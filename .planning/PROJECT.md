@@ -4,9 +4,14 @@
 
 A Claude Code plugin (multi-agent team) that writes and reviews library/package documentation to publication quality. Three specialized agents — Author, Editor, and User Persona — collaborate to produce docs that solve the fundamental problem: the agent that built a feature has too much insider context to document it well for users.
 
+## Vocabulary
+
+- **Project author**: the maintainer who invokes the plugin (i.e. the CC user)
+- **End user**: a user of the documented library/package
+
 ## Core Value
 
-Produce library documentation that a maintainer can publish with minimal tweaks — docs written from the user's perspective, not the builder's.
+Produce library documentation that the project author can publish with minimal tweaks — docs written from the end user's perspective, not the builder's.
 
 ## Requirements
 

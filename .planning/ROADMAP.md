@@ -46,7 +46,10 @@ Plans:
   3. Generated docs contain no references to test utilities, CI config, dev scripts, justfile recipes, or other maintainer-internal concerns
   4. Doc Author reads the selected doc-system guidance file and produces output using that system's syntax (admonitions, frontmatter, directives)
   5. README.md and MAINTAINER.md are generated from their own templates with appropriate audience framing; code examples are working and realistic, not pseudocode stubs
-**Plans**: TBD
+**Plans:** 1 plan
+
+Plans:
+- [ ] 02-01-PLAN.md -- Complete Doc Author agent system prompt (scan, plan, write workflow, templates, filtering, examples, calibration)
 
 ### Phase 3: Editor Agent
 **Goal**: The Editor agent reviews Doc Author output and produces humanized, terminology-consistent, publication-quality docs with structured feedback
@@ -91,7 +94,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation and Setup | 2/2 | Complete | 2026-03-03 |
-| 2. Doc Author Agent | 0/TBD | Not started | - |
+| 2. Doc Author Agent | 0/1 | Planned | - |
 | 3. Editor Agent | 0/TBD | Not started | - |
 | 4. User Persona and Full Pipeline | 0/TBD | Not started | - |
 | 5. Integration and Commands | 0/TBD | Not started | - |

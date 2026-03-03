@@ -75,7 +75,10 @@ Plans:
   3. Every scenario produces a clear PASS, FAIL, or PARTIAL verdict with specific gap identification; FAIL means a user goal cannot be achieved, not merely that something is imperfect
   4. The pipeline revision loop terminates: only BLOCKING issues trigger revision passes, a maximum of 2-3 passes runs before convergence failure is escalated to the user
   5. When two or more audiences are configured, a separate User Persona agent runs for each audience in parallel, producing independent verdicts
-**Plans**: TBD
+**Plans:** 1 plan
+
+Plans:
+- [ ] 04-01-PLAN.md -- Complete User Persona agent system prompt (scenario generation, step-by-step simulation, verdict reporting, revision loop protocol, multi-audience support) and config template extension
 
 ### Phase 5: Integration and Commands
 **Goal**: Project authors can invoke the full pipeline on demand, review existing docs, make targeted edits, and use the plugin from a GSD workflow
@@ -99,5 +102,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Foundation and Setup | 2/2 | Complete | 2026-03-03 |
 | 2. Doc Author Agent | 1/1 | Complete | 2026-03-03 |
 | 3. Editor Agent | 1/1 | Complete   | 2026-03-03 |
-| 4. User Persona and Full Pipeline | 0/TBD | Not started | - |
+| 4. User Persona and Full Pipeline | 0/1 | In progress | - |
 | 5. Integration and Commands | 0/TBD | Not started | - |

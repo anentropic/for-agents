@@ -6,6 +6,8 @@ audiences:
     skill_level: ""
     assumed_knowledge: []
     never_assume: []
+    domain_context: ""
+    discovery_story: ""
 
 doc_system: ""
 

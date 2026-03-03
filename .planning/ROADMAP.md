@@ -30,7 +30,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Universal quality rules are in place as shared skill files; doc-system-specific guidance exists as separate editable `.md` files selectable during setup
   4. Project author can add custom quality rules to `doc-writer.config.json` and the config schema validates them
   5. Audience Q&A answer determines how many End-User Persona agents will be instantiated (one per configured audience)
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md -- Plugin scaffold, manifest, quality-rules skill, diataxis skill, agent stubs
+- [ ] 01-02-PLAN.md -- Setup skill with Q&A, auto-detection, config template, guidance files, default rules
 
 ### Phase 2: Doc Author Agent
 **Goal**: The Doc Author agent produces diataxis-structured, audience-calibrated, internal-detail-free library documentation with working code examples
@@ -86,7 +90,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation and Setup | 0/TBD | Not started | - |
+| 1. Foundation and Setup | 0/2 | Planned | - |
 | 2. Doc Author Agent | 0/TBD | Not started | - |
 | 3. Editor Agent | 0/TBD | Not started | - |
 | 4. User Persona and Full Pipeline | 0/TBD | Not started | - |

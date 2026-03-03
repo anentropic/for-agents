@@ -31,10 +31,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Editor
 
-- [ ] **EDIT-01**: All inline `code` mentions in prose are linked to the relevant API Reference entry
-- [ ] **EDIT-02**: Humanizer pass removes recognizable AI-writing patterns from prose
-- [ ] **EDIT-03**: Cross-file terminology consistency is enforced — same concept uses same name everywhere
-- [ ] **EDIT-04**: Agent communication uses structured feedback format with BLOCKING/SUGGESTION/NITPICK severity levels
+- [x] **EDIT-01**: All inline `code` mentions in prose are linked to the relevant API Reference entry
+- [x] **EDIT-02**: Humanizer pass removes recognizable AI-writing patterns from prose
+- [x] **EDIT-03**: Cross-file terminology consistency is enforced — same concept uses same name everywhere
+- [x] **EDIT-04**: Agent communication uses structured feedback format with BLOCKING/SUGGESTION/NITPICK severity levels
 
 ### End-User Persona
 
@@ -101,10 +101,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-07 | Phase 2 | Complete |
 | AUTH-08 | Phase 2 | Complete |
 | AUTH-09 | Phase 2 | Complete |
-| EDIT-01 | Phase 3 | Pending |
-| EDIT-02 | Phase 3 | Pending |
-| EDIT-03 | Phase 3 | Pending |
-| EDIT-04 | Phase 3 | Pending |
+| EDIT-01 | Phase 3 | Complete |
+| EDIT-02 | Phase 3 | Complete |
+| EDIT-03 | Phase 3 | Complete |
+| EDIT-04 | Phase 3 | Complete |
 | PERS-01 | Phase 4 | Pending |
 | PERS-02 | Phase 4 | Pending |
 | PERS-03 | Phase 4 | Pending |

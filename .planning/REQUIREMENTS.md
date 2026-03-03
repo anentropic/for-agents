@@ -12,9 +12,9 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Setup & Config
 
 - [ ] **SETUP-01**: Project author can run a setup command that asks about target audience(s) and persists config per-project
-- [ ] **SETUP-02**: Quality rules are layered — universal defaults baked into agents, project-specific overrides in config file
+- [x] **SETUP-02**: Quality rules are layered — universal defaults baked into agents, project-specific overrides in config file
 - [ ] **SETUP-03**: Universal quality rules and guidance are doc-system-agnostic; doc-system-specific guidance lives in separate editable .md files (one per system), selected during setup
-- [ ] **SETUP-04**: Project author can define custom quality rules in project config that Editor enforces
+- [x] **SETUP-04**: Project author can define custom quality rules in project config that Editor enforces
 - [ ] **SETUP-05**: Audience Q&A determines number and types of End-User Persona agents to instantiate
 
 ### Doc Author
@@ -88,9 +88,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | SETUP-01 | Phase 1 | Pending |
-| SETUP-02 | Phase 1 | Pending |
+| SETUP-02 | Phase 1 | Complete |
 | SETUP-03 | Phase 1 | Pending |
-| SETUP-04 | Phase 1 | Pending |
+| SETUP-04 | Phase 1 | Complete |
 | SETUP-05 | Phase 1 | Pending |
 | AUTH-01 | Phase 2 | Pending |
 | AUTH-02 | Phase 2 | Pending |

@@ -38,11 +38,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### End-User Persona
 
-- [ ] **PERS-01**: End-User Persona agent generates 3-5 realistic end-user journey scenarios from project context without manual authoring
-- [ ] **PERS-02**: Scenarios are goal-oriented — agent tries to accomplish tasks using only the docs (not checklist-checking)
-- [ ] **PERS-03**: Each scenario gets a clear verdict: PASS, FAIL, or PARTIAL, with specific gap identification
-- [ ] **PERS-04**: Pipeline revision loop has a max pass limit (2-3) and convergence rules — only BLOCKING issues trigger revision
-- [ ] **PERS-05**: When multiple audiences are configured, a separate End-User Persona agent is instantiated for each and runs in parallel
+- [x] **PERS-01**: End-User Persona agent generates 3-5 realistic end-user journey scenarios from project context without manual authoring
+- [x] **PERS-02**: Scenarios are goal-oriented — agent tries to accomplish tasks using only the docs (not checklist-checking)
+- [x] **PERS-03**: Each scenario gets a clear verdict: PASS, FAIL, or PARTIAL, with specific gap identification
+- [x] **PERS-04**: Pipeline revision loop has a max pass limit (2-3) and convergence rules — only BLOCKING issues trigger revision
+- [x] **PERS-05**: When multiple audiences are configured, a separate End-User Persona agent is instantiated for each and runs in parallel
 
 ### Integration
 
@@ -105,11 +105,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EDIT-02 | Phase 3 | Complete |
 | EDIT-03 | Phase 3 | Complete |
 | EDIT-04 | Phase 3 | Complete |
-| PERS-01 | Phase 4 | Pending |
-| PERS-02 | Phase 4 | Pending |
-| PERS-03 | Phase 4 | Pending |
-| PERS-04 | Phase 4 | Pending |
-| PERS-05 | Phase 4 | Pending |
+| PERS-01 | Phase 4 | Complete |
+| PERS-02 | Phase 4 | Complete |
+| PERS-03 | Phase 4 | Complete |
+| PERS-04 | Phase 4 | Complete |
+| PERS-05 | Phase 4 | Complete |
 | INTG-01 | Phase 5 | Pending |
 | INTG-02 | Phase 5 | Pending |
 | INTG-03 | Phase 5 | Pending |

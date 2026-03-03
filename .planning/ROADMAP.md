@@ -60,7 +60,10 @@ Plans:
   2. Editor's humanizer pass removes recognizable AI-writing patterns — prose reads as if written by a senior developer, not a language model
   3. Editor identifies and corrects terminology inconsistencies across files — the same concept uses the same name everywhere in the doc set
   4. Editor produces structured feedback in BLOCKING / SUGGESTION / NITPICK format with page, section, description, and fix for every issue
-**Plans**: TBD
+**Plans:** 1 plan
+
+Plans:
+- [ ] 03-01-PLAN.md -- Complete Doc Editor agent system prompt (three-pass workflow: terminology, humanizer, cross-references, structured feedback, accuracy verification)
 
 ### Phase 4: User Persona and Full Pipeline
 **Goal**: User Persona agents validate docs from the end user's perspective and the full Author > Editor > Persona pipeline runs with a bounded revision loop
@@ -95,6 +98,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Foundation and Setup | 2/2 | Complete | 2026-03-03 |
 | 2. Doc Author Agent | 1/1 | Complete | 2026-03-03 |
-| 3. Editor Agent | 0/TBD | Not started | - |
+| 3. Editor Agent | 0/1 | Not started | - |
 | 4. User Persona and Full Pipeline | 0/TBD | Not started | - |
 | 5. Integration and Commands | 0/TBD | Not started | - |

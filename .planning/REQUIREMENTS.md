@@ -19,15 +19,15 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Doc Author
 
-- [ ] **AUTH-01**: Doc Author classifies content type (tutorial, how-to, reference, explanation) before writing and applies correct structure
-- [ ] **AUTH-02**: All pages of the same doc type follow the same template structure
-- [ ] **AUTH-03**: Internal details are filtered out — no test utils, CI config, dev scripts, justfile recipes, or maintainer-only concerns in end-user-facing docs
-- [ ] **AUTH-04**: Author reads the selected doc-system guidance file and produces output using that system's syntax and conventions (admonitions, frontmatter, directives, etc.)
-- [ ] **AUTH-05**: README.md has its own template — end-user-focused, with quick start, installation, and key features
-- [ ] **AUTH-06**: MAINTAINER.md/DEVELOP.md has its own template — contributor-focused, with setup, architecture, and contribution guidelines
-- [ ] **AUTH-07**: Every API/feature page includes working, realistic code examples (not pseudocode or minimal stubs)
-- [ ] **AUTH-08**: Python/mkdocs projects support blacken-docs formatting and doctest validation where appropriate
-- [ ] **AUTH-09**: Vocabulary and assumed knowledge level are calibrated to the configured audience
+- [x] **AUTH-01**: Doc Author classifies content type (tutorial, how-to, reference, explanation) before writing and applies correct structure
+- [x] **AUTH-02**: All pages of the same doc type follow the same template structure
+- [x] **AUTH-03**: Internal details are filtered out — no test utils, CI config, dev scripts, justfile recipes, or maintainer-only concerns in end-user-facing docs
+- [x] **AUTH-04**: Author reads the selected doc-system guidance file and produces output using that system's syntax and conventions (admonitions, frontmatter, directives, etc.)
+- [x] **AUTH-05**: README.md has its own template — end-user-focused, with quick start, installation, and key features
+- [x] **AUTH-06**: MAINTAINER.md/DEVELOP.md has its own template — contributor-focused, with setup, architecture, and contribution guidelines
+- [x] **AUTH-07**: Every API/feature page includes working, realistic code examples (not pseudocode or minimal stubs)
+- [x] **AUTH-08**: Python/mkdocs projects support blacken-docs formatting and doctest validation where appropriate
+- [x] **AUTH-09**: Vocabulary and assumed knowledge level are calibrated to the configured audience
 
 ### Editor
 
@@ -92,15 +92,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SETUP-03 | Phase 1 | Complete |
 | SETUP-04 | Phase 1 | Complete |
 | SETUP-05 | Phase 1 | Complete |
-| AUTH-01 | Phase 2 | Pending |
-| AUTH-02 | Phase 2 | Pending |
-| AUTH-03 | Phase 2 | Pending |
-| AUTH-04 | Phase 2 | Pending |
-| AUTH-05 | Phase 2 | Pending |
-| AUTH-06 | Phase 2 | Pending |
-| AUTH-07 | Phase 2 | Pending |
-| AUTH-08 | Phase 2 | Pending |
-| AUTH-09 | Phase 2 | Pending |
+| AUTH-01 | Phase 2 | Complete |
+| AUTH-02 | Phase 2 | Complete |
+| AUTH-03 | Phase 2 | Complete |
+| AUTH-04 | Phase 2 | Complete |
+| AUTH-05 | Phase 2 | Complete |
+| AUTH-06 | Phase 2 | Complete |
+| AUTH-07 | Phase 2 | Complete |
+| AUTH-08 | Phase 2 | Complete |
+| AUTH-09 | Phase 2 | Complete |
 | EDIT-01 | Phase 3 | Pending |
 | EDIT-02 | Phase 3 | Pending |
 | EDIT-03 | Phase 3 | Pending |

@@ -13,7 +13,7 @@ Five phases, each delivering one complete, testable capability. The sequence is 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation and Setup** - Config system, skill files, and plugin structure — the prerequisite everything else depends on (completed 2026-03-03)
-- [ ] **Phase 2: Doc Author Agent** - The content generator: diataxis-structured, audience-calibrated, internal-detail-free docs with working code examples
+- [x] **Phase 2: Doc Author Agent** - The content generator: diataxis-structured, audience-calibrated, internal-detail-free docs with working code examples (completed 2026-03-03)
 - [ ] **Phase 3: Editor Agent** - Quality enforcement: humanizer pass, terminology consistency, structured feedback, doc-system formatting
 - [ ] **Phase 4: User Persona and Full Pipeline** - Perspective-shifted validation, full Author > Editor > Persona pipeline with revision loop and exit conditions
 - [ ] **Phase 5: Integration and Commands** - User-facing commands (/doc:write, /doc:review, /doc:edit), GSD integration, and gap detection
@@ -49,7 +49,7 @@ Plans:
 **Plans:** 1 plan
 
 Plans:
-- [ ] 02-01-PLAN.md -- Complete Doc Author agent system prompt (scan, plan, write workflow, templates, filtering, examples, calibration)
+- [x] 02-01-PLAN.md -- Complete Doc Author agent system prompt (scan, plan, write workflow, templates, filtering, examples, calibration)
 
 ### Phase 3: Editor Agent
 **Goal**: The Editor agent reviews Doc Author output and produces humanized, terminology-consistent, publication-quality docs with structured feedback
@@ -94,7 +94,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation and Setup | 2/2 | Complete | 2026-03-03 |
-| 2. Doc Author Agent | 0/1 | Planned | - |
+| 2. Doc Author Agent | 1/1 | Complete | 2026-03-03 |
 | 3. Editor Agent | 0/TBD | Not started | - |
 | 4. User Persona and Full Pipeline | 0/TBD | Not started | - |
 | 5. Integration and Commands | 0/TBD | Not started | - |

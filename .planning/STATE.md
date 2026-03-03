@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Phase 2 context gathered
-last_updated: "2026-03-03T16:41:25.650Z"
-last_activity: 2026-03-03 — Completed plan 01-02 (setup skill, config template, guidance files)
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-03-03T17:07:53.824Z"
+last_activity: 2026-03-03 — Completed plan 02-01 (Doc Author agent system prompt)
 progress:
   total_phases: 5
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
-  percent: 20
+  completed_phases: 2
+  total_plans: 3
+  completed_plans: 3
+  percent: 40
 ---
 
 # Project State
@@ -21,32 +21,33 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-02)
 
 **Core value:** Produce library documentation that the project author can publish with minimal tweaks — docs written from the end user's perspective, not the builder's.
-**Current focus:** Phase 1 - Foundation and Setup
+**Current focus:** Phase 2 - Doc Author Agent (complete)
 
 ## Current Position
 
-Phase: 1 of 5 (Foundation and Setup)
-Plan: 2 of 2 in current phase
-Status: Phase 1 complete — all plans executed
-Last activity: 2026-03-03 — Completed plan 01-02 (setup skill, config template, guidance files)
+Phase: 2 of 5 (Doc Author Agent)
+Plan: 1 of 1 in current phase
+Status: Phase 2 complete — all plans executed
+Last activity: 2026-03-03 — Completed plan 02-01 (Doc Author agent system prompt)
 
-Progress: [██░░░░░░░░] 20%
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 3.5 min
-- Total execution time: 0.12 hours
+- Total plans completed: 3
+- Average duration: 3 min
+- Total execution time: 0.15 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01 | 2 | 7 min | 3.5 min |
+| 02 | 1 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (3 min), 01-02 (4 min)
+- Last 5 plans: 01-01 (3 min), 01-02 (4 min), 02-01 (2 min)
 - Trend: consistent
 
 *Updated after each plan completion*
@@ -66,6 +67,12 @@ Recent decisions affecting current work:
 - [01-02]: Setup skill uses disable-model-invocation: true to prevent auto-invocation
 - [01-02]: Config template enforces audiences as array from day one (prevents Phase 4 refactoring)
 - [01-02]: Guidance files are opinionated preferences, not syntax references
+- [02-01]: Agent uses two-phase workflow (Scan+Plan then Write) with single user approval gate between phases
+- [02-01]: Skills referenced by name, never duplicated in agent body — keeps prompt under 430 lines
+- [02-01]: Internal notes use HTML comments at end of each page — Editor reads them, renderers strip them
+- [02-01]: Author does NOT write reference pages — defers to auto-generated API reference
+- [02-01]: Per-page audience reminder pattern prevents calibration drift on later pages
+- [02-01]: README and MAINTAINER templates embedded directly in agent prompt as locked structure
 
 ### Pending Todos
 
@@ -79,6 +86,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-03T16:41:25.647Z
-Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-doc-author-agent/02-CONTEXT.md
+Last session: 2026-03-03T17:07:53.821Z
+Stopped at: Completed 02-01-PLAN.md
+Resume file: None

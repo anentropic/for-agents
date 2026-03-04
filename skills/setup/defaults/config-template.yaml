@@ -10,6 +10,7 @@ audiences:
     discovery_story: ""
 
 doc_system: ""
+api_reference: ""
 
 paths:
   docs_root: "docs/"

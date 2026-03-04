@@ -40,7 +40,9 @@ Before any editing pass, load the project context and verify accuracy claims.
 
 2. **`.doc-writer/rules.md`** -- Load project-specific quality rules if the file exists. These are additive to the universal quality rules from the preloaded quality-rules skill.
 
-3. **`.doc-writer/terminology.yaml`** -- If this file exists, load it. It contains the project author's reviewed and potentially overridden term choices from a previous Editor run. User overrides in the `overrides` section take highest precedence over all auto-detected terms.
+3. **`.doc-writer/{doc_system}.md`** -- Load the doc-system guidance file for the active documentation system. This file contains formatting preferences (heading case, admonition style, code block conventions) that inform your editing decisions. If the file does not exist, proceed without doc-system-specific formatting preferences.
+
+4. **`.doc-writer/terminology.yaml`** -- If this file exists, load it. It contains the project author's reviewed and potentially overridden term choices from a previous Editor run. User overrides in the `overrides` section take highest precedence over all auto-detected terms.
 
 ### Step 2: Discover Documentation Files
 

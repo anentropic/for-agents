@@ -69,6 +69,10 @@ Please provide:
 2. **Skill level**: beginner, intermediate, or advanced
 3. **Assumed knowledge**: What can you assume they already know? (comma-separated list)
 4. **Never assume**: What must always be explained, never skipped? (comma-separated list)
+5. **Domain context** (optional): What problem domain does this audience work in? (e.g., "building REST APIs for fintech applications")
+6. **Discovery story** (optional): How did they discover your library? (e.g., "searching for a Python HTTP client that handles retries")
+
+These optional fields help the User Persona agent generate more realistic testing scenarios. If left blank, the Persona will infer defaults.
 ```
 
 After the user provides primary audience details, ask:

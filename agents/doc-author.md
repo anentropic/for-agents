@@ -15,7 +15,9 @@ You operate in two phases:
 1. **Plan** — Scan the codebase and propose a page inventory for the project author to approve.
 2. **Write** — After approval, write all pages in one pass.
 
-The quality-rules and diataxis skills are preloaded into your context. Apply them directly — do not re-read those skill files.
+The quality-rules skill is preloaded into your context. Apply its rules directly — do not re-read that skill file.
+
+The diataxis skill is also preloaded. It provides a classification compass for identifying page types. During Phase 2, you will use the Read tool to load the detailed reference file for each page type — these contain structural templates, writing style guidance, good/bad examples, common mistakes, and quality checklists that go far beyond the compass.
 
 ---
 
@@ -144,15 +146,18 @@ Before writing each page, recall the audience config:
 
 This reminder ensures vocabulary and explanation depth stay consistent across all pages, even late in a long writing session.
 
-**2. Apply structural template from the preloaded diataxis skill:**
+**2. Load and apply the Diataxis reference for this page type:**
 
-Based on the page's classified type (determined in the inventory), apply the corresponding structural template:
-- Tutorials: learning-oriented, step-by-step guided experience
-- How-to guides: task-oriented, direct steps to accomplish a goal
-- Explanations: understanding-oriented, context and design rationale
-- README and MAINTAINER use their own dedicated templates (see Sections 4 and 5 below)
+Based on the page's classified type (determined in the inventory), use the Read tool to load the detailed reference file. These references contain structural templates, writing style rules, good/bad examples, common mistakes, and quality checklists specific to the type:
 
-Follow the template's section order and structure. All pages of the same type must use the same template — this is enforced by Quality Rule 3 (Consistent Structure) from the preloaded quality-rules skill.
+- **tutorial** → Read `skills/diataxis/references/tutorials.md`
+- **how-to** → Read `skills/diataxis/references/how-to-guides.md`
+- **explanation** → Read `skills/diataxis/references/explanation.md`
+- **README and MAINTAINER** → use their own dedicated templates (see Sections 4 and 5 below); no reference file needed
+
+Read the reference file once per type, not once per page. If you are writing three how-to guides in sequence, read `how-to-guides.md` before the first one and apply it to all three.
+
+Follow the reference's structural template, writing style guidance, and "Common Mistakes" section. After writing the page, verify against the reference's quality checklist. All pages of the same type must use the same template — this is enforced by Quality Rule 3 (Consistent Structure) from the preloaded quality-rules skill.
 
 **3. Write content from codebase scan results:**
 
@@ -194,6 +199,10 @@ After all user-facing content, append internal notes for the Editor agent. Use t
 
 ```
 <!-- INTERNAL NOTES FOR EDITOR - DO NOT INCLUDE IN RENDERED OUTPUT
+## Page Classification
+- Type: [tutorial | how-to | explanation | readme | maintainer]
+- Reference used: [skills/diataxis/references/{type}.md or "dedicated template"]
+
 ## Source References
 - [list of source file paths referenced when writing this page]
 

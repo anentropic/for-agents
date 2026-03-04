@@ -1,221 +1,207 @@
 ---
 name: diataxis
-description: Diataxis content classification and structural templates for documentation pages.
+description: Write comprehensive, user-focused documentation following the Diataxis framework. Use this skill when creating or improving tutorials, how-to guides, reference documentation, or explanatory content. Helps identify the right documentation type and apply best practices for each.
 user-invocable: false
+metadata:
+  author: abatilo/vimrc/plugins/abatilo-core/skills/diataxis-documentation
 ---
 
-# Diataxis Framework Reference
+# Diataxis Documentation Skill
 
-The Diataxis framework classifies documentation into four types based on what the reader needs. Each type serves a different purpose and has a different structural template. Before writing any documentation page, classify it into one of these four types and apply the corresponding template.
+This skill helps you create high-quality, user-focused documentation following the Diataxis framework, which organizes documentation into four distinct types based on user needs.
 
-Understanding the distinctions is critical: a tutorial is not a how-to guide, and a reference is not an explanation. Misclassifying a page leads to content that tries to do two things at once and does neither well.
+## When to Use This Skill
 
----
+Use this skill when:
+- Creating new documentation of any kind
+- Improving existing documentation
+- Organizing documentation for a project or codebase
+- Writing tutorials, how-to guides, reference material, or explanations
+- Unsure which type of documentation is needed
+- Documentation feels unclear or serves multiple purposes poorly
 
-## Tutorial
+## The Diataxis Framework Overview
 
-**Orientation:** Learning-oriented
-**Purpose:** Teach the reader by walking them through a complete, working example. The reader follows along and builds something concrete.
-**When to use:** First contact with a feature or concept. The reader has never used this before and needs guided, hands-on experience. Tutorials answer: "Can you teach me how to do this?"
+Diataxis organizes documentation along two dimensions:
 
-**What makes it different from a how-to guide:** A tutorial is for learning, not for accomplishing a specific task. It includes explanations of why each step matters. A how-to guide assumes the reader already understands the concepts and just needs the steps.
+**User Context:**
+- **Study** (Skill Acquisition): User is learning
+- **Work** (Skill Application): User is doing
 
-### Structural Template
+**Content Nature:**
+- **Action** (Practical Steps): How to do things
+- **Cognition** (Theoretical Knowledge): Understanding concepts
 
-```markdown
-# [Tutorial Title: Build/Create a ...]
+This creates four distinct documentation types:
 
-[1-2 sentence description of what you will build and what you will learn]
-
-## Prerequisites
-
-- [Specific prerequisite with version, e.g., "Python 3.9 or later"]
-- [Required knowledge, e.g., "Basic familiarity with HTTP requests"]
-- [Required setup, e.g., "A running PostgreSQL instance"]
-
-## Step 1: [Action verb — Set up / Create / Configure ...]
-
-[Brief explanation of what this step does and why it matters]
-
-[Code block with the complete code for this step]
-
-[Explanation of what the code does]
-
-## Step 2: [Action verb ...]
-
-[Continue pattern: explanation, code, explanation]
-
-## Step N: [Final step]
-
-[...]
-
-## What You Learned
-
-- [Key concept 1 demonstrated in this tutorial]
-- [Key concept 2]
-- [Key concept 3]
-
-## Next Steps
-
-- [Link to related how-to guide for specific tasks]
-- [Link to reference for API details]
-- [Link to more advanced tutorial]
+```
+                Study          |          Work
+           (Learning)          |         (Doing)
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                                |
+    TUTORIALS                   |    HOW-TO GUIDES
+    Learning-oriented           |    Goal-oriented
+    Guided lessons              |    Practical directions
+    "Learn by doing"            |    "Achieve a goal"
+                                |
+Action ━━━━━━━━━━━━━━━━━━━━━━━━┼━━━━━━━━━━━━━━━━━━━━━━━━━━ Action
+                                |
+    EXPLANATION                 |    REFERENCE
+    Understanding-oriented      |    Information-oriented
+    Background & context        |    Technical description
+    "Why & how it works"        |    "Facts about machinery"
+                                |
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Cognition                       |                    Cognition
 ```
 
+## How to Use This Skill
+
+### 1. Identify the Documentation Type Needed
+
+**Ask these two questions:**
+1. **Action or Cognition?** Does the user need to DO something or UNDERSTAND something?
+2. **Study or Work?** Is the user learning something new or applying existing knowledge?
+
+**Decision Tree:**
+- Action + Study = **Tutorial** (learning by doing)
+- Action + Work = **How-to Guide** (solving a problem)
+- Cognition + Work = **Reference** (looking up facts)
+- Cognition + Study = **Explanation** (understanding concepts)
+
+### 2. Load the Appropriate Reference File
+
+Based on the documentation type identified, load the relevant reference for detailed guidance:
+
+**For Tutorials:**
+Load [Tutorials Reference](./references/tutorials.md) when you need to:
+- Guide a learner through a complete, practical lesson
+- Teach basic skills and concepts through hands-on experience
+- Create a learning-oriented "first steps" experience
+- Help someone gain confidence with a new tool or technology
+
+**For How-to Guides:**
+Load [How-to Guides Reference](./references/how-to-guides.md) when you need to:
+- Provide step-by-step instructions to achieve a specific goal
+- Help solve a particular real-world problem
+- Write task-oriented documentation for competent users
+- Address a "How do I..." question
+
+**For Reference Documentation:**
+Load [Reference Documentation Reference](./references/reference.md) when you need to:
+- Document APIs, functions, classes, or configuration options
+- Provide accurate technical descriptions
+- Create lookup material for factual information
+- Write information-oriented content structured like the product
+
+**For Explanations:**
+Load [Explanations Reference](./references/explanation.md) when you need to:
+- Explain concepts, design decisions, or architectural choices
+- Provide background and context
+- Discuss alternatives and trade-offs
+- Answer "why" questions about how things work
+
+**For Framework Overview:**
+Load [Framework Overview Reference](./references/framework-overview.md) when you need:
+- Detailed understanding of Diataxis principles
+- Guidance on maintaining distinctness between types
+- Common mistakes to avoid
+- The iterative improvement workflow
+
+### 3. Follow the Iterative Improvement Process
+
+Diataxis emphasizes continuous, incremental improvement:
+
+1. **Choose**: Select a small piece of documentation (page, paragraph, or sentence)
+2. **Assess**: Evaluate it against Diataxis standards:
+   - What user need does it serve?
+   - How well does it serve that need?
+   - Does it belong in the right documentation type?
+   - Is it using the right style and approach?
+3. **Decide**: Determine one specific improvement that aligns with Diataxis
+4. **Do**: Complete that single improvement and publish immediately
+
+**Important:** Focus on small, immediate improvements rather than large restructuring efforts.
+
+## Key Principles
+
+### Maintain Distinctness
+- Each documentation type has a specific purpose - don't blur them
+- Tutorials teach through doing, not explaining
+- How-to guides solve problems, not teach concepts
+- Reference describes facts, not guide users through tasks
+- Explanations provide context, not instructions
+
+### User-Centered Approach
+- Always consider: What does the user need right now?
+- Match the documentation type to the user's context (study vs. work)
+- Match the content to the user's need (action vs. cognition)
+
+### Organic Structure
+- Don't create empty documentation structures upfront
+- Let structure emerge from content improvements
+- Create documentation types only when content demands it
+
+### Link Between Types
+- Tutorials can link to explanations for deeper understanding
+- How-to guides can reference relevant reference material
+- Keep each type focused; use links for cross-cutting needs
+
+## Quick Documentation Type Selector
+
+**User says "How do I..."**
+- If they're learning → Tutorial
+- If they're working → How-to Guide
+
+**User needs facts about something**
+→ Reference
+
+**User asks "Why..." or "What is..."**
+→ Explanation
+
+**User is frustrated or stuck**
+- Check recent tasks → How-to Guide
+- Check understanding → Explanation
+- Check syntax/parameters → Reference
+
+**Creating first-time user content**
+→ Tutorial
+
+## Common Patterns
+
+### Tutorial Example Scenarios
+- "Build your first web app"
+- "Getting started with X"
+- "Introduction to Y"
+- "Your first Z project"
+
+### How-to Guide Example Scenarios
+- "How to deploy to production"
+- "Implementing authentication"
+- "Optimizing database queries"
+- "Troubleshooting connection errors"
+
+### Reference Example Scenarios
+- API documentation
+- Configuration file reference
+- Command-line options
+- Class/function documentation
+
+### Explanation Example Scenarios
+- "Understanding the architecture"
+- "Why we chose X over Y"
+- "How the authentication system works"
+- "Database design decisions"
+
+## Important Notes
+
+- Load specific reference files only when needed to keep context manageable
+- Each documentation type requires different writing styles and structures
+- Avoid mixing purposes - if documentation tries to do multiple things, split it
+- The framework is descriptive, not prescriptive - adapt to your project's needs
+- Iterate continuously rather than attempting complete restructuring
+- Quality comes from alignment with user needs, not from following rigid templates
+
 ---
 
-## How-To Guide
-
-**Orientation:** Task-oriented
-**Purpose:** Provide direct steps to accomplish a specific, real-world goal. The reader knows what they want to do and needs to know how.
-**When to use:** The reader has a concrete goal — "I need to configure authentication" or "I need to deploy to production." How-to guides answer: "How do I do this?"
-
-**What makes it different from a tutorial:** A how-to guide is for doing, not for learning. It assumes the reader understands the underlying concepts and focuses on the steps. Explanations are minimal — just enough to avoid confusion.
-
-### Structural Template
-
-```markdown
-# How to [accomplish specific goal]
-
-[1 sentence stating what this guide helps you do]
-
-## Prerequisites
-
-- [What must already be in place]
-- [Required access, credentials, or configuration]
-
-## Steps
-
-### 1. [Action verb — Configure / Install / Create ...]
-
-[Direct instruction with code or command]
-
-### 2. [Action verb ...]
-
-[Direct instruction]
-
-### N. [Verify / Confirm ...]
-
-[How to verify the goal was accomplished]
-
-## Troubleshooting
-
-### [Common problem 1]
-
-[Symptom and solution]
-
-### [Common problem 2]
-
-[Symptom and solution]
-```
-
----
-
-## Reference
-
-**Orientation:** Information-oriented
-**Purpose:** Provide precise, complete technical descriptions of the API, configuration options, or system components. The reader needs to look up specific details.
-**When to use:** The reader is already using the software and needs exact specifications — function signatures, parameter types, return values, configuration keys. Reference answers: "What are the details of this?"
-
-**What makes it different from an explanation:** Reference describes the machinery — what it is, what it accepts, what it returns. It does not discuss why the machinery exists or the thinking behind its design. Reference is austere and factual.
-
-### Structural Template
-
-```markdown
-# [API/Component Name]
-
-[1-2 sentence description of what this is and its primary purpose]
-
-## Synopsis
-
-[Function signature, CLI usage pattern, or configuration block]
-
-## Parameters
-
-| Parameter | Type | Required | Default | Description |
-|-----------|------|----------|---------|-------------|
-| `param1` | `string` | Yes | — | [What it does] |
-| `param2` | `number` | No | `10` | [What it does] |
-
-## Return Value
-
-[Type and description of what is returned]
-
-[Table or description of possible return states/errors]
-
-## Examples
-
-### [Use case 1 — e.g., "Basic usage"]
-
-[Code block with working example]
-
-### [Use case 2 — e.g., "With optional parameters"]
-
-[Code block with working example]
-
-## Related
-
-- [`relatedFunction()`](./related-function.md) — [brief description]
-- [How-to: Accomplish X](../how-to/accomplish-x.md) — uses this API
-```
-
----
-
-## Explanation
-
-**Orientation:** Understanding-oriented
-**Purpose:** Help the reader understand why something works the way it does, the design decisions behind it, and how it fits into the bigger picture. Explanation provides context and insight.
-**When to use:** The reader wants to understand the reasoning — "Why does the library use connection pooling?" or "What are the tradeoffs of this approach?" Explanation answers: "Why is it like this?"
-
-**What makes it different from reference:** Explanation discusses concepts, context, and design rationale. Reference describes technical specifications. Explanation is discursive and connects ideas; reference is terse and factual.
-
-### Structural Template
-
-```markdown
-# [Concept / Topic — e.g., "Understanding Connection Pooling"]
-
-## Context
-
-[Why this topic matters. What problem or situation led to this design.
-Frame the discussion so the reader understands why they should care.]
-
-## [The Concept]
-
-[Core explanation of the idea. Use analogies where helpful.
-Build understanding progressively — start with the simple version,
-then add nuance.]
-
-## How It Works
-
-[Technical details of the mechanism, at the level appropriate for
-the audience. Diagrams or step-by-step descriptions of the internal
-process. This is not a how-to — the reader is learning how the
-system works, not how to use it.]
-
-## Tradeoffs and Alternatives
-
-[What other approaches exist and why this one was chosen.
-Be honest about limitations. Help the reader understand when
-this approach is and is not appropriate.]
-
-## Further Reading
-
-- [Link to tutorial for hands-on experience]
-- [Link to reference for technical details]
-- [External resource for deeper understanding]
-```
-
----
-
-## Classification Decision Guide
-
-When unsure which type a page should be, ask:
-
-| Question | If yes... |
-|----------|-----------|
-| Is the reader learning something new through a guided experience? | **Tutorial** |
-| Is the reader trying to accomplish a specific, practical goal? | **How-To Guide** |
-| Is the reader looking up technical specifications or API details? | **Reference** |
-| Is the reader trying to understand why something works a certain way? | **Explanation** |
-
-A single page should be one type. If you find yourself mixing types (explaining concepts in a how-to guide, or adding steps to a reference page), split the content into separate pages of the appropriate types and cross-link them.
+**Remember:** The goal is to serve user needs effectively. Use the Diataxis compass to identify what users need, then load the appropriate reference file for detailed guidance on creating that documentation type.

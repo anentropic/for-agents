@@ -90,7 +90,11 @@ Plans:
   3. Project author runs `/doc:edit` targeting a specific page or issue and receives a revised version of only that scope
   4. Plugin is invokable at GSD milestone boundaries — project authors using GSD can trigger doc generation as part of their milestone workflow
   5. Gap detection runs as part of `/doc:write` and reports public API surface items that have no corresponding documentation
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 05-01-PLAN.md -- Full pipeline orchestration skill (/doc-writer:write) with gap detection script and revision loop
+- [ ] 05-02-PLAN.md -- Audit skill (/doc-writer:review) and targeted edit skill (/doc-writer:edit)
 
 ## Progress
 
@@ -103,4 +107,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Doc Author Agent | 1/1 | Complete | 2026-03-03 |
 | 3. Editor Agent | 1/1 | Complete   | 2026-03-03 |
 | 4. User Persona and Full Pipeline | 1/1 | Complete | 2026-03-03 |
-| 5. Integration and Commands | 0/TBD | Not started | - |
+| 5. Integration and Commands | 0/2 | In Progress | - |

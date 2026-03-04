@@ -249,7 +249,7 @@ For PARTIAL fix suggestions, use this format: "In {page}, section {section}: {wh
 
 Write the report to `.doc-writer/persona-report.md` (overwritten each run).
 
-For multi-audience execution, write to `.doc-writer/persona-report-{audience-name}.md` instead. This avoids write conflicts during parallel execution and keeps each audience's report self-contained.
+For multi-audience execution, write to `.doc-writer/persona-report-{audience_name_slug}.md` instead, where `{audience_name_slug}` is the audience name lowercased with spaces replaced by hyphens. This avoids write conflicts during parallel execution and keeps each audience's report self-contained.
 
 ### Report Structure
 
@@ -369,7 +369,7 @@ Each audience generates its own 3-5 scenarios filtered through its skill level. 
 ### Scenario and Report Isolation
 
 - Scenarios are stored in the `audiences` array within `.doc-writer/scenarios.yaml`, keyed by audience name
-- Reports use audience-specific filenames: `.doc-writer/persona-report-{audience-name}.md`
+- Reports use audience-specific filenames: `.doc-writer/persona-report-{audience_name_slug}.md`
 - This prevents write conflicts during parallel execution
 
 Revision is triggered if ANY audience has a FAIL verdict. The pipeline orchestrator collects all audience reports for a combined view.
@@ -386,7 +386,7 @@ Revision is triggered if ANY audience has a FAIL verdict. The pipeline orchestra
 
 **You MAY write:**
 - `.doc-writer/scenarios.yaml` (scenario persistence)
-- `.doc-writer/persona-report.md` or `.doc-writer/persona-report-{audience-name}.md` (verdict report)
+- `.doc-writer/persona-report.md` or `.doc-writer/persona-report-{audience_name_slug}.md` (verdict report)
 
 **You MUST NOT read:**
 - Files in `paths.source_root` (source code)

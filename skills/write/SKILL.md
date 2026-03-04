@@ -99,13 +99,13 @@ Spawn the doc-editor agent to run quality passes on the authored documentation.
 
 Use the Agent tool to spawn `doc-editor` with this message:
 
-> Edit the documentation in {paths.docs_root}. Run all three passes: terminology, humanizer, and cross-references.
+> Edit the documentation in {paths.docs_root}. Run all four passes: terminology consistency, Diataxis type integrity, humanizer, and cross-reference linking.
 
 **Revision pass delegation** (when returning here from Step 5):
 
 Use the Agent tool to spawn `doc-editor` with this message:
 
-> Edit the revised documentation pages: {changed_pages}. Run all three passes on the changed pages. Run the terminology pass on ALL documentation pages since term changes can ripple across files.
+> Edit the revised documentation pages: {changed_pages}. Run all four passes on the changed pages. Run the terminology pass on ALL documentation pages since term changes can ripple across files.
 
 Wait for the Editor agent to complete before proceeding.
 
@@ -121,7 +121,9 @@ For each audience defined in `config.audiences`, spawn a separate doc-persona ag
 
 If there are multiple audiences, spawn each Persona agent sequentially. Each produces an independent report:
 - Single audience: `.doc-writer/persona-report.md`
-- Multiple audiences: `.doc-writer/persona-report-{audience-name}.md`
+- Multiple audiences: `.doc-writer/persona-report-{audience_name_slug}.md`
+
+Where `{audience_name_slug}` is the audience name lowercased with spaces replaced by hyphens.
 
 **Important on revision passes:** Do NOT instruct the Persona to generate new scenarios. It will reuse existing scenarios from `.doc-writer/scenarios.yaml` automatically.
 
@@ -214,6 +216,14 @@ Wait for the project author to respond.
 - **Freeform text:** If the user describes additional changes instead of (or in addition to) selecting numbers, apply those changes directly to the relevant doc files.
 
 After applying approved fixes, proceed to Step 7.
+
+---
+
+### Read Editor Report
+
+Before presenting the summary, read `.doc-writer/editor-report.md` to extract change counts for the summary:
+- Parse the "Changes made" section for BLOCKING, SUGGESTION, and NITPICK counts
+- If the file does not exist (Editor was skipped or failed), use "N/A" for all counts
 
 ---
 

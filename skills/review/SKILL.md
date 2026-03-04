@@ -71,7 +71,7 @@ Spawn the doc-editor agent to review documentation quality. The Editor will make
 
 Use the Agent tool to spawn `doc-editor` with this delegation message:
 
-> Review the documentation in {docs_root}. Run all three passes: terminology consistency, humanizer review, cross-reference verification. Focus on identifying issues and editing docs to fix them. Write your report to .doc-writer/editor-report.md.
+> Review the documentation in {paths.docs_root}. Run all four passes: terminology consistency, Diataxis type integrity, humanizer, and cross-reference linking. Focus on identifying issues and editing docs to fix them. Write your report to .doc-writer/editor-report.md.
 
 Wait for the Editor agent to complete before proceeding.
 
@@ -83,7 +83,7 @@ For each audience entry:
 
 Use the Agent tool to spawn `doc-persona` with this delegation message:
 
-> Evaluate documentation as the '{audience.name}' audience. Read the docs in {docs_root} and run your full three-phase workflow: generate scenarios, simulate user journeys, and produce your report. Write your report to .doc-writer/persona-report-{audience_name_slug}.md.
+> Evaluate documentation as the '{audience.name}' audience. Read the docs in {paths.docs_root} and run your full three-phase workflow: generate scenarios, simulate user journeys, and produce your report. Write your report to .doc-writer/persona-report-{audience_name_slug}.md.
 
 Where `{audience_name_slug}` is the audience name lowercased with spaces replaced by hyphens.
 

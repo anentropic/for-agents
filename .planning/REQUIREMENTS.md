@@ -46,11 +46,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Integration
 
-- [ ] **INTG-01**: Project author can generate new docs on-demand via `/doc:write` command
-- [ ] **INTG-02**: Project author can review existing docs via `/doc:review` — runs Editor + End-User Persona pipeline on current docs, reports issues
-- [ ] **INTG-03**: Project author can make targeted fixes via `/doc:edit` — addresses specific pages or issues
-- [ ] **INTG-04**: Plugin integrates with GSD workflow — invokable at milestone boundaries
-- [ ] **INTG-05**: Gap detection compares public API surface against documented surface and reports undocumented features
+- [x] **INTG-01**: Project author can generate new docs on-demand via `/doc:write` command
+- [x] **INTG-02**: Project author can review existing docs via `/doc:review` — runs Editor + End-User Persona pipeline on current docs, reports issues
+- [x] **INTG-03**: Project author can make targeted fixes via `/doc:edit` — addresses specific pages or issues
+- [x] **INTG-04**: Plugin integrates with GSD workflow — invokable at milestone boundaries
+- [x] **INTG-05**: Gap detection compares public API surface against documented surface and reports undocumented features
 
 ## v2 Requirements
 
@@ -110,11 +110,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PERS-03 | Phase 4 | Complete |
 | PERS-04 | Phase 4 | Complete |
 | PERS-05 | Phase 4 | Complete |
-| INTG-01 | Phase 5 | Pending |
-| INTG-02 | Phase 5 | Pending |
-| INTG-03 | Phase 5 | Pending |
-| INTG-04 | Phase 5 | Pending |
-| INTG-05 | Phase 5 | Pending |
+| INTG-01 | Phase 5 | Complete |
+| INTG-02 | Phase 5 | Complete |
+| INTG-03 | Phase 5 | Complete |
+| INTG-04 | Phase 5 | Complete |
+| INTG-05 | Phase 5 | Complete |
 
 **Coverage:**
 - v1 requirements: 28 total

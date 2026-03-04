@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Phase 5 context gathered
-last_updated: "2026-03-04T00:19:06.169Z"
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-03-04T00:39:07.711Z"
 last_activity: 2026-03-03 — Completed plan 04-01 (User Persona agent system prompt and config extension)
 progress:
   total_phases: 5
-  completed_phases: 4
-  total_plans: 5
-  completed_plans: 5
+  completed_phases: 5
+  total_plans: 7
+  completed_plans: 7
   percent: 80
 ---
 
@@ -54,6 +54,8 @@ Progress: [████████░░] 80%
 
 *Updated after each plan completion*
 | Phase 04 P01 | 4 | 2 tasks | 2 files |
+| Phase 05 P01 | 4 | 1 tasks | 2 files |
+| Phase 05 P02 | 3 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -89,6 +91,11 @@ Recent decisions affecting current work:
 - [04-01]: Scenarios reused during revision passes to ensure consistent evaluation across iterations
 - [04-01]: Multi-audience via invocation message parameter with audience-specific report filenames for parallel safety
 - [04-01]: domain_context and discovery_story are optional config fields with graceful degradation
+- [Phase 05]: Skill-body orchestration over orchestrator agent (subagents cannot spawn subagents)
+- [Phase 05]: PARTIAL approval batched at pipeline end rather than inline during Persona evaluation
+- [Phase 05]: Explicit Bash tool call for gap detection over dynamic context injection (needs config values)
+- [Phase 05]: Editor edits docs directly during review (Phase 3 design); review value is reports + Persona evaluation
+- [Phase 05]: Edit skill excludes Bash and does NOT run Persona after changes (locked decisions)
 
 ### Pending Todos
 
@@ -102,6 +109,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-04T00:19:06.160Z
-Stopped at: Phase 5 context gathered
-Resume file: .planning/phases/05-integration-and-commands/05-CONTEXT.md
+Last session: 2026-03-04T00:39:07.709Z
+Stopped at: Completed 05-02-PLAN.md
+Resume file: None

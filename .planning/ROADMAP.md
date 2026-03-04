@@ -110,10 +110,10 @@ Plans:
   5. Review skill uses consistent `{paths.docs_root}` variable naming
   6. Editor reads doc_system guidance file for formatting context
   7. Config template includes api_reference field
-**Plans:** 0 plans
+**Plans:** 1 plan
 
 Plans:
-(none yet — run `/gsd:plan-phase 6`)
+- [ ] 06-01-PLAN.md -- Close INT-01 through INT-07: fix delegation messages, setup Q&A, filename slugs, editor-report read, variable naming, guidance file read, config template
 
 ## Progress
 
@@ -127,4 +127,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. Editor Agent | 1/1 | Complete | 2026-03-03 |
 | 4. User Persona and Full Pipeline | 1/1 | Complete | 2026-03-03 |
 | 5. Integration and Commands | 2/2 | Complete | 2026-03-04 |
-| 6. Cross-Phase Integration Cleanup | 0/0 | Pending | - |
+| 6. Cross-Phase Integration Cleanup | 0/1 | In Progress | - |

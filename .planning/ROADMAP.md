@@ -16,7 +16,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Doc Author Agent** - The content generator: diataxis-structured, audience-calibrated, internal-detail-free docs with working code examples (completed 2026-03-03)
 - [x] **Phase 3: Editor Agent** - Quality enforcement: humanizer pass, terminology consistency, structured feedback, doc-system formatting (completed 2026-03-03)
 - [x] **Phase 4: User Persona and Full Pipeline** - Perspective-shifted validation, full Author > Editor > Persona pipeline with revision loop and exit conditions (completed 2026-03-03)
-- [ ] **Phase 5: Integration and Commands** - User-facing commands (/doc:write, /doc:review, /doc:edit), GSD integration, and gap detection
+- [x] **Phase 5: Integration and Commands** - User-facing commands (/doc:write, /doc:review, /doc:edit), GSD integration, and gap detection (completed 2026-03-04)
+- [ ] **Phase 6: Cross-Phase Integration Cleanup** - Close integration gaps and tech debt from v1.0 milestone audit (INT-01 through INT-07)
 
 ## Phase Details
 
@@ -93,18 +94,37 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 05-01-PLAN.md -- Full pipeline orchestration skill (/doc-writer:write) with gap detection script and revision loop
-- [ ] 05-02-PLAN.md -- Audit skill (/doc-writer:review) and targeted edit skill (/doc-writer:edit)
+- [x] 05-01-PLAN.md -- Full pipeline orchestration skill (/doc-writer:write) with gap detection script and revision loop
+- [x] 05-02-PLAN.md -- Audit skill (/doc-writer:review) and targeted edit skill (/doc-writer:edit)
+
+### Phase 6: Cross-Phase Integration Cleanup
+**Goal**: Close all integration gaps and tech debt identified in the v1.0 milestone audit — stale delegation messages, missing config collection, filename inconsistencies, and minor wiring fixes
+**Depends on**: Phase 5
+**Requirements**: SETUP-01, EDIT-04, INTG-01, INTG-02, INTG-03, PERS-01, PERS-02 (hardening — all already satisfied, this phase improves integration quality)
+**Gap Closure**: Addresses INT-01 through INT-07 from v1.0-MILESTONE-AUDIT.md
+**Success Criteria** (what must be TRUE):
+  1. All three orchestrator skills (write, review, edit) delegate to Editor with four named passes including Diataxis Type Integrity
+  2. Setup Q&A collects domain_context and discovery_story for each audience
+  3. Persona report filenames use consistent slug transformation across write and review flows
+  4. Write skill reads editor-report.md before presenting summary counts
+  5. Review skill uses consistent `{paths.docs_root}` variable naming
+  6. Editor reads doc_system guidance file for formatting context
+  7. Config template includes api_reference field
+**Plans:** 0 plans
+
+Plans:
+(none yet — run `/gsd:plan-phase 6`)
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation and Setup | 2/2 | Complete | 2026-03-03 |
 | 2. Doc Author Agent | 1/1 | Complete | 2026-03-03 |
-| 3. Editor Agent | 1/1 | Complete   | 2026-03-03 |
+| 3. Editor Agent | 1/1 | Complete | 2026-03-03 |
 | 4. User Persona and Full Pipeline | 1/1 | Complete | 2026-03-03 |
-| 5. Integration and Commands | 0/2 | In Progress | - |
+| 5. Integration and Commands | 2/2 | Complete | 2026-03-04 |
+| 6. Cross-Phase Integration Cleanup | 0/0 | Pending | - |

@@ -10,7 +10,7 @@
 set -euo pipefail
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-AGENT_FILE="${PROJECT_ROOT}/agents/doc-author.md"
+AGENT_FILE="${PROJECT_ROOT}/doc-writer/agents/doc-author.md"
 
 PASS=0
 FAIL=0

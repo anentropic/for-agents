@@ -8,6 +8,11 @@
       "name": "doc-writer",
       "source": "./doc-writer",
       "description": "AI-powered library documentation generator"
+    },
+    {
+      "name": "copilot-review",
+      "source": "./copilot-review",
+      "description": "Multi-dimensional code review using GitHub Copilot as a second opinion — runs 6 parallel sub-reviews (architecture, tests, quality, errors, deps, reinvented wheels) then consolidates and prioritizes findings"
     }
   ]
 }

@@ -1,0 +1,13 @@
+{
+  "name": "doc-writer-plugins",
+  "owner": {
+    "name": "Your Name"
+  },
+  "plugins": [
+    {
+      "name": "doc-writer",
+      "source": "./doc-writer",
+      "description": "AI-powered library documentation generator"
+    }
+  ]
+}

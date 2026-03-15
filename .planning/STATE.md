@@ -5,7 +5,7 @@ milestone_name: milestone
 status: completed
 stopped_at: Completed 07-03-PLAN.md (Test path fixes — full suite GREEN)
 last_updated: "2026-03-15T18:55:02.071Z"
-last_activity: "2026-03-15 — Completed plan 07-01: Phase 7 bats validation suite — 31-test RED-state suite for plugin packaging"
+last_activity: "2026-03-15 — Completed quick task 260315-qru: add the copilot-review skill I just copied here into our marketplace config"
 progress:
   total_phases: 7
   completed_phases: 7
@@ -119,7 +119,7 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 1 | Diataxis deep integration across all three agents | 2026-03-04 | b126e44 | [1-commit-latest-changes](./quick/1-commit-latest-changes/) |
-| 2 | Register copilot-review as second plugin in marketplace.json | 2026-03-15 | a0e17ee | [260315-qru](./quick/260315-qru-add-the-copilot-review-skill-i-just-copi/) |
+| 260315-qru | add the copilot-review skill I just copied here into our marketplace config | 2026-03-15 | a0e17ee | [260315-qru-add-the-copilot-review-skill-i-just-copi](./quick/260315-qru-add-the-copilot-review-skill-i-just-copi/) |
 
 ### Blockers/Concerns
 

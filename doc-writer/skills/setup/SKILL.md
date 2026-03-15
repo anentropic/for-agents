@@ -1,5 +1,5 @@
 ---
-name: setup
+name: doc-writer:setup
 description: Configure doc-writer for this project. Creates .doc-writer/ directory with config, rules, and guidance files.
 disable-model-invocation: true
 allowed-tools: Read, Write, Bash, Glob, Grep

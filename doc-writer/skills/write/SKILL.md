@@ -1,5 +1,5 @@
 ---
-name: write
+name: doc-writer:write
 description: Generate new documentation using the full Author > Editor > Persona pipeline with gap detection, revision loop, and quality validation.
 disable-model-invocation: true
 allowed-tools: Agent, Read, Write, Glob, Grep, Bash

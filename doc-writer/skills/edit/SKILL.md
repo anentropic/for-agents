@@ -1,5 +1,5 @@
 ---
-name: edit
+name: doc-writer:edit
 description: Make targeted fixes to documentation based on report issues or freeform instructions.
 disable-model-invocation: true
 allowed-tools: Agent, Read, Write, Glob, Grep

@@ -1,5 +1,5 @@
 ---
-name: diataxis
+name: doc-writer:diataxis
 description: Write comprehensive, user-focused documentation following the Diataxis framework. Use this skill when creating or improving tutorials, how-to guides, reference documentation, or explanatory content. Helps identify the right documentation type and apply best practices for each.
 user-invocable: false
 metadata:

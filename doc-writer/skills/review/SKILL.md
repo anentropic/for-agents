@@ -1,5 +1,5 @@
 ---
-name: review
+name: doc-writer:review
 description: Audit existing documentation without generating new content. Runs Editor quality checks, Persona validation, and gap detection.
 disable-model-invocation: true
 allowed-tools: Agent, Read, Write, Glob, Grep, Bash

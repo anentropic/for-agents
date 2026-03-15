@@ -1,5 +1,5 @@
 ---
-name: quality-rules
+name: doc-writer:quality-rules
 description: Universal documentation quality rules applied by all doc-writer agents. Non-overridable baseline standards.
 user-invocable: false
 ---

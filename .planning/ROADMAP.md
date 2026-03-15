@@ -115,10 +115,21 @@ Plans:
 Plans:
 - [ ] 06-01-PLAN.md -- Close INT-01 through INT-07: fix delegation messages, setup Q&A, filename slugs, editor-report read, variable naming, guidance file read, config template
 
+### Phase 7: Doc-Writer Plugin Packaging
+**Goal**: Reorganise skills/ and agents/ into a doc-writer/ subdirectory and configure it as a proper Claude Code plugin, ready for multi-plugin repo expansion in future milestones
+**Depends on**: Phase 6
+**Requirements**: PKG-01, PKG-02, PKG-03, PKG-04, PKG-05, PKG-06, PKG-07, PKG-08
+**Plans:** 3 plans
+
+Plans:
+- [ ] 07-01-PLAN.md -- Phase 7 bats test scaffold (PKG-01 through PKG-08) written in RED state before file moves
+- [ ] 07-02-PLAN.md -- Create plugin.json and marketplace.json manifests, git mv skills/ and agents/ into doc-writer/
+- [ ] 07-03-PLAN.md -- Update hardcoded paths in phase-01-validation.bats and test_auth_requirements.sh; full suite GREEN
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -128,3 +139,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 4. User Persona and Full Pipeline | 1/1 | Complete | 2026-03-03 |
 | 5. Integration and Commands | 2/2 | Complete | 2026-03-04 |
 | 6. Cross-Phase Integration Cleanup | 0/1 | In Progress | - |
+| 7. Doc-Writer Plugin Packaging | 0/3 | Planned | - |

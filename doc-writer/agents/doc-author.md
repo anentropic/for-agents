@@ -19,6 +19,14 @@ The quality-rules skill is preloaded into your context. Apply its rules directly
 
 The diataxis skill is also preloaded. It provides a classification compass for identifying page types. During Phase 2, you will use the Read tool to load the detailed reference file for each page type — these contain structural templates, writing style guidance, good/bad examples, common mistakes, and quality checklists that go far beyond the compass.
 
+## User Interaction Pattern
+
+This agent uses AskUserQuestion for structured choices. When the user selects:
+- **"Type something else"** or **"Other"**: Ask your follow-up as plain text. Wait for their response. Then resume the workflow.
+- **"Chat about this"**: Explain the current decision in depth. Open a plain-text dialogue. After it resolves, re-present the original question or proceed based on what was discussed.
+
+Never respond to these selections with another AskUserQuestion.
+
 ---
 
 ## Phase 1: Scan and Plan
@@ -124,13 +132,29 @@ Based on my scan of the codebase, here is the proposed page inventory:
 - **Audience targeting:** which audience each page targets (relevant when multiple audiences are configured)
 - **Coverage gaps:** any codebase areas not covered by the proposed pages
 
-**Wait for the user to approve, modify, add, or remove pages before proceeding to Phase 2.** Do not begin writing until the user confirms the plan.
+**Present the page inventory for approval using AskUserQuestion:**
+- header: "Pages"
+- question: "Confirm the page inventory. Deselect pages to exclude, or choose an action."
+- multiSelect: true
+- options: [dynamically generated from proposed pages, all pre-selected:]
+  - { label: "{title} ({type})", description: "{key sections}" }
+  - ... (one per proposed page)
+  - { label: "Type something else", description: "Add pages or modify the plan" }
+  - { label: "Chat about this", description: "Discuss the page inventory" }
+
+**Handling responses:**
+- **Individual selections (multiSelect):** Write only the selected pages. Pages that were deselected are excluded from Phase 2.
+- **"Type something else":** Ask the user in plain text what pages to add, remove, or modify. Update the inventory based on their response. Then re-present the AskUserQuestion with the updated inventory.
+- **"Chat about this":** Explain why specific pages were proposed, what each page type means, and how the inventory was derived from the codebase scan. After discussion, re-present the AskUserQuestion.
+- **"Other" (auto-added):** Ask the user in plain text what they want to change. Wait for response. Update inventory if needed and re-present.
+
+**Do not begin writing until the user confirms the plan.** If all pages are deselected, inform the user that no documentation will be generated and stop.
 
 ---
 
 ## Phase 2: Write
 
-After the user approves the page inventory, write all approved pages. Do not ask for per-page approval — write the full set in one pass.
+After the user confirms the page inventory via AskUserQuestion, write all selected pages. Do not ask for per-page approval — write the full set in one pass.
 
 ### General Writing Workflow
 
@@ -412,7 +436,7 @@ Run these checklists before presenting output to the user.
 - [ ] README.md and MAINTAINER.md are offered in the inventory
 - [ ] API Reference status is noted (detected location or "not detected" with recommendation)
 - [ ] If multiple audiences are configured, each page notes its target audience
-- [ ] User has approved the plan before proceeding to Phase 2
+- [ ] User has confirmed the page inventory via AskUserQuestion before proceeding to Phase 2
 
 ### After Phase 2 (Write) — run for EACH page:
 

@@ -10,6 +10,14 @@ argument-hint: "[issue description or page path]"
 
 Make targeted fixes to documentation. Select specific issues from existing review reports or describe changes freeform. Only the affected pages are modified -- no full regeneration.
 
+## User Interaction Pattern
+
+This skill uses AskUserQuestion for structured choices. When the user selects:
+- **"Type something else"** or **"Other"**: Ask your follow-up as plain text. Wait for their response. Then resume the workflow.
+- **"Chat about this"**: Explain the current decision in depth. Open a plain-text dialogue. After it resolves, re-present the original question or proceed based on what was discussed.
+
+Never respond to these selections with another AskUserQuestion.
+
 ## Instructions
 
 Follow these steps in order. Complete each step before moving to the next.
@@ -44,32 +52,27 @@ Gather issues from existing reports and present them for selection.
 
 3. **If report files exist:**
 
-   Read each report file and parse the issues. Present them as a numbered list grouped by source:
+   Read each report file and parse the issues. Present them using AskUserQuestion:
+   - header: "Issues"
+   - question: "Select issues to fix from previous reports."
+   - multiSelect: true
+   - options: [dynamically generated from report issues, ordered: BLOCKING first, then FAIL, then SUGGESTION, then PARTIAL, then NITPICK:]
+     - { label: "[BLOCKING] {page} > {section}", description: "{description}" }
+     - { label: "[FAIL] {page}", description: "{scenario_goal} -- {gap_description}" }
+     - { label: "[SUGGESTION] {page} > {section}", description: "{description}" }
+     - { label: "[PARTIAL] {page}", description: "{scenario_goal} -- {friction_description}" }
+     - { label: "[NITPICK] {page} > {section}", description: "{description}" }
+     - ... (one per issue from reports)
+     - { label: "Fix all issues", description: "Select every issue above" }
+     - { label: "Type something else", description: "Describe a different change to make" }
+     - { label: "Chat about this", description: "Discuss these issues before choosing" }
 
-   ```
-   ## Available Issues from Previous Reports
-
-   ### From Editor Report
-   1. [BLOCKING] {page} > "{section}"
-      {description}
-   2. [SUGGESTION] {page} > "{section}"
-      {description}
-   3. [NITPICK] {page} > "{section}"
-      {description}
-
-   ### From Persona Report ({audience_name})
-   4. [FAIL] {page}
-      {scenario_goal} -- {gap_description}
-   5. [PARTIAL] {page}
-      {scenario_goal} -- {friction_description}
-
-   ### Custom
-   N. Describe something else: ___
-
-   Select issues to fix (e.g., "1,3" or "all" or just type a description):
-   ```
-
-   List BLOCKING issues first, then FAIL, then SUGGESTION, then PARTIAL, then NITPICK. Always include the "Describe something else" option as the last numbered item.
+   **Handling responses:**
+   - **Individual selections (multiSelect):** Map selected issues to their full details (page, section, description, suggested fix from report) for Step 2.
+   - **"Fix all issues":** Select all listed issues.
+   - **"Type something else":** Ask the user in plain text what changes they want. Wait for response. Use that text as the change description for Step 2.
+   - **"Chat about this":** Explain the severity levels (BLOCKING = factual/broken, FAIL = user goal impossible, SUGGESTION = improvement, PARTIAL = friction, NITPICK = style) and discuss specific issues. After conversation resolves, re-present the AskUserQuestion.
+   - **"Other" (auto-added):** Ask the user in plain text what they want to do. Wait for response. Proceed based on their answer.
 
 #### Step 1b: Process Selection
 

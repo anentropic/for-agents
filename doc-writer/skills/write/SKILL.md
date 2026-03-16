@@ -10,6 +10,14 @@ argument-hint: "[--skip-gap-scan]"
 
 You are orchestrating the doc-writer documentation pipeline. Follow these steps exactly in order. Do NOT use `context: fork`. Do NOT commit any generated documentation -- leave all changes uncommitted for the project author to review.
 
+## User Interaction Pattern
+
+This skill uses AskUserQuestion for structured choices. When the user selects:
+- **"Type something else"** or **"Other"**: Ask your follow-up as plain text. Wait for their response. Then resume the workflow.
+- **"Chat about this"**: Explain the current decision in depth. Open a plain-text dialogue. After it resolves, re-present the original question or proceed based on what was discussed.
+
+Never respond to these selections with another AskUserQuestion.
+
 ## Pre-Flight
 
 1. Read `.doc-writer/config.yaml`. If the file does not exist, tell the user:
@@ -186,34 +194,27 @@ These issues may require manual intervention. Consider:
 
 ## Step 6: PARTIAL Approval
 
-Collect all PARTIAL fix suggestions from all persona reports across all audiences. Present them as a numbered list for the project author to approve or reject.
+Collect all PARTIAL fix suggestions from all persona reports across all audiences.
 
-```
-## PARTIAL Issues Requiring Your Decision
+Use AskUserQuestion to present them for approval:
+- header: "Approve"
+- question: "Select PARTIAL fixes to apply, or choose an action below."
+- multiSelect: true
+- options: [dynamically generated from PARTIAL verdicts, each as:]
+  - { label: "[N] {page} > {section}", description: "{fix description}" }
+  - ... (one per PARTIAL issue)
+  - { label: "Apply all fixes", description: "Approve every suggestion above" }
+  - { label: "Skip all fixes", description: "Proceed without applying any" }
+  - { label: "Type something else", description: "Describe additional changes" }
+  - { label: "Chat about this", description: "Discuss these issues before deciding" }
 
-The following issues were identified but do not prevent users from accomplishing
-their goals. Review each and decide which to fix:
-
-{For each PARTIAL verdict:}
-{N}. [{audience_name}, {scenario_id}] {page_path} > "{section_name}"
-   Issue: {description of friction or gap}
-   Suggested fix: {what the Persona recommended}
-
----
-
-Or describe additional changes you would like made:
-
-Enter numbers to approve (e.g., "1,3"), "all", or "none":
-```
-
-Wait for the project author to respond.
-
-### Processing Approval
-
-- **Numbers (e.g., "1,3,5"):** Apply only the approved fixes by writing changes directly to the doc files. Do NOT re-run the pipeline for PARTIAL fixes.
-- **"all":** Apply all suggested fixes directly.
-- **"none":** Skip all PARTIAL fixes. Proceed to Summary.
-- **Freeform text:** If the user describes additional changes instead of (or in addition to) selecting numbers, apply those changes directly to the relevant doc files.
+**Handling responses:**
+- **Individual selections (multiSelect):** Apply only the selected fixes by writing changes directly to the doc files. Do NOT re-run the pipeline for PARTIAL fixes.
+- **"Apply all fixes":** Apply all suggested fixes directly.
+- **"Skip all fixes":** Skip all PARTIAL fixes. Proceed to Summary.
+- **"Type something else":** Ask the user in plain text what additional changes they want. Wait for response. Apply those changes directly to the relevant doc files.
+- **"Chat about this":** Explain what each PARTIAL issue means and what the suggested fixes would change. Open a plain-text dialogue. After discussion resolves, re-present the AskUserQuestion to get a decision.
+- **"Other" (auto-added):** Ask the user in plain text what they want to do. Wait for response. Proceed based on their answer.
 
 After applying approved fixes, proceed to Step 7.
 

@@ -10,6 +10,14 @@ argument-hint: "[--reset]"
 
 Configure the doc-writer plugin for this project. Creates a `.doc-writer/` directory containing project configuration, documentation rules, and doc-system guidance.
 
+## User Interaction Pattern
+
+This skill uses AskUserQuestion for structured choices. When the user selects:
+- **"Type something else"** or **"Other"**: Ask your follow-up as plain text. Wait for their response. Then resume the workflow.
+- **"Chat about this"**: Explain the current decision in depth. Open a plain-text dialogue. After it resolves, re-present the original question or proceed based on what was discussed.
+
+Never respond to these selections with another AskUserQuestion.
+
 ## Project Detection Results
 
 !`bash ${CLAUDE_PLUGIN_ROOT}/skills/setup/scripts/detect-project.sh`
@@ -25,9 +33,18 @@ First, check whether this project already has a doc-writer configuration:
 1. Use Glob to check if `.doc-writer/config.yaml` exists.
 
 2. **If `$ARGUMENTS` contains `--reset`:**
-   - Warn the user: "This will overwrite your existing doc-writer configuration. Guidance files and rules in `.doc-writer/` will be replaced with defaults. Continue? (yes/no)"
-   - If user confirms, proceed to Step 2 (Full Q&A Flow) below.
-   - If user declines, stop.
+   - Use AskUserQuestion to confirm:
+     - header: "Reset"
+     - question: "This will overwrite your existing doc-writer configuration. Guidance files and rules will be replaced with defaults."
+     - options:
+       - { label: "Reset config", description: "Overwrite existing configuration with fresh defaults" }
+       - { label: "Keep current", description: "Cancel and keep existing configuration" }
+       - { label: "Type something else", description: "Specify what to reset" }
+       - { label: "Chat about this", description: "Discuss what will be overwritten" }
+   - **"Reset config":** Proceed to Step 2 (Full Q&A Flow).
+   - **"Keep current":** Stop.
+   - **"Type something else":** Ask in plain text what the user wants to reset selectively. Handle accordingly.
+   - **"Chat about this":** Explain which files exist and what will be overwritten. After discussion, re-present the question.
 
 3. **If `.doc-writer/config.yaml` exists (and no `--reset` flag):**
    - Read the existing config file.
@@ -44,9 +61,22 @@ First, check whether this project already has a doc-writer configuration:
      **Docs root:** [paths.docs_root]
      **Source root:** [paths.source_root]
      ```
-   - Ask: "What would you like to update?"
-   - Options: `audiences`, `doc system`, `paths`, `rules`, `guidance file`, or `done`
-   - Jump to Step 4 (Re-Run Update Flow) below.
+   - Use AskUserQuestion:
+     - header: "Update"
+     - question: "What would you like to update in your doc-writer configuration?"
+     - options:
+       - { label: "Audiences", description: "Edit, add, or remove target audiences" }
+       - { label: "Doc system", description: "Change documentation system (currently: {doc_system})" }
+       - { label: "Paths", description: "Change docs root or source root directories" }
+       - { label: "Done", description: "Finish updating configuration" }
+       - { label: "Type something else", description: "Describe a different change" }
+       - { label: "Chat about this", description: "Discuss configuration options" }
+   - **"Audiences":** Jump to Step 4 audiences handling.
+   - **"Doc system":** Jump to Step 4 doc system handling.
+   - **"Paths":** Jump to Step 4 paths handling.
+   - **"Done":** Stop. Display current config summary.
+   - **"Type something else":** Ask in plain text what the user wants to change. This covers `rules` and `guidance file` which are file-edit instructions, plus any other custom request.
+   - **"Chat about this":** Explain what each section controls. After discussion, re-present the question.
 
 4. **If `.doc-writer/config.yaml` does NOT exist:**
    - Proceed to Step 2 (Full Q&A Flow).
@@ -75,36 +105,39 @@ Please provide:
 These optional fields help the User Persona agent generate more realistic testing scenarios. If left blank, the Persona will infer defaults.
 ```
 
-After the user provides primary audience details, ask:
+After the user provides primary audience details, use AskUserQuestion:
+- header: "Audiences"
+- question: "Do you have a secondary audience? (e.g., contributors vs. end users)"
+- options:
+  - { label: "Add audience", description: "Define another target audience" }
+  - { label: "No, continue", description: "Move on to doc system selection" }
+  - { label: "Type something else", description: "Describe your audience setup differently" }
+  - { label: "Chat about this", description: "Discuss audience configuration" }
 
-```
-Do you have a secondary audience? (e.g., contributors vs. end users)
-If yes, I'll ask the same questions for the next audience.
-If no, we'll move on to doc system selection.
-```
+- **"Add audience":** Repeat the audience definition questions (name, skill level, assumed knowledge, never assume, domain context, discovery story) in plain text. After collecting answers, ask again if there are more audiences.
+- **"No, continue":** Proceed to Step 2b (Doc System Selection).
+- **"Type something else":** Ask in plain text. User may want to modify the primary audience just defined or describe a non-standard setup.
+- **"Chat about this":** Explain how multiple audiences affect the pipeline (separate Persona agents per audience, independent verdicts). After discussion, re-present the question.
 
-If yes, repeat the audience questions. Continue offering additional audiences until the user says no or indicates they are done.
+Continue offering additional audiences until the user selects "No, continue" or indicates they are done.
 
 Store all audiences in an array — even if only one audience is configured, it must be stored as a single-element array.
 
 #### 2b: Doc System Selection
 
-Present the detected doc system from the Project Detection Results above as the default:
+Present the detected doc system from the Project Detection Results above as the default. Use AskUserQuestion:
+- header: "Doc system"
+- question: "Which documentation system does this project use? Detected: {detected_system}"
+- options:
+  - { label: "mkdocs-material", description: "MkDocs with Material theme" }
+  - { label: "plain-markdown", description: "Standard Markdown, no doc framework" }
+  - { label: "Type something else", description: "Enter a custom doc system name" }
+  - { label: "Chat about this", description: "Discuss doc system options" }
 
-```
-## Doc System
-
-Detected: [detected doc system from auto-detection, or "plain-markdown" if none detected]
-
-Which documentation system does this project use?
-1. mkdocs-material (MkDocs with Material theme)
-2. plain-markdown (standard Markdown, no doc framework)
-3. custom — enter a name (you will need to create .doc-writer/{name}.md guidance file)
-
-Press Enter to accept the detected default, or select an option.
-```
-
-Record the user's selection.
+- **"mkdocs-material":** Record selection.
+- **"plain-markdown":** Record selection.
+- **"Type something else":** Ask in plain text for the custom doc system name. Inform the user they will need to create `.doc-writer/{name}.md` with their doc system preferences.
+- **"Chat about this":** Explain what each doc system means for formatting output. After discussion, re-present the question.
 
 #### 2c: Paths
 
@@ -159,7 +192,17 @@ This section handles field-by-field editing when an existing config is detected.
 
 Based on user selection from Step 1:
 
-- **`audiences`**: Show current audiences. Ask: "Do you want to edit an existing audience, add a new one, or remove one?" Handle accordingly. Write updated config preserving all other fields.
+- **`audiences`** (from "Audiences" selection above): Show current audiences. Use AskUserQuestion:
+  - header: "Audiences"
+  - question: "What would you like to do with your audience configuration?"
+  - options:
+    - { label: "Edit audience", description: "Modify an existing audience's settings" }
+    - { label: "Add audience", description: "Define a new target audience" }
+    - { label: "Remove audience", description: "Delete an existing audience" }
+    - { label: "Type something else", description: "Describe a different audience change" }
+    - { label: "Chat about this", description: "Discuss audience configuration" }
+  - Handle each selection with plain-text follow-ups as needed (which audience to edit/remove, new audience details).
+  - Write updated config preserving all other fields.
 
 - **`doc system`**: Show current doc system. Present selection options (same as Step 2b). If changed, copy new guidance file to `.doc-writer/`. Note: the old guidance file remains in `.doc-writer/` — user can delete it manually if desired.
 

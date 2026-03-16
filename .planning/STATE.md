@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Phase 8 context gathered
-last_updated: "2026-03-16T22:49:14.880Z"
-last_activity: "2026-03-15 — Completed plan 07-01: Phase 7 bats validation suite — 31-test RED-state suite for plugin packaging"
+status: in-progress
+stopped_at: Completed 08-01-PLAN.md
+last_updated: "2026-03-16T23:12:06.000Z"
+last_activity: "2026-03-16 — Completed plan 08-01: argument-hint and AskUserQuestion for review/write/edit skills"
 progress:
   total_phases: 8
   completed_phases: 7
-  total_plans: 11
-  completed_plans: 11
-  percent: 90
+  total_plans: 13
+  completed_plans: 12
+  percent: 92
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-02)
 
 **Core value:** Produce library documentation that the project author can publish with minimal tweaks — docs written from the end user's perspective, not the builder's.
-**Current focus:** Phase 7 - Doc-Writer Plugin Packaging
+**Current focus:** Phase 8 - Doc-Writer Skills Polish
 
 ## Current Position
 
-Phase: 7 of 7 (Doc-Writer Plugin Packaging)
+Phase: 8 of 8 (Doc-Writer Skills Polish)
 Plan: 1 of 2 in current phase
-Status: Plan 07-01 complete — bats suite created in RED state; Plan 07-02 (file migration) pending
-Last activity: 2026-03-15 — Completed plan 07-01: Phase 7 bats validation suite — 31-test RED-state suite for plugin packaging
+Status: Plan 08-01 complete — argument-hint and AskUserQuestion added to review/write/edit skills; Plan 08-02 pending
+Last activity: 2026-03-16 — Completed plan 08-01: argument-hint and AskUserQuestion for review/write/edit skills
 
-Progress: [█████████░] 90%
+Progress: [█████████░] 92%
 
 ## Performance Metrics
 
@@ -60,6 +60,7 @@ Progress: [█████████░] 90%
 | Phase 06 P01 | 3 | 2 tasks | 7 files |
 | Phase 07-doc-writer-plugin-packaging P02 | 2 | 2 tasks | 22 files |
 | Phase 07-doc-writer-plugin-packaging P03 | 3 | 1 tasks | 2 files |
+| Phase 08-doc-writer-skills-polish P01 | 3 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -105,6 +106,8 @@ Recent decisions affecting current work:
 - [Phase 07-doc-writer-plugin-packaging]: marketplace.json uses name: doc-writer-plugins (not doc-writer-agent) to signal multi-plugin repo intent
 - [Phase 07-doc-writer-plugin-packaging]: git mv used for all moves to preserve per-file git history; no content changes during move
 - [Phase 07-doc-writer-plugin-packaging]: No logic changes in test path updates — only path prefix insertions; all test assertions, grep patterns, and structure unchanged
+- [Phase 08]: User Interaction Pattern section added to each skill defining shared freeform handling rules (DRY approach)
+- [Phase 08]: All AskUserQuestion blocks include mandatory "Type something else" and "Chat about this" trailing options per CONTEXT.md decisions
 
 ### Roadmap Evolution
 
@@ -131,6 +134,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T22:49:14.866Z
-Stopped at: Phase 8 context gathered
-Resume file: .planning/phases/08-doc-writer-skills-polish/08-CONTEXT.md
+Last session: 2026-03-16T23:12:06Z
+Stopped at: Completed 08-01-PLAN.md
+Resume file: .planning/phases/08-doc-writer-skills-polish/08-01-SUMMARY.md

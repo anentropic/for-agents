@@ -140,7 +140,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 5. Integration and Commands | 2/2 | Complete | 2026-03-04 |
 | 6. Cross-Phase Integration Cleanup | 0/1 | In Progress | - |
 | 7. Doc-Writer Plugin Packaging | 3/3 | Complete    | 2026-03-15 |
-| 8. Doc-Writer Skills Polish | 2/2 | Complete   | 2026-03-16 |
+| 8. Doc-Writer Skills Polish | 2/2 | Complete    | 2026-03-16 |
 
 ### Phase 8: doc-writer skills polish
 

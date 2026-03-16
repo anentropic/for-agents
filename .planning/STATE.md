@@ -5,7 +5,7 @@ milestone_name: milestone
 status: completed
 stopped_at: Completed 07-03-PLAN.md (Test path fixes — full suite GREEN)
 last_updated: "2026-03-15T18:55:02.071Z"
-last_activity: "2026-03-15 — Completed quick task 260315-qru: add the copilot-review skill I just copied here into our marketplace config"
+last_activity: "2026-03-16 — Completed quick task 260316-had: Fix invalid source schema in marketplace.json for plugins 56, 63, 67, 71-75"
 progress:
   total_phases: 7
   completed_phases: 7
@@ -120,6 +120,7 @@ None yet.
 |---|-------------|------|--------|-----------|
 | 1 | Diataxis deep integration across all three agents | 2026-03-04 | b126e44 | [1-commit-latest-changes](./quick/1-commit-latest-changes/) |
 | 260315-qru | add the copilot-review skill I just copied here into our marketplace config | 2026-03-15 | a0e17ee | [260315-qru-add-the-copilot-review-skill-i-just-copi](./quick/260315-qru-add-the-copilot-review-skill-i-just-copi/) |
+| 260316-had | Fix invalid source schema in marketplace.json for plugins 56, 63, 67, 71-75 | 2026-03-16 | n/a (external) | [260316-had-fix-invalid-source-schema-in-marketplace](./quick/260316-had-fix-invalid-source-schema-in-marketplace/) |
 
 ### Blockers/Concerns
 

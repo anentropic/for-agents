@@ -129,7 +129,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -140,3 +140,15 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 5. Integration and Commands | 2/2 | Complete | 2026-03-04 |
 | 6. Cross-Phase Integration Cleanup | 0/1 | In Progress | - |
 | 7. Doc-Writer Plugin Packaging | 3/3 | Complete    | 2026-03-15 |
+| 8. Doc-Writer Skills Polish | 0/2 | Planned | - |
+
+### Phase 8: doc-writer skills polish
+
+**Goal:** Add argument-hint frontmatter to the review skill and convert plain-text list questions across all skills and the doc-author agent to native AskUserQuestion multi-choice UI
+**Requirements**: P8-01, P8-02, P8-03, P8-04, P8-05, P8-06, P8-07, P8-08, P8-09
+**Depends on:** Phase 7
+**Plans:** 2 plans
+
+Plans:
+- [ ] 08-01-PLAN.md -- Add argument-hint to review skill; convert review, write, and edit skills to AskUserQuestion
+- [ ] 08-02-PLAN.md -- Convert setup skill and doc-author agent to AskUserQuestion

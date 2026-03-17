@@ -339,101 +339,26 @@ After doc system selection, check whether the project already has a framework co
 
 #### 2b.5: Framework Configuration
 
-After doc system selection, present framework-specific questions. The questions help the researcher agent produce more accurate framework preference guidance in context.md.
+After scaffold check, present framework-specific questions. These are read dynamically from Q&A data files.
 
-**If doc_system is `mkdocs-material`:**
+1. **Check for Q&A data file:**
+   - Use Glob to check if `{framework_root}/{doc_system}.qa.md` exists.
+   - **If found:** Read the file. Parse the `## Question N:` sections.
+   - **If NOT found:** Skip framework Q&A. Proceed to Step 2c (Paths).
 
-First, use Glob to check for `mkdocs.yml` in the project root. If found, use Read + Grep to detect which features are enabled (check for `navigation.sections`, `navigation.tabs`, `pymdownx.tabbed`, `pymdownx.superfences` with mermaid fence, `admonition`, `pymdownx.details`, `content.code.annotate`, `mkdocstrings`, `literate-nav`). Auto-detected features are shown in the question descriptions as context.
+2. **If config file exists (detected in Step 2b.3):** Use Grep on the config file to detect which features are currently enabled. Match detected features against the `recommend_if` fields in the Q&A options. Mark matching options as "(Recommended)" and pre-select them for multiSelect questions. Show detected features in the `detect_context` field.
 
-**Question 1: Navigation style**
+3. **Present each question from the .qa.md file as an AskUserQuestion:**
+   - Use the `header`, `question`, and `options` fields from each `## Question` section.
+   - If the question has `multiSelect: true`, set multiSelect on the AskUserQuestion.
+   - If the question has `detect_context` and features were detected, include the detected values in the question text.
+   - Every question MUST have "Type something else" and "Chat about this" as trailing options (the .qa.md files already include them).
 
-Use AskUserQuestion:
-- header: "Navigation"
-- question: "How should documentation be organized?{if mkdocs.yml detected: ' Detected: ' + detected features}"
-- options:
-  - { label: "Sections", description: "2-level nav: sections group related pages (navigation.sections)" }
-  - { label: "Tabs + sections", description: "Top-level tabs with sections underneath (navigation.tabs)" }
-  - { label: "Flat", description: "All pages at one level, no grouping" }
-  - { label: "Type something else", description: "Describe a different nav structure" }
-  - { label: "Chat about this", description: "Discuss navigation options" }
-
-If mkdocs.yml has `navigation.sections` enabled, mark "Sections" as "(Recommended)". If `navigation.tabs` is enabled, mark "Tabs + sections" as "(Recommended)".
-
-Record the selection. This goes to context.md via the researcher, not to config.yaml.
-
-**Question 2: API reference approach**
-
-Use AskUserQuestion:
-- header: "API docs"
-- question: "How is API reference generated?{if mkdocstrings detected: ' Detected: mkdocstrings with ' + docstring_style}"
-- options:
-  - { label: "mkdocstrings", description: "Auto-generated from docstrings" }
-  - { label: "Manual pages", description: "Hand-written API reference in docs/" }
-  - { label: "None", description: "No API reference -- narrative docs only" }
-  - { label: "Type something else", description: "Describe a different approach" }
-  - { label: "Chat about this", description: "Discuss API reference options" }
-
-If mkdocs.yml has `mkdocstrings` plugin, mark "mkdocstrings" as "(Recommended)".
-
-Record the selection.
-
-**Question 3: Rich features usage**
-
-Use AskUserQuestion:
-- header: "Features"
-- question: "Which MkDocs Material features should docs use?{if features detected: ' Detected: ' + detected list}"
-- multiSelect: true
-- options: (pre-select items that are detected in mkdocs.yml)
-  - { label: "Content tabs", description: "For multi-language or multi-method examples (pymdownx.tabbed)" }
-  - { label: "Mermaid diagrams", description: "For architecture and flow diagrams (pymdownx.superfences)" }
-  - { label: "Code annotations", description: "Numbered annotations explaining code lines (content.code.annotate)" }
-  - { label: "Admonitions", description: "Tip/warning/info callout boxes (admonition)" }
-  - { label: "Collapsible details", description: "Expandable sections for optional content (pymdownx.details)" }
-  - { label: "Type something else", description: "Add or remove features" }
-  - { label: "Chat about this", description: "See examples of each feature" }
-
-Record the selections.
-
-**If doc_system is `plain-markdown`:**
-
-**Question 1: Callout style**
-
-Use AskUserQuestion:
-- header: "Callouts"
-- question: "How should callouts (tips, warnings, notes) be formatted?"
-- options:
-  - { label: "Blockquotes", description: "Use > **Note:** and > **Warning:** blockquote pattern" }
-  - { label: "None", description: "No special callout formatting -- just regular paragraphs" }
-  - { label: "Type something else", description: "Describe a different callout style" }
-  - { label: "Chat about this", description: "See examples of each style" }
-
-**Question 2: Heading convention**
-
-Use AskUserQuestion:
-- header: "Headings"
-- question: "What case convention should headings use?"
-- options:
-  - { label: "Sentence case", description: "Only first word capitalized: 'Getting started with auth'" }
-  - { label: "Title case", description: "Major words capitalized: 'Getting Started with Auth'" }
-  - { label: "Type something else", description: "Describe a different convention" }
-  - { label: "Chat about this", description: "Discuss heading conventions" }
-
-**Question 3: Table of contents**
-
-Use AskUserQuestion:
-- header: "TOC"
-- question: "How should documentation pages be indexed?"
-- options:
-  - { label: "Index page", description: "Manual index.md with links to all pages" }
-  - { label: "Filename-based", description: "Readers navigate by file/folder structure" }
-  - { label: "Type something else", description: "Describe a different approach" }
-  - { label: "Chat about this", description: "Discuss table of contents options" }
-
-**For any other doc_system value:** Skip framework Q&A. The researcher will use defaults.
+4. **Record all answers.** Framework Q&A answers do NOT go into config.yaml. Store them in-memory and pass them to the researcher via the Agent tool invocation message in Step 5.
 
 **Passing framework answers to the researcher:**
 
-Framework Q&A answers do NOT go into config.yaml (config stays lean). Instead, store them temporarily in a variable/context during the setup flow and pass them to the researcher via the Agent tool invocation message in Step 5.
+This is unchanged from the current behavior. Framework Q&A answers are passed to the researcher in the Agent tool invocation message in Step 5.
 
 #### 2c: Paths
 
@@ -499,7 +424,7 @@ Based on user selection from Step 1:
 
 - **`tone`** (from "Tone" selection above): Present the tone selection AskUserQuestion (same as Step 2a.5). Write updated config preserving all other fields.
 
-- **`doc system`**: Show current doc system. Present selection options (same as Step 2b). If changed, copy new guidance file to `.doc-writer/`. Note: the old guidance file remains in `.doc-writer/` -- user can delete it manually if desired.
+- **`doc system`**: Show current doc system. Present selection options (same as Step 2b). If changed, copy new guidance file to `.doc-writer/`. Note: the old guidance file remains in `.doc-writer/` -- user can delete it manually if desired. If the new doc system triggers the unknown framework researcher flow, wait for it to complete and check for FALLBACK prefix to set framework_root. Then run Step 2b.3 (Scaffold Check) for the new framework.
 
 - **`paths`**: Show current paths. Ask for new values. Write updated config preserving all other fields.
 

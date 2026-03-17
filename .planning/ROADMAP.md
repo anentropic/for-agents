@@ -129,7 +129,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -142,6 +142,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 7. Doc-Writer Plugin Packaging | 3/3 | Complete    | 2026-03-15 |
 | 8. Doc-Writer Skills Polish | 2/2 | Complete    | 2026-03-16 |
 | 9. Enhanced Setup Q&A + Researcher | 3/3 | Complete    | 2026-03-17 |
+| 10. Framework Scaffolding + Unknown Framework Research | 0/3 | Planned | - |
 
 ### Phase 8: doc-writer skills polish
 
@@ -165,3 +166,15 @@ Plans:
 - [x] 09-01-PLAN.md -- Config template extension (tone, user_tasks) and doc-researcher agent definition (completed 2026-03-17)
 - [x] 09-02-PLAN.md -- Downstream agent updates: doc-author, doc-editor, doc-persona read context.md (completed 2026-03-17)
 - [x] 09-03-PLAN.md -- Setup skill rewrite: infer+suggest Q&A, tone, persona tasks, framework Q&A, researcher invocation (completed 2026-03-17)
+
+### Phase 10: Framework Scaffolding and Unknown Framework Research+Guidance Generation
+
+**Goal:** Extract framework Q&A into data files, add smart scaffolding for known frameworks (diff-against-defaults for existing configs, full scaffold for new projects), and enable dynamic unknown framework support via researcher-generated guidance and Q&A that persist globally in plugin defaults
+**Requirements**: P10-01, P10-02, P10-03, P10-04, P10-05, P10-06, P10-07, P10-08
+**Depends on:** Phase 9
+**Plans:** 3 plans
+
+Plans:
+- [ ] 10-01-PLAN.md -- Extract Q&A data files for mkdocs-material and plain-markdown, create mkdocs-material scaffold template
+- [ ] 10-02-PLAN.md -- Add Unknown Framework Research mode to doc-researcher agent
+- [ ] 10-03-PLAN.md -- Rewrite setup skill: dynamic Q&A reading, scaffold check step, unknown framework detection

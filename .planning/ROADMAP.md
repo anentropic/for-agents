@@ -129,7 +129,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -141,6 +141,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 6. Cross-Phase Integration Cleanup | 0/1 | In Progress | - |
 | 7. Doc-Writer Plugin Packaging | 3/3 | Complete    | 2026-03-15 |
 | 8. Doc-Writer Skills Polish | 2/2 | Complete    | 2026-03-16 |
+| 9. Enhanced Setup Q&A + Researcher | 0/3 | Planned     | - |
 
 ### Phase 8: doc-writer skills polish
 
@@ -152,3 +153,15 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 Plans:
 - [ ] 08-01-PLAN.md -- Add argument-hint to review skill; convert review, write, and edit skills to AskUserQuestion
 - [ ] 08-02-PLAN.md -- Convert setup skill and doc-author agent to AskUserQuestion
+
+### Phase 9: Enhanced Setup Q&A, Tone, User Persona Tasks, and Researcher Agent
+
+**Goal:** Deepen the setup experience with infer+suggest AskUserQuestion for audience fields, tone selection, user persona task Q&A, framework-specific follow-up Q&A, and a researcher agent that enriches config inputs into a persisted context.md consumed by all downstream agents
+**Requirements**: P9-01, P9-02, P9-03, P9-04, P9-05, P9-06, P9-07, P9-08, P9-09, P9-10
+**Depends on:** Phase 8
+**Plans:** 3 plans
+
+Plans:
+- [ ] 09-01-PLAN.md -- Config template extension (tone, user_tasks) and doc-researcher agent definition
+- [ ] 09-02-PLAN.md -- Downstream agent updates: doc-author, doc-editor, doc-persona read context.md
+- [ ] 09-03-PLAN.md -- Setup skill rewrite: infer+suggest Q&A, tone, persona tasks, framework Q&A, researcher invocation

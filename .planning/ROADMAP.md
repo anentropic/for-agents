@@ -142,7 +142,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 7. Doc-Writer Plugin Packaging | 3/3 | Complete    | 2026-03-15 |
 | 8. Doc-Writer Skills Polish | 2/2 | Complete    | 2026-03-16 |
 | 9. Enhanced Setup Q&A + Researcher | 3/3 | Complete    | 2026-03-17 |
-| 10. Framework Scaffolding + Unknown Framework Research | 0/3 | Planned | - |
+| 10. Framework Scaffolding + Unknown Framework Research | 2/3 | In Progress|  |
 
 ### Phase 8: doc-writer skills polish
 
@@ -172,7 +172,7 @@ Plans:
 **Goal:** Extract framework Q&A into data files, add smart scaffolding for known frameworks (diff-against-defaults for existing configs, full scaffold for new projects), and enable dynamic unknown framework support via researcher-generated guidance and Q&A that persist globally in plugin defaults
 **Requirements**: P10-01, P10-02, P10-03, P10-04, P10-05, P10-06, P10-07, P10-08
 **Depends on:** Phase 9
-**Plans:** 3 plans
+**Plans:** 2/3 plans executed
 
 Plans:
 - [ ] 10-01-PLAN.md -- Extract Q&A data files for mkdocs-material and plain-markdown, create mkdocs-material scaffold template

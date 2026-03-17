@@ -52,6 +52,17 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **INTG-04**: Plugin integrates with GSD workflow — invokable at milestone boundaries
 - [x] **INTG-05**: Gap detection compares public API surface against documented surface and reports undocumented features
 
+### Framework Scaffolding & Unknown Framework Research
+
+- [x] **P10-01**: mkdocs-material Q&A question set exists as a standalone .qa.md data file in defaults/
+- [x] **P10-02**: plain-markdown Q&A question set exists as a standalone .qa.md data file in defaults/
+- [x] **P10-03**: Opinionated mkdocs-material scaffold template exists in defaults/scaffolds/
+- [ ] **P10-04**: Setup skill reads framework Q&A from .qa.md data files instead of hardcoded questions in the skill body
+- [ ] **P10-05**: Setup skill has a scaffold check step that detects existing framework config vs no config and handles both modes (full scaffold + diff-against-defaults)
+- [ ] **P10-06**: Setup skill handles unknown framework names by spawning doc-researcher to generate guidance, Q&A, and scaffold files
+- [ ] **P10-07**: doc-researcher agent has a distinct "Unknown Framework Research" mode that generates guidance, Q&A, and scaffold files to plugin defaults (with project-local fallback)
+- [ ] **P10-08**: No framework Q&A questions remain hardcoded in the setup SKILL.md body -- all are read dynamically from .qa.md files
+
 ## v2 Requirements
 
 Deferred to future release. Tracked but not in current roadmap.
@@ -115,12 +126,20 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INTG-03 | Phase 5 | Complete |
 | INTG-04 | Phase 5 | Complete |
 | INTG-05 | Phase 5 | Complete |
+| P10-01 | Phase 10 | Planned |
+| P10-02 | Phase 10 | Planned |
+| P10-03 | Phase 10 | Planned |
+| P10-04 | Phase 10 | Planned |
+| P10-05 | Phase 10 | Planned |
+| P10-06 | Phase 10 | Planned |
+| P10-07 | Phase 10 | Planned |
+| P10-08 | Phase 10 | Planned |
 
 **Coverage:**
-- v1 requirements: 28 total
-- Mapped to phases: 28
+- v1 requirements: 36 total
+- Mapped to phases: 36
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-03*
-*Last updated: 2026-03-03 after roadmap creation — all 28 requirements mapped*
+*Last updated: 2026-03-17 after Phase 10 planning -- added P10-01 through P10-08*

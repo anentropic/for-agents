@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 09-03-PLAN.md
-last_updated: "2026-03-17T18:53:41.402Z"
-last_activity: "2026-03-17 — Completed plan 09-03: Setup skill rewrite with infer+suggest Q&A, tone, framework Q&A, researcher"
+stopped_at: Completed 10-01-PLAN.md
+last_updated: "2026-03-17T21:54:14.457Z"
+last_activity: "2026-03-17 — Completed plan 10-01: Framework Q&A data files and scaffold template"
 progress:
-  total_phases: 9
+  total_phases: 10
   completed_phases: 9
-  total_plans: 16
-  completed_plans: 16
-  percent: 100
+  total_plans: 19
+  completed_plans: 18
+  percent: 89
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-02)
 
 **Core value:** Produce library documentation that the project author can publish with minimal tweaks — docs written from the end user's perspective, not the builder's.
-**Current focus:** Phase 9 -- Enhanced setup Q&A, tone, researcher agent
+**Current focus:** Phase 10 -- Framework scaffolding and unknown framework research/guidance generation
 
 ## Current Position
 
-Phase: 9 of 9 (Enhanced Setup Q&A + Researcher)
-Plan: 3 of 3 in current phase
-Status: Phase 9 complete -- all plans executed
-Last activity: 2026-03-17 — Completed plan 09-03: Setup skill rewrite with infer+suggest Q&A, tone, framework Q&A, researcher
+Phase: 10 of 10 (Framework Scaffolding + Unknown Framework Research)
+Plan: 2 of 3 in current phase
+Status: Plan 10-02 complete -- Unknown Framework Research mode added to doc-researcher
+Last activity: 2026-03-17 — Completed plan 10-02: Unknown Framework Research mode for doc-researcher agent
 
-Progress: [██████████] 100%
+Progress: [██████████] 95%
 
 ## Performance Metrics
 
@@ -66,6 +66,7 @@ Progress: [██████████] 100%
 | Phase 09 P01 | 3 | 2 tasks | 2 files |
 | Phase 09 P02 | 3 | 2 tasks | 3 files |
 | Phase 09 P03 | 4 | 2 tasks | 1 files |
+| Phase 10 P01 | 2 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -125,12 +126,16 @@ Recent decisions affecting current work:
 - [09-02]: Persona context.md reading integrated inline in Step 1 (not separate numbered item) to keep scenario guidance close to audience config
 - [09-03]: Framework Q&A answers stored in-memory during setup, passed to researcher via Agent invocation message -- not persisted in config.yaml
 - [09-03]: Complete setup skill rewrite done atomically (465 lines) with all Phase 9 enhancements in single file write
+- [10-01]: Q&A files use Detection section for auto-detect metadata (config file, features list)
+- [10-01]: Scaffold template uses only two template variables: {site_name} and {site_description}
+- [10-01]: Q&A files placed alongside existing guidance files in defaults/ for consistent discovery
 
 ### Roadmap Evolution
 
 - Phase 7 added: Doc-Writer Plugin Packaging — reorganise into `doc-writer/` subdir and configure as a Claude plugin (repo will host multiple plugins in future milestones)
 - Phase 8 added: doc-writer skills polish
 - Phase 9 added: enhanced setup Q&A, tone, user persona, and new planner/researcher agents
+- Phase 10 added: framework scaffolding and unknown framework research+guidance generation
 
 ### Pending Todos
 
@@ -152,6 +157,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-17T18:47:00Z
-Stopped at: Completed 09-03-PLAN.md
+Last session: 2026-03-17T21:52:49Z
+Stopped at: Completed 10-01-PLAN.md
 Resume file: None

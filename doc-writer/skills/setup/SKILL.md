@@ -2,8 +2,8 @@
 name: doc-writer:setup
 description: Configure doc-writer for this project. Creates .doc-writer/ directory with config, rules, and guidance files.
 disable-model-invocation: true
-allowed-tools: Read, Write, Bash, Glob, Grep
-argument-hint: "[--reset]"
+allowed-tools: Read, Write, Bash, Glob, Grep, Agent
+argument-hint: "[--reset] [--refresh-context]"
 ---
 
 # Doc Writer Setup
@@ -32,7 +32,12 @@ First, check whether this project already has a doc-writer configuration:
 
 1. Use Glob to check if `.doc-writer/config.yaml` exists.
 
-2. **If `$ARGUMENTS` contains `--reset`:**
+2. **If `$ARGUMENTS` contains `--refresh-context`:**
+   - Verify `.doc-writer/config.yaml` exists. If it does not, tell the user: "No configuration found. Run `/doc-writer:setup` first to configure audiences, doc system, and paths." Stop.
+   - Skip all Q&A. Jump directly to Step 5 (Context Enrichment) to re-run the researcher.
+   - Stop after Step 5 completes.
+
+3. **If `$ARGUMENTS` contains `--reset`:**
    - Use AskUserQuestion to confirm:
      - header: "Reset"
      - question: "This will overwrite your existing doc-writer configuration. Guidance files and rules will be replaced with defaults."
@@ -46,7 +51,7 @@ First, check whether this project already has a doc-writer configuration:
    - **"Type something else":** Ask in plain text what the user wants to reset selectively. Handle accordingly.
    - **"Chat about this":** Explain which files exist and what will be overwritten. After discussion, re-present the question.
 
-3. **If `.doc-writer/config.yaml` exists (and no `--reset` flag):**
+4. **If `.doc-writer/config.yaml` exists (and no flags):**
    - Read the existing config file.
    - Display it formatted nicely:
      ```
@@ -56,7 +61,9 @@ First, check whether this project already has a doc-writer configuration:
      1. [name] (skill_level)
         - Assumed knowledge: [list]
         - Never assume: [list]
+        - User tasks: [list or "none"]
 
+     **Tone:** {tone or "not set"}
      **Doc system:** [doc_system]
      **Docs root:** [paths.docs_root]
      **Source root:** [paths.source_root]
@@ -66,19 +73,23 @@ First, check whether this project already has a doc-writer configuration:
      - question: "What would you like to update in your doc-writer configuration?"
      - options:
        - { label: "Audiences", description: "Edit, add, or remove target audiences" }
+       - { label: "Tone", description: "Change documentation writing tone (currently: {tone})" }
        - { label: "Doc system", description: "Change documentation system (currently: {doc_system})" }
        - { label: "Paths", description: "Change docs root or source root directories" }
+       - { label: "Re-run researcher", description: "Regenerate context.md from current config" }
        - { label: "Done", description: "Finish updating configuration" }
        - { label: "Type something else", description: "Describe a different change" }
        - { label: "Chat about this", description: "Discuss configuration options" }
    - **"Audiences":** Jump to Step 4 audiences handling.
+   - **"Tone":** Jump to Step 2a.5 (Tone Selection). After tone is updated, write updated config and return to re-run menu.
    - **"Doc system":** Jump to Step 4 doc system handling.
    - **"Paths":** Jump to Step 4 paths handling.
+   - **"Re-run researcher":** Jump to Step 5 (Context Enrichment). After researcher completes, return to re-run menu.
    - **"Done":** Stop. Display current config summary.
    - **"Type something else":** Ask in plain text what the user wants to change. This covers `rules` and `guidance file` which are file-edit instructions, plus any other custom request.
    - **"Chat about this":** Explain what each section controls. After discussion, re-present the question.
 
-4. **If `.doc-writer/config.yaml` does NOT exist:**
+5. **If `.doc-writer/config.yaml` does NOT exist:**
    - Proceed to Step 2 (Full Q&A Flow).
 
 ### Step 2: Full Q&A Flow (First-Time Setup)
@@ -87,41 +98,151 @@ Run through these questions interactively. Wait for user response after each que
 
 #### 2a: Audience Definition
 
-Ask the user to define their primary audience:
+Ask the user to define their primary audience. Each field is collected individually using infer+suggest AskUserQuestion interactions, except where noted as freeform.
 
-```
-## Audience Definition
+**Audience name** -- freeform (too specific to infer):
 
-Who is the primary audience for this library's documentation?
+Ask the user in plain text:
+"Who is the primary audience for this library's documentation? Describe them in a short phrase (e.g., 'Python developers building REST APIs', 'DevOps engineers managing Kubernetes clusters')."
 
-Please provide:
-1. **Name**: A description of who they are (e.g., "Python developers building REST APIs")
-2. **Skill level**: beginner, intermediate, or advanced
-3. **Assumed knowledge**: What can you assume they already know? (comma-separated list)
-4. **Never assume**: What must always be explained, never skipped? (comma-separated list)
-5. **Domain context** (optional): What problem domain does this audience work in? (e.g., "building REST APIs for fintech applications")
-6. **Discovery story** (optional): How did they discover your library? (e.g., "searching for a Python HTTP client that handles retries")
+**Skill level** -- infer+suggest AskUserQuestion:
 
-These optional fields help the User Persona agent generate more realistic testing scenarios. If left blank, the Persona will infer defaults.
-```
+Using the Project Detection Results and README content, infer 2-3 likely skill levels. Mark the most likely as Recommended.
 
-After the user provides primary audience details, use AskUserQuestion:
+Use AskUserQuestion:
+- header: "Skill level"
+- question: "What skill level should docs target for {audience_name}?"
+- options:
+  - { label: "{inferred level} (Recommended)", description: "{why this fits based on project signals}" }
+  - { label: "{alternative level}", description: "{brief description}" }
+  - { label: "{alternative level}", description: "{brief description}" }
+  - { label: "Type something else", description: "Describe a different skill level" }
+  - { label: "Chat about this", description: "Discuss what skill levels mean for docs" }
+
+Example inference logic:
+- README mentions "getting started" prominently, uses simple examples -> suggest Intermediate (Recommended)
+- Heavy type hints, abstract patterns, no tutorial content -> suggest Advanced (Recommended)
+- Explicit "for beginners" in README or package description -> suggest Beginner (Recommended)
+
+**Assumed knowledge** -- infer+suggest multiSelect AskUserQuestion:
+
+Using dependencies, README, and code patterns, infer 3-5 knowledge areas the audience likely has. All pre-selected by default.
+
+Use AskUserQuestion:
+- header: "Assumed"
+- question: "What can {audience_name} be assumed to already know? Deselect items they might NOT know."
+- multiSelect: true
+- options:
+  - { label: "{knowledge area 1} (Recommended)", description: "{specific description}" }
+  - { label: "{knowledge area 2}", description: "{specific description}" }
+  - { label: "{knowledge area 3}", description: "{specific description}" }
+  - { label: "{knowledge area 4}", description: "{specific description}" }
+  - { label: "Type something else", description: "Add a different knowledge area" }
+  - { label: "Chat about this", description: "Discuss assumed knowledge" }
+
+Example inference logic:
+- Python project with requests dependency -> "HTTP/REST APIs" as assumed knowledge
+- TypeScript project -> "TypeScript basics" and "npm/Node.js" as assumed knowledge
+- Has CLI entrypoint -> "Command-line usage" as assumed knowledge
+- Uses async/await patterns -> "Async programming" as assumed knowledge
+
+**Never assume** -- infer+suggest multiSelect AskUserQuestion:
+
+Infer 3-5 topics that should always be explained, based on project complexity and common confusion points.
+
+Use AskUserQuestion:
+- header: "Explain"
+- question: "What must ALWAYS be explained for {audience_name}? These topics will never be assumed as prior knowledge."
+- multiSelect: true
+- options:
+  - { label: "{topic 1} (Recommended)", description: "{why this needs explanation}" }
+  - { label: "{topic 2}", description: "{why this needs explanation}" }
+  - { label: "{topic 3}", description: "{why this needs explanation}" }
+  - { label: "Type something else", description: "Add a different topic" }
+  - { label: "Chat about this", description: "Discuss what needs explanation" }
+
+Example inference logic:
+- Library has custom config format -> "Configuration syntax" as never-assume
+- Library uses non-standard patterns -> those patterns as never-assume
+- Library has specific terminology -> that terminology as never-assume
+
+**Domain context** -- infer+suggest AskUserQuestion:
+
+Using README and package description, infer 2-4 domain context options.
+
+Use AskUserQuestion:
+- header: "Domain"
+- question: "What problem domain does {audience_name} work in?"
+- options:
+  - { label: "{inferred domain 1} (Recommended)", description: "{expanded description}" }
+  - { label: "{inferred domain 2}", description: "{expanded description}" }
+  - { label: "Type something else", description: "Describe a different domain" }
+  - { label: "Chat about this", description: "Discuss domain context" }
+
+**User persona tasks** -- infer+suggest multiSelect AskUserQuestion:
+
+Using the codebase scan (public API surface, README examples, test patterns), infer 3-5 common tasks users perform with this library.
+
+Use AskUserQuestion:
+- header: "Tasks"
+- question: "What tasks does {audience_name} typically perform with this library? These inform User Persona scenario generation."
+- multiSelect: true
+- options:
+  - { label: "{task 1}", description: "{brief context}" }
+  - { label: "{task 2}", description: "{brief context}" }
+  - { label: "{task 3}", description: "{brief context}" }
+  - { label: "{task 4}", description: "{brief context}" }
+  - { label: "Type something else", description: "Add a different task" }
+  - { label: "Chat about this", description: "Discuss common user tasks" }
+
+Example inference logic:
+- Rate-limiting library -> "Set up rate limiting", "Configure per-route limits", "Handle 429 responses", "Monitor rate limit usage"
+- HTTP client library -> "Make API requests", "Handle authentication", "Configure retries", "Process response data"
+
+**Discovery story** -- freeform (too specific to infer):
+
+Ask the user in plain text:
+"How would a typical {audience_name} discover this library? (e.g., 'searching for a Python HTTP client that handles retries', 'recommended by a colleague for rate limiting'). This helps the User Persona generate realistic scenarios. Press Enter to skip."
+
+**Adding more audiences:**
+
+After completing all fields for the primary audience, use AskUserQuestion:
 - header: "Audiences"
 - question: "Do you have a secondary audience? (e.g., contributors vs. end users)"
 - options:
   - { label: "Add audience", description: "Define another target audience" }
-  - { label: "No, continue", description: "Move on to doc system selection" }
+  - { label: "No, continue", description: "Move on to tone selection" }
   - { label: "Type something else", description: "Describe your audience setup differently" }
   - { label: "Chat about this", description: "Discuss audience configuration" }
 
-- **"Add audience":** Repeat the audience definition questions (name, skill level, assumed knowledge, never assume, domain context, discovery story) in plain text. After collecting answers, ask again if there are more audiences.
-- **"No, continue":** Proceed to Step 2b (Doc System Selection).
+- **"Add audience":** Repeat the audience definition questions (name, skill level, assumed knowledge, never assume, domain context, user tasks, discovery story) using the same infer+suggest pattern. After collecting answers, ask again if there are more audiences.
+- **"No, continue":** Proceed to Step 2a.5 (Tone Selection).
 - **"Type something else":** Ask in plain text. User may want to modify the primary audience just defined or describe a non-standard setup.
 - **"Chat about this":** Explain how multiple audiences affect the pipeline (separate Persona agents per audience, independent verdicts). After discussion, re-present the question.
 
 Continue offering additional audiences until the user selects "No, continue" or indicates they are done.
 
-Store all audiences in an array — even if only one audience is configured, it must be stored as a single-element array.
+Store all audiences in an array -- even if only one audience is configured, it must be stored as a single-element array.
+
+#### 2a.5: Tone Selection
+
+After audience definition is complete (all audiences collected), present tone selection.
+
+Use AskUserQuestion:
+- header: "Tone"
+- question: "What writing tone should the documentation use?"
+- options:
+  - { label: "Just the facts", description: "Minimal, no preamble, direct definitions, one example max" }
+  - { label: "Helpful and comprehensive, warm but businesslike", description: "Clear explanations, multiple examples, structured and approachable" }
+  - { label: "Helpful and comprehensive, with personality and occasional humour", description: "Same depth, but with personality and occasional humour" }
+  - { label: "Type something else", description: "Describe a different tone" }
+  - { label: "Chat about this", description: "See examples of each tone style" }
+
+- **"Just the facts":** Record tone as "just-the-facts"
+- **"Helpful and comprehensive, warm but businesslike":** Record tone as "warm-businesslike"
+- **"Helpful and comprehensive, with personality and occasional humour":** Record tone as "personality"
+- **"Type something else":** Ask in plain text what tone they want. Record their description as a custom tone label.
+- **"Chat about this":** Show example paragraphs in each tone for the same concept. After discussion, re-present the question.
 
 #### 2b: Doc System Selection
 
@@ -138,6 +259,104 @@ Present the detected doc system from the Project Detection Results above as the 
 - **"plain-markdown":** Record selection.
 - **"Type something else":** Ask in plain text for the custom doc system name. Inform the user they will need to create `.doc-writer/{name}.md` with their doc system preferences.
 - **"Chat about this":** Explain what each doc system means for formatting output. After discussion, re-present the question.
+
+#### 2b.5: Framework Configuration
+
+After doc system selection, present framework-specific questions. The questions help the researcher agent produce more accurate framework preference guidance in context.md.
+
+**If doc_system is `mkdocs-material`:**
+
+First, use Glob to check for `mkdocs.yml` in the project root. If found, use Read + Grep to detect which features are enabled (check for `navigation.sections`, `navigation.tabs`, `pymdownx.tabbed`, `pymdownx.superfences` with mermaid fence, `admonition`, `pymdownx.details`, `content.code.annotate`, `mkdocstrings`, `literate-nav`). Auto-detected features are shown in the question descriptions as context.
+
+**Question 1: Navigation style**
+
+Use AskUserQuestion:
+- header: "Navigation"
+- question: "How should documentation be organized?{if mkdocs.yml detected: ' Detected: ' + detected features}"
+- options:
+  - { label: "Sections", description: "2-level nav: sections group related pages (navigation.sections)" }
+  - { label: "Tabs + sections", description: "Top-level tabs with sections underneath (navigation.tabs)" }
+  - { label: "Flat", description: "All pages at one level, no grouping" }
+  - { label: "Type something else", description: "Describe a different nav structure" }
+  - { label: "Chat about this", description: "Discuss navigation options" }
+
+If mkdocs.yml has `navigation.sections` enabled, mark "Sections" as "(Recommended)". If `navigation.tabs` is enabled, mark "Tabs + sections" as "(Recommended)".
+
+Record the selection. This goes to context.md via the researcher, not to config.yaml.
+
+**Question 2: API reference approach**
+
+Use AskUserQuestion:
+- header: "API docs"
+- question: "How is API reference generated?{if mkdocstrings detected: ' Detected: mkdocstrings with ' + docstring_style}"
+- options:
+  - { label: "mkdocstrings", description: "Auto-generated from docstrings" }
+  - { label: "Manual pages", description: "Hand-written API reference in docs/" }
+  - { label: "None", description: "No API reference -- narrative docs only" }
+  - { label: "Type something else", description: "Describe a different approach" }
+  - { label: "Chat about this", description: "Discuss API reference options" }
+
+If mkdocs.yml has `mkdocstrings` plugin, mark "mkdocstrings" as "(Recommended)".
+
+Record the selection.
+
+**Question 3: Rich features usage**
+
+Use AskUserQuestion:
+- header: "Features"
+- question: "Which MkDocs Material features should docs use?{if features detected: ' Detected: ' + detected list}"
+- multiSelect: true
+- options: (pre-select items that are detected in mkdocs.yml)
+  - { label: "Content tabs", description: "For multi-language or multi-method examples (pymdownx.tabbed)" }
+  - { label: "Mermaid diagrams", description: "For architecture and flow diagrams (pymdownx.superfences)" }
+  - { label: "Code annotations", description: "Numbered annotations explaining code lines (content.code.annotate)" }
+  - { label: "Admonitions", description: "Tip/warning/info callout boxes (admonition)" }
+  - { label: "Collapsible details", description: "Expandable sections for optional content (pymdownx.details)" }
+  - { label: "Type something else", description: "Add or remove features" }
+  - { label: "Chat about this", description: "See examples of each feature" }
+
+Record the selections.
+
+**If doc_system is `plain-markdown`:**
+
+**Question 1: Callout style**
+
+Use AskUserQuestion:
+- header: "Callouts"
+- question: "How should callouts (tips, warnings, notes) be formatted?"
+- options:
+  - { label: "Blockquotes", description: "Use > **Note:** and > **Warning:** blockquote pattern" }
+  - { label: "None", description: "No special callout formatting -- just regular paragraphs" }
+  - { label: "Type something else", description: "Describe a different callout style" }
+  - { label: "Chat about this", description: "See examples of each style" }
+
+**Question 2: Heading convention**
+
+Use AskUserQuestion:
+- header: "Headings"
+- question: "What case convention should headings use?"
+- options:
+  - { label: "Sentence case", description: "Only first word capitalized: 'Getting started with auth'" }
+  - { label: "Title case", description: "Major words capitalized: 'Getting Started with Auth'" }
+  - { label: "Type something else", description: "Describe a different convention" }
+  - { label: "Chat about this", description: "Discuss heading conventions" }
+
+**Question 3: Table of contents**
+
+Use AskUserQuestion:
+- header: "TOC"
+- question: "How should documentation pages be indexed?"
+- options:
+  - { label: "Index page", description: "Manual index.md with links to all pages" }
+  - { label: "Filename-based", description: "Readers navigate by file/folder structure" }
+  - { label: "Type something else", description: "Describe a different approach" }
+  - { label: "Chat about this", description: "Discuss table of contents options" }
+
+**For any other doc_system value:** Skip framework Q&A. The researcher will use defaults.
+
+**Passing framework answers to the researcher:**
+
+Framework Q&A answers do NOT go into config.yaml (config stays lean). Instead, store them temporarily in a variable/context during the setup flow and pass them to the researcher via the Agent tool invocation message in Step 5.
 
 #### 2c: Paths
 
@@ -159,7 +378,7 @@ After Q&A completes, create the project configuration:
 
 1. **Create `.doc-writer/` directory** if it does not exist.
 
-2. **Write `.doc-writer/config.yaml`** — Read the config template from `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/config-template.yaml` and populate it with the Q&A answers. The config MUST use `audiences:` as an array, even for a single audience. Include the `detected:` section with auto-detection results from the Project Detection Results above.
+2. **Write `.doc-writer/config.yaml`** -- Read the config template from `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/config-template.yaml` and populate it with the Q&A answers. The config MUST use `audiences:` as an array, even for a single audience. Include the `detected:` section with auto-detection results from the Project Detection Results above. The config MUST include `tone: "{selected_tone}"` as a top-level field. Each audience entry MUST include `user_tasks: [{selected_tasks}]`.
 
 3. **Copy the selected guidance file:**
    - Read `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/{doc_system}.md`
@@ -176,14 +395,11 @@ After Q&A completes, create the project configuration:
    ## Setup Complete
 
    Created `.doc-writer/` with:
-   - config.yaml — [N] audience(s), doc system: [system], paths configured
-   - [doc_system].md — Documentation system guidance (editable)
-   - rules.md — Project-specific rules template (editable)
+   - config.yaml -- [N] audience(s), tone: {tone}, doc system: [system], paths configured
+   - [doc_system].md -- Documentation system guidance (editable)
+   - rules.md -- Project-specific rules template (editable)
 
-   Next steps:
-   - Edit `.doc-writer/rules.md` to add project-specific documentation rules
-   - Edit `.doc-writer/[doc_system].md` to customize documentation system preferences
-   - Run `/doc-writer:setup` again to update configuration
+   Running researcher to generate context.md...
    ```
 
 ### Step 4: Re-Run Update Flow
@@ -204,22 +420,46 @@ Based on user selection from Step 1:
   - Handle each selection with plain-text follow-ups as needed (which audience to edit/remove, new audience details).
   - Write updated config preserving all other fields.
 
-- **`doc system`**: Show current doc system. Present selection options (same as Step 2b). If changed, copy new guidance file to `.doc-writer/`. Note: the old guidance file remains in `.doc-writer/` — user can delete it manually if desired.
+- **`tone`** (from "Tone" selection above): Present the tone selection AskUserQuestion (same as Step 2a.5). Write updated config preserving all other fields.
+
+- **`doc system`**: Show current doc system. Present selection options (same as Step 2b). If changed, copy new guidance file to `.doc-writer/`. Note: the old guidance file remains in `.doc-writer/` -- user can delete it manually if desired.
 
 - **`paths`**: Show current paths. Ask for new values. Write updated config preserving all other fields.
 
-- **`rules`**: Inform the user: "Rules are in `.doc-writer/rules.md`. Edit that file directly — it's freeform markdown that agents interpret." Open or display the file path.
+- **`researcher`** (from "Re-run researcher" selection above): Jump to Step 5 (Context Enrichment). Return to the re-run menu after completion.
 
-- **`guidance file`**: Inform the user: "Guidance is in `.doc-writer/{doc_system}.md`. Edit that file directly — it contains documentation system preferences." Open or display the file path.
+- **`rules`**: Inform the user: "Rules are in `.doc-writer/rules.md`. Edit that file directly -- it's freeform markdown that agents interpret." Open or display the file path.
+
+- **`guidance file`**: Inform the user: "Guidance is in `.doc-writer/{doc_system}.md`. Edit that file directly -- it contains documentation system preferences." Open or display the file path.
 
 - **`done`**: Stop. Display current config summary.
 
 After any update, ask if the user wants to update anything else, or if they are done.
 
+### Step 5: Context Enrichment
+
+After file creation (Step 3) completes, or when triggered by --refresh-context or "Re-run researcher":
+
+Use the Agent tool to spawn `doc-researcher` with this message:
+
+> Enrich the project configuration. Read `.doc-writer/config.yaml` for audiences, tone, and doc system. Scan the codebase (README, source files, framework config) and produce `.doc-writer/context.md` with expanded audience guidance, project domain summary, tone-specific writing rules, and framework usage preferences.
+>
+> Framework Q&A answers: {framework_answers or "none -- use defaults from framework config detection"}
+
+After the researcher completes, display the updated confirmation:
+```
+   - context.md -- Expanded context for downstream agents (editable)
+```
+
+Both first-time setup and --reset flows end at Step 5. The --refresh-context flow jumps directly to Step 5 and stops after.
+
 ## Notes
 
 - All plugin-internal file references use `${CLAUDE_PLUGIN_ROOT}` for portability across different installation locations.
 - The detection script runs automatically via `!`bash`` dynamic context injection when this skill is loaded.
-- Config schema uses `audiences:` (plural, array) — never `audience:` (singular).
+- Config schema uses `audiences:` (plural, array) -- never `audience:` (singular).
 - Guidance files are opinionated preferences, not syntax references. Agents already understand doc system syntax.
-- Rules in `.doc-writer/rules.md` are additive to universal quality rules — they extend but cannot override the baseline.
+- Rules in `.doc-writer/rules.md` are additive to universal quality rules -- they extend but cannot override the baseline.
+- `tone` field in config.yaml stores a label; expanded writing rules live in `.doc-writer/context.md`.
+- `user_tasks` on each audience entry stores the user's selections; expanded task descriptions live in `context.md`.
+- The researcher agent is spawned at the end of every setup flow (first-time, --reset, --refresh-context) to ensure context.md is always current.

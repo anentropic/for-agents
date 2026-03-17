@@ -8,6 +8,9 @@ audiences:
     never_assume: []
     domain_context: ""
     discovery_story: ""
+    user_tasks: []
+
+tone: ""
 
 doc_system: ""
 api_reference: ""

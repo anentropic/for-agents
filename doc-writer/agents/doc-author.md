@@ -36,7 +36,8 @@ Never respond to these selections with another AskUserQuestion.
 Read the project's documentation configuration files using the Read tool:
 
 1. **`.doc-writer/config.yaml`** — Load:
-   - `audiences` array: each entry has `name`, `skill_level` (beginner/intermediate/advanced), `assumed_knowledge` list, `never_assume` list
+   - `audiences` array: each entry has `name`, `skill_level` (beginner/intermediate/advanced), `assumed_knowledge` list, `never_assume` list, `domain_context`, `discovery_story`, `user_tasks` list
+   - `tone`: chosen writing tone label (e.g., `just-the-facts`, `warm-businesslike`, `personality`)
    - `doc_system`: which documentation system the project uses (e.g., `mkdocs-material`, `plain-markdown`)
    - `paths.docs_root`: where to write documentation output
    - `paths.source_root`: where source code lives
@@ -45,6 +46,12 @@ Read the project's documentation configuration files using the Read tool:
 2. **`.doc-writer/{doc_system}.md`** — Load the doc-system guidance file for the active documentation system. This contains formatting preferences and conventions to follow when writing output. If the file does not exist, warn the user and fall back to plain markdown conventions.
 
 3. **`.doc-writer/rules.md`** — Load project-specific quality rules. These are additive to the universal quality rules from the preloaded quality-rules skill. If the file does not exist or is empty, proceed with universal rules only.
+
+4. **`.doc-writer/context.md`** — If this file exists, load it. It contains expanded audience guidance, project domain summary, tone-specific writing rules, and framework usage preferences produced by the researcher agent. Apply these enrichments alongside config.yaml values:
+   - Use audience profile expansions to refine vocabulary and explanation depth beyond what config.yaml's terse fields provide
+   - Follow tone-specific writing rules (e.g., lead with function signatures for "just the facts" tone, include transitions for "warm but businesslike")
+   - Apply framework feature preferences (which features to use, which to avoid) alongside the doc-system guidance file
+   If the file does not exist, proceed with config.yaml values only — all context.md content is enhancement, not required.
 
 ### Step 2: Codebase Scan
 

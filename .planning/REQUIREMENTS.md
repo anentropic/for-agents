@@ -60,7 +60,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **P10-04**: Setup skill reads framework Q&A from .qa.md data files instead of hardcoded questions in the skill body
 - [ ] **P10-05**: Setup skill has a scaffold check step that detects existing framework config vs no config and handles both modes (full scaffold + diff-against-defaults)
 - [ ] **P10-06**: Setup skill handles unknown framework names by spawning doc-researcher to generate guidance, Q&A, and scaffold files
-- [ ] **P10-07**: doc-researcher agent has a distinct "Unknown Framework Research" mode that generates guidance, Q&A, and scaffold files to plugin defaults (with project-local fallback)
+- [x] **P10-07**: doc-researcher agent has a distinct "Unknown Framework Research" mode that generates guidance, Q&A, and scaffold files to plugin defaults (with project-local fallback)
 - [ ] **P10-08**: No framework Q&A questions remain hardcoded in the setup SKILL.md body -- all are read dynamically from .qa.md files
 
 ## v2 Requirements

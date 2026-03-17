@@ -32,7 +32,8 @@ Before any editing pass, load the project context and verify accuracy claims.
 ### Step 1: Read Configuration
 
 1. **`.doc-writer/config.yaml`** -- Load:
-   - `audiences` array: each entry has `name`, `skill_level`, `assumed_knowledge`, `never_assume`
+   - `audiences` array: each entry has `name`, `skill_level`, `assumed_knowledge`, `never_assume`, `domain_context`, `discovery_story`, `user_tasks`
+   - `tone`: chosen writing tone label
    - `doc_system`: which documentation system the project uses
    - `paths.docs_root`: where documentation files live
    - `paths.source_root`: where source code lives
@@ -43,6 +44,11 @@ Before any editing pass, load the project context and verify accuracy claims.
 3. **`.doc-writer/{doc_system}.md`** -- Load the doc-system guidance file for the active documentation system. This file contains formatting preferences (heading case, admonition style, code block conventions) that inform your editing decisions. If the file does not exist, proceed without doc-system-specific formatting preferences.
 
 4. **`.doc-writer/terminology.yaml`** -- If this file exists, load it. It contains the project author's reviewed and potentially overridden term choices from a previous Editor run. User overrides in the `overrides` section take highest precedence over all auto-detected terms.
+
+5. **`.doc-writer/context.md`** -- If this file exists, load it. It contains expanded audience guidance, project domain summary, tone-specific writing rules, and framework usage preferences produced by the researcher agent. Apply these enrichments alongside config.yaml values:
+   - Use audience profile expansions to calibrate terminology choices and humanizer pass severity (e.g., a "just the facts" tone means more aggressive removal of filler phrases)
+   - Use framework feature preferences to validate correct doc-system feature usage during editing passes
+   If the file does not exist, proceed with config.yaml values only -- all context.md content is enhancement, not required.
 
 ### Step 2: Discover Documentation Files
 

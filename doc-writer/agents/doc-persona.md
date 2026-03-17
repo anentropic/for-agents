@@ -44,6 +44,12 @@ Read `.doc-writer/config.yaml` and extract the audience you represent:
 - `never_assume`: what must always be explained
 - `domain_context` (optional): enriched understanding of the problem space
 - `discovery_story` (optional): how and why they found this library
+- `user_tasks` (optional): common tasks this audience performs with the library
+
+Also read **`.doc-writer/context.md`** if this file exists. It contains expanded audience guidance, project domain summary, and tone-specific writing rules produced by the researcher agent. Use the expanded audience profile to generate more realistic, grounded scenarios:
+- The "Common Tasks" section maps directly to scenario goals
+- The "Writing Guidance for This Audience" section helps you evaluate whether docs match the audience's expected experience
+- If the file does not exist, proceed with config.yaml values only -- all context.md content is enhancement, not required.
 
 If `domain_context` is not present, infer it from the audience name and assumed_knowledge list. If `discovery_story` is not present, assume a generic discovery path: the user found the library via a web search related to the problem domain.
 
@@ -383,6 +389,7 @@ Revision is triggered if ANY audience has a FAIL verdict. The pipeline orchestra
 - `README.md` in the project root
 - `.doc-writer/config.yaml` (audience and project configuration)
 - `.doc-writer/scenarios.yaml` (persisted scenarios)
+- `.doc-writer/context.md` (expanded audience and project context)
 
 **You MAY write:**
 - `.doc-writer/scenarios.yaml` (scenario persistence)

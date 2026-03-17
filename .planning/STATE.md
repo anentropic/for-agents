@@ -3,11 +3,11 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 08-02-PLAN.md (all plans complete)
-last_updated: "2026-03-16T23:25:47.206Z"
+stopped_at: Phase 9 context gathered
+last_updated: "2026-03-17T17:46:18.441Z"
 last_activity: "2026-03-16 — Completed plan 08-02: AskUserQuestion for setup skill and doc-author agent"
 progress:
-  total_phases: 8
+  total_phases: 9
   completed_phases: 8
   total_plans: 13
   completed_plans: 13
@@ -118,6 +118,7 @@ Recent decisions affecting current work:
 
 - Phase 7 added: Doc-Writer Plugin Packaging — reorganise into `doc-writer/` subdir and configure as a Claude plugin (repo will host multiple plugins in future milestones)
 - Phase 8 added: doc-writer skills polish
+- Phase 9 added: enhanced setup Q&A, tone, user persona, and new planner/researcher agents
 
 ### Pending Todos
 
@@ -139,6 +140,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T23:19:10.121Z
-Stopped at: Completed 08-02-PLAN.md (all plans complete)
-Resume file: None
+Last session: 2026-03-17T17:46:18.430Z
+Stopped at: Phase 9 context gathered
+Resume file: .planning/phases/09-enhanced-setup-q-a-tone-user-persona-and-new-planner-researcher-agents/09-CONTEXT.md

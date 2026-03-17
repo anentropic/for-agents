@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Phase 9 context gathered
-last_updated: "2026-03-17T17:46:18.441Z"
-last_activity: "2026-03-16 — Completed plan 08-02: AskUserQuestion for setup skill and doc-author agent"
+status: executing
+stopped_at: Completed 09-01-PLAN.md
+last_updated: "2026-03-17T18:40:17.792Z"
+last_activity: "2026-03-17 — Completed plan 09-02: Downstream agent context.md integration"
 progress:
   total_phases: 9
   completed_phases: 8
-  total_plans: 13
-  completed_plans: 13
-  percent: 100
+  total_plans: 16
+  completed_plans: 15
+  percent: 94
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-02)
 
 **Core value:** Produce library documentation that the project author can publish with minimal tweaks — docs written from the end user's perspective, not the builder's.
-**Current focus:** All phases complete
+**Current focus:** Phase 9 -- Enhanced setup Q&A, tone, researcher agent
 
 ## Current Position
 
-Phase: 8 of 8 (Doc-Writer Skills Polish)
-Plan: 2 of 2 in current phase (complete)
-Status: All plans complete -- milestone v1.0 finished
-Last activity: 2026-03-16 — Completed plan 08-02: AskUserQuestion for setup skill and doc-author agent
+Phase: 9 of 9 (Enhanced Setup Q&A + Researcher)
+Plan: 2 of 3 in current phase
+Status: Phase 9 in progress -- plans 01-02 complete, plan 03 remaining
+Last activity: 2026-03-17 — Completed plan 09-02: Downstream agent context.md integration
 
-Progress: [██████████] 100%
+Progress: [█████████░] 94%
 
 ## Performance Metrics
 
@@ -63,6 +63,8 @@ Progress: [██████████] 100%
 | Phase 08-doc-writer-skills-polish P01 | 3 | 2 tasks | 3 files |
 | Phase 08-doc-writer-skills-polish P02 | 3 | 2 tasks | 2 files |
 | Phase 08 P02 | 3 | 2 tasks | 2 files |
+| Phase 09 P01 | 3 | 2 tasks | 2 files |
+| Phase 09 P02 | 3 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -113,6 +115,13 @@ Recent decisions affecting current work:
 - [Phase 08]: Kept rules and guidance file as Type something else paths instead of explicit menu items (informational responses, not structured workflows)
 - [Phase 08]: Used multiSelect: true for page inventory approval with all pages pre-selected — user deselects to exclude
 - [Phase 08]: Setup skill Step 2c paths confirmation kept as plain-text (confirmation of auto-detected values with freeform override)
+- [09-01]: Researcher agent has no skills field -- it reads codebase and config, does not write docs
+- [09-01]: Single context.md file (no split into agent-specific files) -- under 200 lines for any project
+- [09-01]: tone defaults to warm-businesslike when empty string
+- [09-01]: context.md is fully overwritten on each regeneration, not merged
+- [09-02]: Doc Author context.md already committed by Plan 09-01 -- no duplicate commit needed
+- [09-02]: Editor context.md item placed as item 5 after terminology.yaml for logical config loading order
+- [09-02]: Persona context.md reading integrated inline in Step 1 (not separate numbered item) to keep scenario guidance close to audience config
 
 ### Roadmap Evolution
 
@@ -140,6 +149,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-17T17:46:18.430Z
-Stopped at: Phase 9 context gathered
-Resume file: .planning/phases/09-enhanced-setup-q-a-tone-user-persona-and-new-planner-researcher-agents/09-CONTEXT.md
+Last session: 2026-03-17T18:40:17.787Z
+Stopped at: Completed 09-01-PLAN.md
+Resume file: None

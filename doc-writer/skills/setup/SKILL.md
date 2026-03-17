@@ -257,8 +257,85 @@ Present the detected doc system from the Project Detection Results above as the 
 
 - **"mkdocs-material":** Record selection.
 - **"plain-markdown":** Record selection.
-- **"Type something else":** Ask in plain text for the custom doc system name. Inform the user they will need to create `.doc-writer/{name}.md` with their doc system preferences.
+- **"Type something else":** Ask in plain text for the doc system name. Then:
+  1. Normalize the name to lowercase-hyphenated form (e.g., "Docusaurus" -> "docusaurus", "VitePress" -> "vitepress").
+  2. Check if `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/{name}.md` exists using Glob:
+     - **If YES:** Record as doc_system. Set `framework_root` = `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults`. Proceed to Step 2b.3 (Scaffold Check).
+     - **If NO:** Inform the user: "No built-in support for '{name}' yet. I'll research this framework and generate guidance. This will take a moment."
+       Use the Agent tool to spawn `doc-researcher` with this message:
+       > Research the documentation framework '{name}'. Generate guidance, Q&A question set, and scaffold template files into the plugin defaults directory. Read the existing mkdocs-material.md and mkdocs-material.qa.md files in ${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/ as reference for the file structure and format.
+       After researcher completes, check the response for a `FALLBACK:` prefix:
+       - **If FALLBACK detected:** Set `framework_root` = `.doc-writer` (project-local). The researcher wrote files to `.doc-writer/{name}.md`, `.doc-writer/{name}.qa.md`, and optionally `.doc-writer/scaffolds/{name}.{ext}` instead of the plugin defaults directory. All subsequent file lookups in Step 2b.3 and Step 2b.5 MUST use `framework_root` instead of `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults`.
+       - **If no FALLBACK:** Set `framework_root` = `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults`.
+       Record as doc_system. Proceed to Step 2b.3 (Scaffold Check).
 - **"Chat about this":** Explain what each doc system means for formatting output. After discussion, re-present the question.
+
+For built-in frameworks (mkdocs-material, plain-markdown) selected from the standard options (not "Type something else"), set `framework_root` = `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults`.
+
+#### 2b.3: Scaffold Check
+
+After doc system selection, check whether the project already has a framework config file.
+
+1. **Determine what to look for:**
+   - Read `{framework_root}/{doc_system}.qa.md` if it exists.
+   - If the .qa.md file has a `## Detection` section with `Config file: {filename}`, use that filename.
+   - If no .qa.md file exists or Config file is "none", skip scaffold check entirely and proceed to Step 2b.5.
+
+2. **Check for existing framework config:**
+   - Use Glob to check if `{config_filename}` exists in the project root (e.g., `mkdocs.yml` for mkdocs-material).
+
+3. **If config file NOT found (full scaffold mode):**
+   - Check if `{framework_root}/scaffolds/{doc_system}.yml` (or `.js`, `.yaml`, `.toml` variants) exists.
+   - **If scaffold template exists:**
+     a. Read the scaffold template.
+     b. Infer `site_name` from the project's package manifest (pyproject.toml `name` field, package.json `name` field, Cargo.toml `[package] name`, or README.md first heading). If not found, ask the user in plain text: "What is the project name for the documentation site?"
+     c. Infer `site_description` from the package manifest `description` field. If not found, ask the user in plain text: "One-sentence description for the documentation site:"
+     d. Replace `{site_name}` and `{site_description}` template variables in the scaffold content.
+     e. Write the generated config file to the project root (e.g., `mkdocs.yml`).
+     f. Check if `{paths.docs_root}` directory exists. If not, create it with a starter `index.md`:
+        ```markdown
+        # {site_name}
+
+        Welcome to the {site_name} documentation.
+        ```
+     g. Surface install commands as informational text. Do NOT execute them:
+        ```
+        ## Install
+
+        To serve your documentation locally, install the framework:
+
+        mkdocs-material: `pip install mkdocs-material`
+
+        This command is shown for your reference -- run it manually when ready.
+        ```
+        For other frameworks, infer the appropriate install command from the researcher's knowledge or the framework's conventions.
+   - **If no scaffold template exists:** Inform the user: "No scaffold template for '{doc_system}'. You'll need to create the config file manually." Proceed to Step 2b.5.
+
+4. **If config file FOUND (diff-against-defaults mode):**
+   - Read the existing config file from the project root.
+   - Check if `{framework_root}/scaffolds/{doc_system}.yml` (or variants) exists.
+   - **If scaffold template exists:**
+     a. Read the scaffold template (opinionated defaults).
+     b. Compare: identify features, extensions, and plugins in the scaffold template that are ABSENT from the existing config. Use Grep on the existing config to check for each feature listed in the scaffold.
+     c. If gaps found, present as AskUserQuestion:
+        - header: "Extras"
+        - question: "Your {config_filename} is missing these recommended features. Enable any?"
+        - multiSelect: true
+        - options: (one per missing feature, using feature name and brief description)
+          - Plus: { label: "None", description: "Keep current config as-is" }
+          - Plus: { label: "Type something else", description: "Describe other changes" }
+          - Plus: { label: "Chat about this", description: "Learn what each feature does" }
+     d. For each selected feature: show the exact config YAML that will be added. Use AskUserQuestion to confirm:
+        - header: "Confirm"
+        - question: "Add this to {config_filename}?"
+        - Display the proposed addition as a code block.
+        - options:
+          - { label: "Add it", description: "Append to existing config" }
+          - { label: "Skip", description: "Don't add this feature" }
+          - { label: "Chat about this", description: "Discuss this change" }
+     e. For confirmed additions: Read the existing config file, append the new config blocks, and Write the complete updated file. Never overwrite existing config -- only append.
+     f. If "None" selected: proceed without changes.
+   - **If no scaffold template exists:** No diff possible. Proceed to Step 2b.5.
 
 #### 2b.5: Framework Configuration
 

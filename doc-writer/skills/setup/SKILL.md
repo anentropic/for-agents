@@ -287,7 +287,7 @@ After doc system selection, check whether the project already has a framework co
    - Use Glob to check if `{config_filename}` exists in the project root (e.g., `mkdocs.yml` for mkdocs-material).
 
 3. **If config file NOT found (full scaffold mode):**
-   - Check if `{framework_root}/scaffolds/{doc_system}.yml` (or `.js`, `.yaml`, `.toml` variants) exists.
+   - Check if `{framework_root}/scaffolds/{doc_system}.yml` (or `.js`, `.yaml`, `.toml`, `.py` variants) exists.
    - **If scaffold template exists:**
      a. Read the scaffold template.
      b. Infer `site_name` from the project's package manifest (pyproject.toml `name` field, package.json `name` field, Cargo.toml `[package] name`, or README.md first heading). If not found, ask the user in plain text: "What is the project name for the documentation site?"
@@ -315,7 +315,7 @@ After doc system selection, check whether the project already has a framework co
 
 4. **If config file FOUND (diff-against-defaults mode):**
    - Read the existing config file from the project root.
-   - Check if `{framework_root}/scaffolds/{doc_system}.yml` (or variants) exists.
+   - Check if `{framework_root}/scaffolds/{doc_system}.yml` (or `.js`, `.yaml`, `.toml`, `.py` variants) exists.
    - **If scaffold template exists:**
      a. Read the scaffold template (opinionated defaults).
      b. Compare: identify features, extensions, and plugins in the scaffold template that are ABSENT from the existing config. Use Grep on the existing config to check for each feature listed in the scaffold.

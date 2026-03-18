@@ -252,11 +252,13 @@ Present the detected doc system from the Project Detection Results above as the 
 - options:
   - { label: "mkdocs-material", description: "MkDocs with Material theme" }
   - { label: "plain-markdown", description: "Standard Markdown, no doc framework" }
+  - { label: "sphinx-shibuya", description: "Sphinx with Shibuya theme" }
   - { label: "Type something else", description: "Enter a custom doc system name" }
   - { label: "Chat about this", description: "Discuss doc system options" }
 
 - **"mkdocs-material":** Record selection.
 - **"plain-markdown":** Record selection.
+- **"sphinx-shibuya":** Record selection.
 - **"Type something else":** Ask in plain text for the doc system name. Then:
   1. Normalize the name to lowercase-hyphenated form (e.g., "Docusaurus" -> "docusaurus", "VitePress" -> "vitepress").
   2. Check if `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/{name}.md` exists using Glob:
@@ -270,7 +272,7 @@ Present the detected doc system from the Project Detection Results above as the 
        Record as doc_system. Proceed to Step 2b.3 (Scaffold Check).
 - **"Chat about this":** Explain what each doc system means for formatting output. After discussion, re-present the question.
 
-For built-in frameworks (mkdocs-material, plain-markdown) selected from the standard options (not "Type something else"), set `framework_root` = `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults`.
+For built-in frameworks (mkdocs-material, plain-markdown, sphinx-shibuya) selected from the standard options (not "Type something else"), set `framework_root` = `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults`.
 
 #### 2b.3: Scaffold Check
 

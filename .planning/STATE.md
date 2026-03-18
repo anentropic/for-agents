@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 11-01-PLAN.md
-last_updated: "2026-03-18T23:25:09.000Z"
-last_activity: "2026-03-18 — Completed 11-01: Sphinx/Shibuya Q&A and scaffold template"
+stopped_at: Completed 11-02-PLAN.md
+last_updated: "2026-03-18T23:26:37.000Z"
+last_activity: "2026-03-18 — Completed 11-02: Sphinx/Shibuya guidance verified and setup skill updated"
 progress:
   total_phases: 11
-  completed_phases: 10
+  completed_phases: 11
   total_plans: 21
-  completed_plans: 20
-  percent: 95
+  completed_plans: 21
+  percent: 100
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-02)
 
 **Core value:** Produce library documentation that the project author can publish with minimal tweaks — docs written from the end user's perspective, not the builder's.
-**Current focus:** Phase 11 -- Sphinx/Shibuya doc framework support (Plan 01 complete, Plan 02 next)
+**Current focus:** Phase 11 -- Sphinx/Shibuya doc framework support (complete)
 
 ## Current Position
 
 Phase: 11 of 11 (Sphinx/Shibuya Doc Framework Support)
-Plan: 1 of 2 in current phase
-Status: In progress — executing Phase 11 plans
-Last activity: 2026-03-18 — Completed 11-01: Sphinx/Shibuya Q&A and scaffold template
+Plan: 2 of 2 in current phase
+Status: Complete — all Phase 11 plans executed
+Last activity: 2026-03-18 — Completed 11-02: Sphinx/Shibuya guidance verified and setup skill updated
 
-Progress: [██████████] 95%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -70,6 +70,7 @@ Progress: [██████████] 95%
 | Phase 10 P02 | 2 | 1 tasks | 1 files |
 | Phase 10 P03 | 3 | 2 tasks | 1 files |
 | Phase 11 P01 | 2 | 2 tasks | 2 files |
+| Phase 11 P02 | 3 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -142,6 +143,8 @@ Recent decisions affecting current work:
 - [11-01]: autoapi_root = reference/api with manual toctree placement for clean Reference tab
 - [11-01]: 4 template variables ({project_name}, {author_name}, {copyright_year}, {github_url}) in string literals only
 - [11-01]: napoleon_google_docstring = True for consistency with mkdocstrings in mkdocs-material
+- [11-02]: sphinx-shibuya.md already created by Plan 11-01 -- verified all 20 acceptance criteria pass, no changes needed
+- [11-02]: SKILL.md modified with exactly 3 touch points: option, handler, built-in frameworks list
 
 ### Roadmap Evolution
 
@@ -171,6 +174,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-18T23:25:09Z
-Stopped at: Completed 11-01-PLAN.md
+Last session: 2026-03-18T23:26:37Z
+Stopped at: Completed 11-02-PLAN.md
 Resume file: None

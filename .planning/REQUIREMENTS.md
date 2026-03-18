@@ -63,6 +63,15 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **P10-07**: doc-researcher agent has a distinct "Unknown Framework Research" mode that generates guidance, Q&A, and scaffold files to plugin defaults (with project-local fallback)
 - [x] **P10-08**: No framework Q&A questions remain hardcoded in the setup SKILL.md body -- all are read dynamically from .qa.md files
 
+### Sphinx/Shibuya Framework Support
+
+- [ ] **P11-01**: sphinx-shibuya Q&A data file exists in defaults/ with Detection section (conf.py) and 3 questions (navigation, API reference, sphinx-design features)
+- [ ] **P11-02**: sphinx-shibuya guidance file exists in defaults/ with opinionated RST writing preferences mirroring mkdocs-material.md structure
+- [ ] **P11-03**: conf.py scaffold template exists in defaults/scaffolds/ with Shibuya theme, nav_links for Diataxis tabs, autoapi, napoleon, intersphinx, and sphinx-design extensions
+- [ ] **P11-04**: Setup skill SKILL.md lists sphinx-shibuya as a selectable built-in doc system option in Step 2b
+- [ ] **P11-05**: Guidance file covers all four sphinx-design component groups (grids+cards, tab sets, dropdowns, badges+buttons) with curated use-case rules
+- [ ] **P11-06**: Guidance file covers sphinx-autoapi integration: autoapi replaces Reference tab, Google docstring convention, Author agent must not write manual reference pages
+
 ## v2 Requirements
 
 Deferred to future release. Tracked but not in current roadmap.
@@ -134,12 +143,18 @@ Which phases cover which requirements. Updated during roadmap creation.
 | P10-06 | Phase 10 | Planned |
 | P10-07 | Phase 10 | Planned |
 | P10-08 | Phase 10 | Planned |
+| P11-01 | Phase 11 | Planned |
+| P11-02 | Phase 11 | Planned |
+| P11-03 | Phase 11 | Planned |
+| P11-04 | Phase 11 | Planned |
+| P11-05 | Phase 11 | Planned |
+| P11-06 | Phase 11 | Planned |
 
 **Coverage:**
-- v1 requirements: 36 total
-- Mapped to phases: 36
+- v1 requirements: 42 total
+- Mapped to phases: 42
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-03*
-*Last updated: 2026-03-17 after Phase 10 planning -- added P10-01 through P10-08*
+*Last updated: 2026-03-18 after Phase 11 planning -- added P11-01 through P11-06*

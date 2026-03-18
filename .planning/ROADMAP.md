@@ -129,7 +129,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -143,6 +143,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8. Doc-Writer Skills Polish | 2/2 | Complete    | 2026-03-16 |
 | 9. Enhanced Setup Q&A + Researcher | 3/3 | Complete    | 2026-03-17 |
 | 10. Framework Scaffolding + Unknown Framework Research | 3/3 | Complete    | 2026-03-17 |
+| 11. Sphinx/Shibuya Framework Support | 0/2 | Planned | - |
 
 ### Phase 8: doc-writer skills polish
 
@@ -178,3 +179,14 @@ Plans:
 - [ ] 10-01-PLAN.md -- Extract Q&A data files for mkdocs-material and plain-markdown, create mkdocs-material scaffold template
 - [ ] 10-02-PLAN.md -- Add Unknown Framework Research mode to doc-researcher agent
 - [ ] 10-03-PLAN.md -- Rewrite setup skill: dynamic Q&A reading, scaffold check step, unknown framework detection
+
+### Phase 11: Sphinx/Shibuya Doc Framework Support
+
+**Goal:** Add Sphinx + Shibuya theme as a built-in supported framework in the doc-writer plugin with RST-native guidance, sphinx-design component rules, sphinx-autoapi integration, and conf.py scaffolding -- on equal footing with mkdocs-material
+**Requirements**: P11-01, P11-02, P11-03, P11-04, P11-05, P11-06
+**Depends on:** Phase 10
+**Plans:** 2 plans
+
+Plans:
+- [ ] 11-01-PLAN.md -- Q&A data file (sphinx-shibuya.qa.md) and conf.py scaffold template (sphinx-shibuya.py)
+- [ ] 11-02-PLAN.md -- Guidance file (sphinx-shibuya.md) and setup skill integration (SKILL.md update)

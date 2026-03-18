@@ -65,9 +65,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Sphinx/Shibuya Framework Support
 
-- [ ] **P11-01**: sphinx-shibuya Q&A data file exists in defaults/ with Detection section (conf.py) and 3 questions (navigation, API reference, sphinx-design features)
+- [x] **P11-01**: sphinx-shibuya Q&A data file exists in defaults/ with Detection section (conf.py) and 3 questions (navigation, API reference, sphinx-design features)
 - [ ] **P11-02**: sphinx-shibuya guidance file exists in defaults/ with opinionated RST writing preferences mirroring mkdocs-material.md structure
-- [ ] **P11-03**: conf.py scaffold template exists in defaults/scaffolds/ with Shibuya theme, nav_links for Diataxis tabs, autoapi, napoleon, intersphinx, and sphinx-design extensions
+- [x] **P11-03**: conf.py scaffold template exists in defaults/scaffolds/ with Shibuya theme, nav_links for Diataxis tabs, autoapi, napoleon, intersphinx, and sphinx-design extensions
 - [ ] **P11-04**: Setup skill SKILL.md lists sphinx-shibuya as a selectable built-in doc system option in Step 2b
 - [ ] **P11-05**: Guidance file covers all four sphinx-design component groups (grids+cards, tab sets, dropdowns, badges+buttons) with curated use-case rules
 - [ ] **P11-06**: Guidance file covers sphinx-autoapi integration: autoapi replaces Reference tab, Google docstring convention, Author agent must not write manual reference pages

@@ -143,7 +143,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8. Doc-Writer Skills Polish | 2/2 | Complete    | 2026-03-16 |
 | 9. Enhanced Setup Q&A + Researcher | 3/3 | Complete    | 2026-03-17 |
 | 10. Framework Scaffolding + Unknown Framework Research | 3/3 | Complete    | 2026-03-17 |
-| 11. Sphinx/Shibuya Framework Support | 0/2 | Planned | - |
+| 11. Sphinx/Shibuya Framework Support | 1/2 | In Progress|  |
 
 ### Phase 8: doc-writer skills polish
 
@@ -185,7 +185,7 @@ Plans:
 **Goal:** Add Sphinx + Shibuya theme as a built-in supported framework in the doc-writer plugin with RST-native guidance, sphinx-design component rules, sphinx-autoapi integration, and conf.py scaffolding -- on equal footing with mkdocs-material
 **Requirements**: P11-01, P11-02, P11-03, P11-04, P11-05, P11-06
 **Depends on:** Phase 10
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 - [ ] 11-01-PLAN.md -- Q&A data file (sphinx-shibuya.qa.md) and conf.py scaffold template (sphinx-shibuya.py)

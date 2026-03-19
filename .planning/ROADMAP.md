@@ -145,7 +145,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 10. Framework Scaffolding + Unknown Framework Research | 3/3 | Complete    | 2026-03-17 |
 | 11. Sphinx/Shibuya Framework Support | 2/2 | Complete    | 2026-03-18 |
 | 12. Odoc Framework for OCaml | 4/4 | Complete    | 2026-03-19 |
-| 13. Scaffold Variable Fix + Doc-Researcher | 3/3 | Complete   | 2026-03-19 |
+| 13. Scaffold Variable Fix + Doc-Researcher | 3/3 | Complete    | 2026-03-19 |
 
 ### Phase 8: doc-writer skills polish
 

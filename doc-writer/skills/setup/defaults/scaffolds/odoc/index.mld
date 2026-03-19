@@ -1,0 +1,33 @@
+{0 {package_name} - {synopsis}}
+
+{1 Overview}
+
+TODO: Describe what {library_name} does and how to install it.
+
+{v
+opam install {package_name}
+v}
+
+{1 Documentation}
+
+{2 Tutorial}
+
+TODO: Link to getting_started.mld when created.
+
+{2 How-to Guides}
+
+TODO: Add guide page links here.
+
+{2 Explanation}
+
+TODO: Add explanation page links here.
+
+{1 API Reference}
+
+{!modules:
+{library_name}
+}
+
+{1 Project}
+
+TODO: Add project links (GitHub, etc.).

@@ -1,0 +1,11 @@
+{0 {package_name} - {synopsis}}
+
+{1 Overview}
+
+TODO: Describe what this package does and why it exists separately.
+
+{1 API Reference}
+
+{!modules:
+{library_name}
+}

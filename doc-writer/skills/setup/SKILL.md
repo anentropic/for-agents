@@ -293,17 +293,33 @@ After doc system selection, check whether the project already has a framework co
    - **If scaffold template exists:**
      a. Read the scaffold template.
      For directory scaffolds (`scaffolds/{doc_system}/` exists): read each template file in the directory. Process template variable substitution on each file. The scaffold directory contains files that map to project locations (e.g., `doc_dune.sexp` -> `doc/dune`, `index.mld` -> `doc/index.mld`). For multi-library projects (detected from Q1), also instantiate secondary templates (`secondary_dune.sexp`, `secondary_index.mld`) for each non-primary package.
-     b. Infer `site_name` from the project's package manifest (pyproject.toml `name` field, package.json `name` field, Cargo.toml `[package] name`, or README.md first heading). If not found, ask the user in plain text: "What is the project name for the documentation site?"
-     c. Infer `site_description` from the package manifest `description` field. If not found, ask the user in plain text: "One-sentence description for the documentation site:"
-     d. Replace `{site_name}` and `{site_description}` template variables in the scaffold content.
-     e. Write the generated config file to the project root (e.g., `mkdocs.yml`).
-     f. Check if `{paths.docs_root}` directory exists. If not, create it with a starter `index.md`:
+     b. Identify all template variables in the scaffold content (patterns matching `{variable_name}`).
+        Infer values for each using this table:
+
+        | Variable | Primary Source | Fallback Source | Last Resort |
+        |----------|---------------|-----------------|-------------|
+        | `{site_name}` | Package manifest `name` field (pyproject.toml, package.json, Cargo.toml) | README.md first heading | Ask user: "Project name for the documentation site:" |
+        | `{site_description}` | Package manifest `description` field | README.md subtitle or first paragraph | Ask user: "One-sentence description:" |
+        | `{project_name}` | Same as `{site_name}` | Same as `{site_name}` | Same as `{site_name}` |
+        | `{author_name}` | `git config user.name` | Package manifest author field | Ask user: "Author name:" |
+        | `{copyright_year}` | Current year (automatic) | -- | -- |
+        | `{github_url}` | `git remote get-url origin` (convert SSH to HTTPS via `sed 's#git@github.com:#https://github.com/#'`) | Package manifest repository URL | Ask user: "GitHub repository URL:" |
+        | `{package_name}` | dune-project `(name ...)` sexp or inferred from project structure | Same as `{site_name}` | Ask user: "Package name:" |
+        | `{library_name}` | dune-project `(public_name ...)` sexp or library name from Q1 answer | Same as `{package_name}` | Ask user: "Library name:" |
+        | `{synopsis}` | Same as `{site_description}` | opam file synopsis field | Ask user: "One-line synopsis:" |
+
+        Variables not in this table: ask the user in plain text for a value.
+        Variables with an automatic source (e.g., `{copyright_year}`): never ask -- always use the computed value.
+
+     c. Replace all identified template variables in the scaffold content with their inferred values.
+     d. Write the generated config file to the project root (e.g., `mkdocs.yml`).
+     e. Check if `{paths.docs_root}` directory exists. If not, create it with a starter `index.md`:
         ```markdown
         # {site_name}
 
         Welcome to the {site_name} documentation.
         ```
-     g. Surface install commands as informational text. Do NOT execute them:
+     f. Surface install commands as informational text. Do NOT execute them:
         ```
         ## Install
 

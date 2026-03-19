@@ -253,12 +253,14 @@ Present the detected doc system from the Project Detection Results above as the 
   - { label: "mkdocs-material", description: "MkDocs with Material theme" }
   - { label: "plain-markdown", description: "Standard Markdown, no doc framework" }
   - { label: "sphinx-shibuya", description: "Sphinx with Shibuya theme" }
+  - { label: "odoc", description: "OCaml documentation via odoc" }
   - { label: "Type something else", description: "Enter a custom doc system name" }
   - { label: "Chat about this", description: "Discuss doc system options" }
 
 - **"mkdocs-material":** Record selection.
 - **"plain-markdown":** Record selection.
 - **"sphinx-shibuya":** Record selection.
+- **"odoc":** Record selection.
 - **"Type something else":** Ask in plain text for the doc system name. Then:
   1. Normalize the name to lowercase-hyphenated form (e.g., "Docusaurus" -> "docusaurus", "VitePress" -> "vitepress").
   2. Check if `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/{name}.md` exists using Glob:
@@ -272,7 +274,7 @@ Present the detected doc system from the Project Detection Results above as the 
        Record as doc_system. Proceed to Step 2b.3 (Scaffold Check).
 - **"Chat about this":** Explain what each doc system means for formatting output. After discussion, re-present the question.
 
-For built-in frameworks (mkdocs-material, plain-markdown, sphinx-shibuya) selected from the standard options (not "Type something else"), set `framework_root` = `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults`.
+For built-in frameworks (mkdocs-material, plain-markdown, sphinx-shibuya, odoc) selected from the standard options (not "Type something else"), set `framework_root` = `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults`.
 
 #### 2b.3: Scaffold Check
 
@@ -287,9 +289,10 @@ After doc system selection, check whether the project already has a framework co
    - Use Glob to check if `{config_filename}` exists in the project root (e.g., `mkdocs.yml` for mkdocs-material).
 
 3. **If config file NOT found (full scaffold mode):**
-   - Check if `{framework_root}/scaffolds/{doc_system}.yml` (or `.js`, `.yaml`, `.toml`, `.py` variants) exists.
+   - Check if `{framework_root}/scaffolds/{doc_system}.yml` (or `.js`, `.yaml`, `.toml`, `.py` variants) exists. Also check if `{framework_root}/scaffolds/{doc_system}/` directory exists (for multi-file scaffolds like odoc).
    - **If scaffold template exists:**
      a. Read the scaffold template.
+     For directory scaffolds (`scaffolds/{doc_system}/` exists): read each template file in the directory. Process template variable substitution on each file. The scaffold directory contains files that map to project locations (e.g., `doc_dune.sexp` -> `doc/dune`, `index.mld` -> `doc/index.mld`). For multi-library projects (detected from Q1), also instantiate secondary templates (`secondary_dune.sexp`, `secondary_index.mld`) for each non-primary package.
      b. Infer `site_name` from the project's package manifest (pyproject.toml `name` field, package.json `name` field, Cargo.toml `[package] name`, or README.md first heading). If not found, ask the user in plain text: "What is the project name for the documentation site?"
      c. Infer `site_description` from the package manifest `description` field. If not found, ask the user in plain text: "One-sentence description for the documentation site:"
      d. Replace `{site_name}` and `{site_description}` template variables in the scaffold content.
@@ -315,9 +318,10 @@ After doc system selection, check whether the project already has a framework co
 
 4. **If config file FOUND (diff-against-defaults mode):**
    - Read the existing config file from the project root.
-   - Check if `{framework_root}/scaffolds/{doc_system}.yml` (or `.js`, `.yaml`, `.toml`, `.py` variants) exists.
+   - Check if `{framework_root}/scaffolds/{doc_system}.yml` (or `.js`, `.yaml`, `.toml`, `.py` variants) exists. Also check if `{framework_root}/scaffolds/{doc_system}/` directory exists (for multi-file scaffolds like odoc).
    - **If scaffold template exists:**
      a. Read the scaffold template (opinionated defaults).
+     For directory scaffolds (`scaffolds/{doc_system}/` exists): read each template file in the directory. Compare each template against the corresponding project file to identify missing features or stanzas. Present gaps as a combined list across all template files.
      b. Compare: identify features, extensions, and plugins in the scaffold template that are ABSENT from the existing config. Use Grep on the existing config to check for each feature listed in the scaffold.
      c. If gaps found, present as AskUserQuestion:
         - header: "Extras"

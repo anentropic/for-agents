@@ -67,7 +67,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **P11-01**: sphinx-shibuya Q&A data file exists in defaults/ with Detection section (conf.py) and 3 questions (navigation, API reference, sphinx-design features)
 - [x] **P11-02**: sphinx-shibuya guidance file exists in defaults/ with opinionated RST writing preferences mirroring mkdocs-material.md structure
-- [x] **P11-03**: conf.py scaffold template exists in defaults/scaffolds/ with Shibuya theme, nav_links for Diataxis tabs, autoapi, napoleon, intersphinx, and sphinx-design extensions
+- [ ] **P11-03**: conf.py scaffold template exists in defaults/scaffolds/ with Shibuya theme, nav_links for Diataxis tabs, autoapi, napoleon, intersphinx, and sphinx-design extensions
 - [x] **P11-04**: Setup skill SKILL.md lists sphinx-shibuya as a selectable built-in doc system option in Step 2b
 - [x] **P11-05**: Guidance file covers all four sphinx-design component groups (grids+cards, tab sets, dropdowns, badges+buttons) with curated use-case rules
 - [x] **P11-06**: Guidance file covers sphinx-autoapi integration: autoapi replaces Reference tab, Google docstring convention, Author agent must not write manual reference pages
@@ -146,28 +146,28 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INTG-03 | Phase 5 | Complete |
 | INTG-04 | Phase 5 | Complete |
 | INTG-05 | Phase 5 | Complete |
-| P10-01 | Phase 10 | Planned |
-| P10-02 | Phase 10 | Planned |
-| P10-03 | Phase 10 | Planned |
-| P10-04 | Phase 10 | Planned |
-| P10-05 | Phase 10 | Planned |
-| P10-06 | Phase 10 | Planned |
-| P10-07 | Phase 10 | Planned |
-| P10-08 | Phase 10 | Planned |
-| P11-01 | Phase 11 | Planned |
-| P11-02 | Phase 11 | Planned |
-| P11-03 | Phase 11 | Planned |
-| P11-04 | Phase 11 | Planned |
-| P11-05 | Phase 11 | Planned |
-| P11-06 | Phase 11 | Planned |
-| P12-01 | Phase 12 | Planned |
-| P12-02 | Phase 12 | Planned |
-| P12-03 | Phase 12 | Planned |
-| P12-04 | Phase 12 | Planned |
-| P12-05 | Phase 12 | Planned |
-| P12-06 | Phase 12 | Planned |
-| P12-07 | Phase 12 | Planned |
-| P12-08 | Phase 12 | Planned |
+| P10-01 | Phase 10 | Complete |
+| P10-02 | Phase 10 | Complete |
+| P10-03 | Phase 10 | Complete |
+| P10-04 | Phase 10 | Complete |
+| P10-05 | Phase 10 | Complete |
+| P10-06 | Phase 10 | Complete |
+| P10-07 | Phase 10 | Complete |
+| P10-08 | Phase 10 | Complete |
+| P11-01 | Phase 11 | Complete |
+| P11-02 | Phase 11 | Complete |
+| P11-03 | Phase 13 | Pending |
+| P11-04 | Phase 11 | Complete |
+| P11-05 | Phase 11 | Complete |
+| P11-06 | Phase 11 | Complete |
+| P12-01 | Phase 12 | Complete |
+| P12-02 | Phase 12 | Complete |
+| P12-03 | Phase 12 | Complete |
+| P12-04 | Phase 12 | Complete |
+| P12-05 | Phase 12 | Complete |
+| P12-06 | Phase 12 | Complete |
+| P12-07 | Phase 12 | Complete |
+| P12-08 | Phase 12 | Complete |
 
 **Coverage:**
 - v1 requirements: 50 total

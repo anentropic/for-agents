@@ -200,7 +200,15 @@ Plans:
 **Plans:** 4/4 plans complete
 
 Plans:
-- [ ] 12-01-PLAN.md -- Bats test scaffold (P12-01 through P12-08) in RED state
-- [ ] 12-02-PLAN.md -- Q&A data file (odoc.qa.md) and directory-based scaffold templates (scaffolds/odoc/)
-- [ ] 12-03-PLAN.md -- Comprehensive guidance file (odoc.md) absorbing ocaml-odoc-guide skill content
-- [ ] 12-04-PLAN.md -- Setup skill integration (SKILL.md: option, handler, built-in list, directory scaffold support) and full validation
+- [x] 12-01-PLAN.md -- Bats test scaffold (P12-01 through P12-08) in RED state (completed 2026-03-19)
+- [x] 12-02-PLAN.md -- Q&A data file (odoc.qa.md) and directory-based scaffold templates (scaffolds/odoc/) (completed 2026-03-19)
+- [x] 12-03-PLAN.md -- Comprehensive guidance file (odoc.md) absorbing ocaml-odoc-guide skill content (completed 2026-03-19)
+- [x] 12-04-PLAN.md -- Setup skill integration (SKILL.md: option, handler, built-in list, directory scaffold support) and full validation (completed 2026-03-19)
+
+### Phase 13: Scaffold variable substitution fix and doc-researcher improvements
+
+**Goal:** Close the P11-03 blocker (sphinx-shibuya conf.py generated with unsubstituted template variables) and improve doc-researcher quality for new frameworks
+**Requirements**: P11-03
+**Depends on:** Phase 12
+**Gap Closure:** Closes P11-03 from v1.0-MILESTONE-AUDIT.md + MISSING-01 and MISSING-02 tech debt
+**Plans:** TBD (run /gsd:plan-phase 13 to break down)

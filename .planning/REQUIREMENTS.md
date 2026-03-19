@@ -72,6 +72,17 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **P11-05**: Guidance file covers all four sphinx-design component groups (grids+cards, tab sets, dropdowns, badges+buttons) with curated use-case rules
 - [x] **P11-06**: Guidance file covers sphinx-autoapi integration: autoapi replaces Reference tab, Google docstring convention, Author agent must not write manual reference pages
 
+### Odoc Framework for OCaml Projects
+
+- [ ] **P12-01**: odoc.qa.md exists in defaults/ with Detection section (doc/dune) and 3 questions (library structure, author scope, guide pages)
+- [ ] **P12-02**: odoc.md exists in defaults/ with all required sections (code blocks, .mld structure, .mli comments, cross-references, file naming, dune wiring, multi-package, build validation, quality checklist)
+- [ ] **P12-03**: scaffolds/odoc/ directory exists with 4 template files (doc_dune.sexp, index.mld, secondary_dune.sexp, secondary_index.mld)
+- [ ] **P12-04**: Setup skill SKILL.md lists odoc as a selectable built-in doc system option in Step 2b
+- [ ] **P12-05**: odoc.md contains cross-reference syntax rules from ocaml-odoc-guide (within-package, cross-package HTML URLs, section refs)
+- [ ] **P12-06**: odoc.md contains quality checklist adapted from ocaml-odoc-guide (without diataxis/humanizer mandates)
+- [ ] **P12-07**: odoc.qa.md Q3 includes follow-on sub-topic question structure with dynamic scan instructions (not static option lists)
+- [ ] **P12-08**: SKILL.md built-in frameworks list includes odoc and scaffold check supports directory scaffolds
+
 ## v2 Requirements
 
 Deferred to future release. Tracked but not in current roadmap.
@@ -149,12 +160,20 @@ Which phases cover which requirements. Updated during roadmap creation.
 | P11-04 | Phase 11 | Planned |
 | P11-05 | Phase 11 | Planned |
 | P11-06 | Phase 11 | Planned |
+| P12-01 | Phase 12 | Planned |
+| P12-02 | Phase 12 | Planned |
+| P12-03 | Phase 12 | Planned |
+| P12-04 | Phase 12 | Planned |
+| P12-05 | Phase 12 | Planned |
+| P12-06 | Phase 12 | Planned |
+| P12-07 | Phase 12 | Planned |
+| P12-08 | Phase 12 | Planned |
 
 **Coverage:**
-- v1 requirements: 42 total
-- Mapped to phases: 42
+- v1 requirements: 50 total
+- Mapped to phases: 50
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-03*
-*Last updated: 2026-03-18 after Phase 11 planning -- added P11-01 through P11-06*
+*Last updated: 2026-03-19 after Phase 12 planning -- added P12-01 through P12-08*

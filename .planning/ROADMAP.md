@@ -129,7 +129,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -144,6 +144,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 9. Enhanced Setup Q&A + Researcher | 3/3 | Complete    | 2026-03-17 |
 | 10. Framework Scaffolding + Unknown Framework Research | 3/3 | Complete    | 2026-03-17 |
 | 11. Sphinx/Shibuya Framework Support | 2/2 | Complete    | 2026-03-18 |
+| 12. Odoc Framework for OCaml | 0/4 | Planned     | - |
 
 ### Phase 8: doc-writer skills polish
 
@@ -190,3 +191,16 @@ Plans:
 Plans:
 - [ ] 11-01-PLAN.md -- Q&A data file (sphinx-shibuya.qa.md) and conf.py scaffold template (sphinx-shibuya.py)
 - [ ] 11-02-PLAN.md -- Guidance file (sphinx-shibuya.md) and setup skill integration (SKILL.md update)
+
+### Phase 12: Odoc Framework for OCaml Projects
+
+**Goal:** Add odoc as a built-in supported framework in the doc-writer plugin -- on equal footing with mkdocs-material and sphinx-shibuya. Delivers odoc.qa.md (Q&A with follow-on sub-topic questions), odoc.md (comprehensive guidance absorbing ocaml-odoc-guide skill), scaffolds/odoc/ (directory-based dune + .mld templates), and SKILL.md updated to list odoc as a selectable doc system.
+**Requirements**: P12-01, P12-02, P12-03, P12-04, P12-05, P12-06, P12-07, P12-08
+**Depends on:** Phase 11
+**Plans:** 4 plans
+
+Plans:
+- [ ] 12-01-PLAN.md -- Bats test scaffold (P12-01 through P12-08) in RED state
+- [ ] 12-02-PLAN.md -- Q&A data file (odoc.qa.md) and directory-based scaffold templates (scaffolds/odoc/)
+- [ ] 12-03-PLAN.md -- Comprehensive guidance file (odoc.md) absorbing ocaml-odoc-guide skill content
+- [ ] 12-04-PLAN.md -- Setup skill integration (SKILL.md: option, handler, built-in list, directory scaffold support) and full validation

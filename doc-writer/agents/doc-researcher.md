@@ -1,7 +1,7 @@
 ---
 name: doc-researcher
 description: Enriches setup configuration into expanded context for downstream agents. Produces .doc-writer/context.md from config.yaml and codebase analysis.
-tools: Read, Write, Glob, Grep, Bash
+tools: Read, Write, Glob, Grep, Bash, WebFetch
 model: inherit
 ---
 
@@ -115,11 +115,11 @@ For the chosen tone, generate concrete writing rules:
 
 ### Framework Preferences
 
-If `doc_system` is `mkdocs-material` or `plain-markdown`:
+If the project has a framework config file (e.g., `mkdocs.yml`, `conf.py`, `doc/dune`):
 
-1. Read the framework config file detected during the scan (e.g. `mkdocs.yml`).
-2. Note which features are enabled (from `mkdocs.yml` extensions/plugins or equivalent).
-3. Generate usage guidance for each detected feature: when to use it, how to use it, and what it looks like in markdown.
+1. Read the framework config file detected during the scan.
+2. Note which features are enabled (from the config file's extensions, plugins, or equivalent stanzas).
+3. Generate usage guidance for each detected feature: when to use it, how to use it, and what it looks like in the framework's markup language.
 4. Note features NOT detected (absent from config) as "Features NOT to Use" -- agents should not generate syntax for features the project has not enabled.
 
 ---

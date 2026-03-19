@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Phase 12 context gathered
-last_updated: "2026-03-19T09:06:58.460Z"
-last_activity: "2026-03-18 — Completed 11-02: Sphinx/Shibuya guidance verified and setup skill updated"
+status: in-progress
+stopped_at: Completed 12-01 validation scaffold
+last_updated: "2026-03-19T10:59:17.840Z"
+last_activity: "2026-03-19 — Completed 12-01: Phase 12 validation scaffold (8 bats stubs in RED state)"
 progress:
   total_phases: 12
   completed_phases: 11
-  total_plans: 21
-  completed_plans: 21
-  percent: 100
+  total_plans: 25
+  completed_plans: 22
+  percent: 88
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-02)
 
 **Core value:** Produce library documentation that the project author can publish with minimal tweaks — docs written from the end user's perspective, not the builder's.
-**Current focus:** Phase 11 -- Sphinx/Shibuya doc framework support (complete)
+**Current focus:** Phase 12 -- Odoc framework for OCaml projects
 
 ## Current Position
 
-Phase: 11 of 11 (Sphinx/Shibuya Doc Framework Support)
-Plan: 2 of 2 in current phase
-Status: Complete — all Phase 11 plans executed
-Last activity: 2026-03-18 — Completed 11-02: Sphinx/Shibuya guidance verified and setup skill updated
+Phase: 12 of 12 (Odoc Framework for OCaml Projects)
+Plan: 1 of 4 in current phase
+Status: In progress — Plan 12-01 complete (validation scaffold)
+Last activity: 2026-03-19 — Completed 12-01: Phase 12 validation scaffold (8 bats stubs in RED state)
 
-Progress: [██████████] 100%
+Progress: [█████████░] 88%
 
 ## Performance Metrics
 
@@ -71,6 +71,7 @@ Progress: [██████████] 100%
 | Phase 10 P03 | 3 | 2 tasks | 1 files |
 | Phase 11 P01 | 2 | 2 tasks | 2 files |
 | Phase 11 P02 | 3 | 2 tasks | 1 files |
+| Phase 12 P01 | 1 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -145,6 +146,7 @@ Recent decisions affecting current work:
 - [11-01]: napoleon_google_docstring = True for consistency with mkdocstrings in mkdocs-material
 - [11-02]: sphinx-shibuya.md already created by Plan 11-01 -- verified all 20 acceptance criteria pass, no changes needed
 - [11-02]: SKILL.md modified with exactly 3 touch points: option, handler, built-in frameworks list
+- [12-01]: Used portable PROJECT_ROOT pattern (BATS_TEST_FILENAME-relative) instead of hardcoded path for repo-agnostic test execution
 
 ### Roadmap Evolution
 
@@ -175,6 +177,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-19T09:06:58.456Z
-Stopped at: Phase 12 context gathered
-Resume file: .planning/phases/12-add-odoc-framework-for-ocaml-projects/12-CONTEXT.md
+Last session: 2026-03-19T10:58:37Z
+Stopped at: Completed 12-01 validation scaffold
+Resume file: .planning/phases/12-add-odoc-framework-for-ocaml-projects/12-01-SUMMARY.md

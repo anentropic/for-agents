@@ -129,7 +129,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12 → 13
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -145,6 +145,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 10. Framework Scaffolding + Unknown Framework Research | 3/3 | Complete    | 2026-03-17 |
 | 11. Sphinx/Shibuya Framework Support | 2/2 | Complete    | 2026-03-18 |
 | 12. Odoc Framework for OCaml | 4/4 | Complete    | 2026-03-19 |
+| 13. Scaffold Variable Fix + Doc-Researcher | 0/3 | Planned    | - |
 
 ### Phase 8: doc-writer skills polish
 
@@ -211,4 +212,9 @@ Plans:
 **Requirements**: P11-03
 **Depends on:** Phase 12
 **Gap Closure:** Closes P11-03 from v1.0-MILESTONE-AUDIT.md + MISSING-01 and MISSING-02 tech debt
-**Plans:** TBD (run /gsd:plan-phase 13 to break down)
+**Plans:** 3 plans
+
+Plans:
+- [ ] 13-01-PLAN.md -- Bats test scaffold (P11-03, MISSING-01, MISSING-02) in RED state (10 tests)
+- [ ] 13-02-PLAN.md -- Generic variable inference table in SKILL.md Step 2b.3 (closes P11-03)
+- [ ] 13-03-PLAN.md -- Add WebFetch to doc-researcher tools + expand Framework Preferences conditional (closes MISSING-01, MISSING-02)

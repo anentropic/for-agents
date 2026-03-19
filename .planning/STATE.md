@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: in-progress
-stopped_at: Completed 12-01 validation scaffold
-last_updated: "2026-03-19T10:59:17.840Z"
-last_activity: "2026-03-19 — Completed 12-01: Phase 12 validation scaffold (8 bats stubs in RED state)"
+status: executing
+stopped_at: Completed 12-02 odoc Q&A and scaffold data files
+last_updated: "2026-03-19T11:04:23.849Z"
+last_activity: "2026-03-19 — Completed 12-02: Odoc Q&A data file + scaffolds/odoc/ directory with 4 template files"
 progress:
   total_phases: 12
   completed_phases: 11
   total_plans: 25
-  completed_plans: 22
-  percent: 88
+  completed_plans: 23
+  percent: 92
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-03-02)
 ## Current Position
 
 Phase: 12 of 12 (Odoc Framework for OCaml Projects)
-Plan: 1 of 4 in current phase
-Status: In progress — Plan 12-01 complete (validation scaffold)
-Last activity: 2026-03-19 — Completed 12-01: Phase 12 validation scaffold (8 bats stubs in RED state)
+Plan: 2 of 4 in current phase
+Status: In progress — Plan 12-02 complete (odoc Q&A and scaffold data files)
+Last activity: 2026-03-19 — Completed 12-02: Odoc Q&A data file + scaffolds/odoc/ directory with 4 template files
 
-Progress: [█████████░] 88%
+Progress: [█████████░] 92%
 
 ## Performance Metrics
 
@@ -72,6 +72,7 @@ Progress: [█████████░] 88%
 | Phase 11 P01 | 2 | 2 tasks | 2 files |
 | Phase 11 P02 | 3 | 2 tasks | 1 files |
 | Phase 12 P01 | 1 | 1 tasks | 1 files |
+| Phase 12 P02 | 2 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -147,6 +148,9 @@ Recent decisions affecting current work:
 - [11-02]: sphinx-shibuya.md already created by Plan 11-01 -- verified all 20 acceptance criteria pass, no changes needed
 - [11-02]: SKILL.md modified with exactly 3 touch points: option, handler, built-in frameworks list
 - [12-01]: Used portable PROJECT_ROOT pattern (BATS_TEST_FILENAME-relative) instead of hardcoded path for repo-agnostic test execution
+- [Phase 12]: Config file: doc/dune (NOT dune-project) to avoid false positive detection since every OCaml project has dune-project
+- [Phase 12]: Follow-on sub-topic questions define scan instructions and question template but NOT static option lists -- options generated dynamically at setup time
+- [Phase 12]: Directory-based scaffold with 4 separate template files for primary and secondary package variants (new pattern alongside single-file scaffolds)
 
 ### Roadmap Evolution
 
@@ -177,6 +181,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-19T10:58:37Z
-Stopped at: Completed 12-01 validation scaffold
-Resume file: .planning/phases/12-add-odoc-framework-for-ocaml-projects/12-01-SUMMARY.md
+Last session: 2026-03-19T11:04:23.846Z
+Stopped at: Completed 12-02 odoc Q&A and scaffold data files
+Resume file: None

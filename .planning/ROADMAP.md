@@ -144,7 +144,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 9. Enhanced Setup Q&A + Researcher | 3/3 | Complete    | 2026-03-17 |
 | 10. Framework Scaffolding + Unknown Framework Research | 3/3 | Complete    | 2026-03-17 |
 | 11. Sphinx/Shibuya Framework Support | 2/2 | Complete    | 2026-03-18 |
-| 12. Odoc Framework for OCaml | 1/4 | In Progress|  |
+| 12. Odoc Framework for OCaml | 3/4 | In Progress|  |
 
 ### Phase 8: doc-writer skills polish
 
@@ -197,7 +197,7 @@ Plans:
 **Goal:** Add odoc as a built-in supported framework in the doc-writer plugin -- on equal footing with mkdocs-material and sphinx-shibuya. Delivers odoc.qa.md (Q&A with follow-on sub-topic questions), odoc.md (comprehensive guidance absorbing ocaml-odoc-guide skill), scaffolds/odoc/ (directory-based dune + .mld templates), and SKILL.md updated to list odoc as a selectable doc system.
 **Requirements**: P12-01, P12-02, P12-03, P12-04, P12-05, P12-06, P12-07, P12-08
 **Depends on:** Phase 11
-**Plans:** 1/4 plans executed
+**Plans:** 3/4 plans executed
 
 Plans:
 - [ ] 12-01-PLAN.md -- Bats test scaffold (P12-01 through P12-08) in RED state

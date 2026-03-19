@@ -74,13 +74,13 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Odoc Framework for OCaml Projects
 
-- [ ] **P12-01**: odoc.qa.md exists in defaults/ with Detection section (doc/dune) and 3 questions (library structure, author scope, guide pages)
+- [x] **P12-01**: odoc.qa.md exists in defaults/ with Detection section (doc/dune) and 3 questions (library structure, author scope, guide pages)
 - [ ] **P12-02**: odoc.md exists in defaults/ with all required sections (code blocks, .mld structure, .mli comments, cross-references, file naming, dune wiring, multi-package, build validation, quality checklist)
-- [ ] **P12-03**: scaffolds/odoc/ directory exists with 4 template files (doc_dune.sexp, index.mld, secondary_dune.sexp, secondary_index.mld)
+- [x] **P12-03**: scaffolds/odoc/ directory exists with 4 template files (doc_dune.sexp, index.mld, secondary_dune.sexp, secondary_index.mld)
 - [ ] **P12-04**: Setup skill SKILL.md lists odoc as a selectable built-in doc system option in Step 2b
 - [ ] **P12-05**: odoc.md contains cross-reference syntax rules from ocaml-odoc-guide (within-package, cross-package HTML URLs, section refs)
 - [ ] **P12-06**: odoc.md contains quality checklist adapted from ocaml-odoc-guide (without diataxis/humanizer mandates)
-- [ ] **P12-07**: odoc.qa.md Q3 includes follow-on sub-topic question structure with dynamic scan instructions (not static option lists)
+- [x] **P12-07**: odoc.qa.md Q3 includes follow-on sub-topic question structure with dynamic scan instructions (not static option lists)
 - [ ] **P12-08**: SKILL.md built-in frameworks list includes odoc and scaffold check supports directory scaffolds
 
 ## v2 Requirements

@@ -1,0 +1,9 @@
+{
+  "name": "doc-writer",
+  "description": "Multi-agent documentation writer — Author, Editor, and User Persona agents collaborate to produce publication-quality library docs",
+  "version": "1.0.0",
+  "author": {
+    "name": "Paul"
+  },
+  "keywords": ["documentation", "writing", "multi-agent", "diataxis"]
+}

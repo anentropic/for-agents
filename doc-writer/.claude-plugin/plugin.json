@@ -1,0 +1,11 @@
+{
+  "name": "doc-writer",
+  "version": "1.0.0",
+  "description": "AI-powered library documentation generator. Produces audience-calibrated, Diataxis-structured docs via a full Author > Editor > Persona pipeline.",
+  "author": {
+    "name": "Your Name"
+  },
+  "homepage": "https://github.com/you/doc-writer-agent",
+  "repository": "https://github.com/you/doc-writer-agent",
+  "license": "MIT"
+}

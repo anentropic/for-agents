@@ -1,97 +1,46 @@
 # Roadmap: Doc Writer Agent
 
-## Overview
+## Milestones
 
-Five phases, each delivering one complete, testable capability. The sequence is dictated by hard architectural dependencies: config must exist before agents can run, Doc Author must produce real drafts before Editor can review them, and User Persona must be built last when the full pipeline is stable enough to validate against. The final phase wires up the user-facing commands and GSD integration that turn the proven pipeline into a distributable plugin.
+- ✅ **v1.0 Doc Writer Plugin** — Phases 1-13 (shipped 2026-03-19)
 
 ## Phases
 
-**Phase Numbering:**
-- Integer phases (1, 2, 3): Planned milestone work
-- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+<details>
+<summary>✅ v1.0 Doc Writer Plugin (Phases 1-13) — SHIPPED 2026-03-19</summary>
 
-Decimal phases appear between their surrounding integers in numeric order.
+- [x] Phase 1: Foundation and Setup (2/2 plans) — completed 2026-03-03
+- [x] Phase 2: Doc Author Agent (1/1 plans) — completed 2026-03-03
+- [x] Phase 3: Editor Agent (1/1 plans) — completed 2026-03-03
+- [x] Phase 4: User Persona and Full Pipeline (1/1 plans) — completed 2026-03-03
+- [x] Phase 5: Integration and Commands (2/2 plans) — completed 2026-03-04
+- [x] Phase 6: Cross-Phase Integration Cleanup (1/1 plans) — completed 2026-03-15
+- [x] Phase 7: Doc-Writer Plugin Packaging (3/3 plans) — completed 2026-03-15
+- [x] Phase 8: Doc-Writer Skills Polish (2/2 plans) — completed 2026-03-16
+- [x] Phase 9: Enhanced Setup Q&A + Researcher (3/3 plans) — completed 2026-03-17
+- [x] Phase 10: Framework Scaffolding + Unknown Framework Research (3/3 plans) — completed 2026-03-17
+- [x] Phase 11: Sphinx/Shibuya Framework Support (2/2 plans) — completed 2026-03-18
+- [x] Phase 12: Odoc Framework for OCaml (4/4 plans) — completed 2026-03-19
+- [x] Phase 13: Scaffold Variable Fix + Doc-Researcher Improvements (3/3 plans) — completed 2026-03-19
 
-- [ ] **Phase 1: Foundation and Setup** - Config system, skill files, and plugin structure — the prerequisite everything else depends on
-- [ ] **Phase 2: Doc Author Agent** - The content generator: diataxis-structured, audience-calibrated, internal-detail-free docs with working code examples
-- [ ] **Phase 3: Editor Agent** - Quality enforcement: humanizer pass, terminology consistency, structured feedback, doc-system formatting
-- [ ] **Phase 4: User Persona and Full Pipeline** - Perspective-shifted validation, full Author > Editor > Persona pipeline with revision loop and exit conditions
-- [ ] **Phase 5: Integration and Commands** - User-facing commands (/doc:write, /doc:review, /doc:edit), GSD integration, and gap detection
+Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
-## Phase Details
-
-### Phase 1: Foundation and Setup
-**Goal**: Project authors can configure the plugin for their project and everything the agents need to function is in place
-**Depends on**: Nothing (first phase)
-**Requirements**: SETUP-01, SETUP-02, SETUP-03, SETUP-04, SETUP-05
-**Success Criteria** (what must be TRUE):
-  1. Project author runs `/doc:setup` and answers Q&A prompts about their audience(s); a valid `doc-writer.config.json` is written to their project
-  2. Config persists across sessions — re-running setup on the same project updates rather than overwrites audience definitions and custom rules
-  3. Universal quality rules are in place as shared skill files; doc-system-specific guidance exists as separate editable `.md` files selectable during setup
-  4. Project author can add custom quality rules to `doc-writer.config.json` and the config schema validates them
-  5. Audience Q&A answer determines how many End-User Persona agents will be instantiated (one per configured audience)
-**Plans:** 2 plans
-
-Plans:
-- [ ] 01-01-PLAN.md -- Plugin scaffold, manifest, quality-rules skill, diataxis skill, agent stubs
-- [ ] 01-02-PLAN.md -- Setup skill with Q&A, auto-detection, config template, guidance files, default rules
-
-### Phase 2: Doc Author Agent
-**Goal**: The Doc Author agent produces diataxis-structured, audience-calibrated, internal-detail-free library documentation with working code examples
-**Depends on**: Phase 1
-**Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, AUTH-06, AUTH-07, AUTH-08, AUTH-09
-**Success Criteria** (what must be TRUE):
-  1. Doc Author classifies each page as tutorial, how-to, reference, or explanation before writing and applies the correct structural template for that type
-  2. All pages of the same doc type use consistent structure — a reader opening two how-to guides sees the same section layout
-  3. Generated docs contain no references to test utilities, CI config, dev scripts, justfile recipes, or other maintainer-internal concerns
-  4. Doc Author reads the selected doc-system guidance file and produces output using that system's syntax (admonitions, frontmatter, directives)
-  5. README.md and MAINTAINER.md are generated from their own templates with appropriate audience framing; code examples are working and realistic, not pseudocode stubs
-**Plans**: TBD
-
-### Phase 3: Editor Agent
-**Goal**: The Editor agent reviews Doc Author output and produces humanized, terminology-consistent, publication-quality docs with structured feedback
-**Depends on**: Phase 2
-**Requirements**: EDIT-01, EDIT-02, EDIT-03, EDIT-04
-**Success Criteria** (what must be TRUE):
-  1. All inline `code` mentions in prose are linked to the relevant API Reference entry after an Editor pass
-  2. Editor's humanizer pass removes recognizable AI-writing patterns — prose reads as if written by a senior developer, not a language model
-  3. Editor identifies and corrects terminology inconsistencies across files — the same concept uses the same name everywhere in the doc set
-  4. Editor produces structured feedback in BLOCKING / SUGGESTION / NITPICK format with page, section, description, and fix for every issue
-**Plans**: TBD
-
-### Phase 4: User Persona and Full Pipeline
-**Goal**: User Persona agents validate docs from the end user's perspective and the full Author > Editor > Persona pipeline runs with a bounded revision loop
-**Depends on**: Phase 3
-**Requirements**: PERS-01, PERS-02, PERS-03, PERS-04, PERS-05
-**Success Criteria** (what must be TRUE):
-  1. User Persona generates 3-5 concrete, goal-oriented user journey scenarios from project context without any manual authoring by the project author
-  2. Each scenario is tested by attempting to accomplish a goal using only the generated docs — not by checking a criteria list
-  3. Every scenario produces a clear PASS, FAIL, or PARTIAL verdict with specific gap identification; FAIL means a user goal cannot be achieved, not merely that something is imperfect
-  4. The pipeline revision loop terminates: only BLOCKING issues trigger revision passes, a maximum of 2-3 passes runs before convergence failure is escalated to the user
-  5. When two or more audiences are configured, a separate User Persona agent runs for each audience in parallel, producing independent verdicts
-**Plans**: TBD
-
-### Phase 5: Integration and Commands
-**Goal**: Project authors can invoke the full pipeline on demand, review existing docs, make targeted edits, and use the plugin from a GSD workflow
-**Depends on**: Phase 4
-**Requirements**: INTG-01, INTG-02, INTG-03, INTG-04, INTG-05
-**Success Criteria** (what must be TRUE):
-  1. Project author runs `/doc:write` and the full Author > Editor > Persona pipeline executes and writes publication-ready docs to the doc root
-  2. Project author runs `/doc:review` on an existing doc set and receives a structured report of issues from Editor and User Persona without generating new content
-  3. Project author runs `/doc:edit` targeting a specific page or issue and receives a revised version of only that scope
-  4. Plugin is invokable at GSD milestone boundaries — project authors using GSD can trigger doc generation as part of their milestone workflow
-  5. Gap detection runs as part of `/doc:write` and reports public API surface items that have no corresponding documentation
-**Plans**: TBD
+</details>
 
 ## Progress
 
-**Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
-
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Foundation and Setup | 0/2 | Planned | - |
-| 2. Doc Author Agent | 0/TBD | Not started | - |
-| 3. Editor Agent | 0/TBD | Not started | - |
-| 4. User Persona and Full Pipeline | 0/TBD | Not started | - |
-| 5. Integration and Commands | 0/TBD | Not started | - |
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1. Foundation and Setup | v1.0 | 2/2 | Complete | 2026-03-03 |
+| 2. Doc Author Agent | v1.0 | 1/1 | Complete | 2026-03-03 |
+| 3. Editor Agent | v1.0 | 1/1 | Complete | 2026-03-03 |
+| 4. User Persona and Full Pipeline | v1.0 | 1/1 | Complete | 2026-03-03 |
+| 5. Integration and Commands | v1.0 | 2/2 | Complete | 2026-03-04 |
+| 6. Cross-Phase Integration Cleanup | v1.0 | 1/1 | Complete | 2026-03-15 |
+| 7. Doc-Writer Plugin Packaging | v1.0 | 3/3 | Complete | 2026-03-15 |
+| 8. Doc-Writer Skills Polish | v1.0 | 2/2 | Complete | 2026-03-16 |
+| 9. Enhanced Setup Q&A + Researcher | v1.0 | 3/3 | Complete | 2026-03-17 |
+| 10. Framework Scaffolding + Unknown Framework | v1.0 | 3/3 | Complete | 2026-03-17 |
+| 11. Sphinx/Shibuya Framework Support | v1.0 | 2/2 | Complete | 2026-03-18 |
+| 12. Odoc Framework for OCaml | v1.0 | 4/4 | Complete | 2026-03-19 |
+| 13. Scaffold Variable Fix + Doc-Researcher | v1.0 | 3/3 | Complete | 2026-03-19 |

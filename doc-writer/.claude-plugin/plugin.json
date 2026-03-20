@@ -1,7 +1,7 @@
 {
   "name": "doc-writer",
-  "version": "1.0.0",
-  "description": "AI-powered library documentation generator. Produces audience-calibrated, Diataxis-structured docs via a full Author > Editor > Persona pipeline.",
+  "version": "1.1.0",
+  "description": "AI-powered library documentation generator. Produces persona-calibrated, Diataxis-structured docs via a full Author > Editor > Persona pipeline.",
   "author": {
     "name": "Your Name"
   },

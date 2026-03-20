@@ -21,11 +21,11 @@ Never respond to these selections with another AskUserQuestion.
 ## Pre-Flight
 
 1. Read `.doc-writer/config.yaml`. If the file does not exist, tell the user:
-   "No configuration found. Run `/doc-writer:setup` first to configure audiences, doc system, and paths."
+   "No configuration found. Run `/doc-writer:setup` first to configure user personas, doc system, and paths."
    Then **stop** -- do not proceed with the pipeline.
 
 2. Extract these values from config:
-   - `audiences` (array -- note the count for Persona spawning)
+   - `user_personas` (array -- note the count for User Tester spawning)
    - `doc_system` (string)
    - `paths.source_root` (string)
    - `paths.docs_root` (string)
@@ -87,7 +87,7 @@ Spawn the doc-author agent to generate documentation.
 
 Use the Agent tool to spawn `doc-author` with this message:
 
-> Generate documentation for this project. Read `.doc-writer/config.yaml` for audience and paths configuration. Read `.doc-writer/gap-report.md` for undocumented symbols to prioritize in your coverage.
+> Generate documentation for this project. Read `.doc-writer/config.yaml` for persona and paths configuration. Read `.doc-writer/gap-report.md` for undocumented symbols to prioritize in your coverage.
 
 **Revision pass delegation** (when returning here from Step 5):
 
@@ -121,17 +121,17 @@ Wait for the Editor agent to complete before proceeding.
 
 ## Step 4: Persona Evaluation
 
-For each audience defined in `config.audiences`, spawn a separate doc-persona agent.
+For each persona defined in `config.user_personas`, spawn a separate doc-user-tester agent.
 
-**For each audience, use the Agent tool to spawn `doc-persona` with this message:**
+**For each persona, use the Agent tool to spawn `doc-user-tester` with this message:**
 
-> Evaluate the documentation as the '{audience_name}' audience.
+> Evaluate the documentation as the '{persona_name}' persona.
 
-If there are multiple audiences, spawn each Persona agent sequentially. Each produces an independent report:
-- Single audience: `.doc-writer/persona-report.md`
-- Multiple audiences: `.doc-writer/persona-report-{audience_name_slug}.md`
+If there are multiple personas, spawn each Persona agent sequentially. Each produces an independent report:
+- Single persona: `.doc-writer/persona-report.md`
+- Multiple personas: `.doc-writer/persona-report-{persona_name_slug}.md`
 
-Where `{audience_name_slug}` is the audience name lowercased with spaces replaced by hyphens.
+Where `{persona_name_slug}` is the persona name lowercased with spaces replaced by hyphens.
 
 **Important on revision passes:** Do NOT instruct the Persona to generate new scenarios. It will reuse existing scenarios from `.doc-writer/scenarios.yaml` automatically.
 
@@ -141,11 +141,11 @@ Wait for all Persona agents to complete before proceeding.
 
 ## Step 5: Verdict Check and Revision Routing
 
-After all Persona evaluations complete, read all persona report files and collect verdicts for every scenario across all audiences.
+After all Persona evaluations complete, read all persona report files and collect verdicts for every scenario across all personas.
 
 ### Routing Logic
 
-**Case A: All PASS across all audiences**
+**Case A: All PASS across all personas**
 - If there are any PARTIAL verdicts from earlier passes that were deferred, go to Step 6 (PARTIAL Approval).
 - Otherwise, go to Step 7 (Summary Report).
 
@@ -153,9 +153,9 @@ After all Persona evaluations complete, read all persona report files and collec
 1. Extract FAIL details from persona reports:
    - Which pages failed
    - What specific gaps or issues were identified
-   - Which audience(s) reported the failure
+   - Which persona(s) reported the failure
 2. Increment `pass_count` by 1.
-3. Compile the targeted page list from all FAIL verdicts across all audiences.
+3. Compile the targeted page list from all FAIL verdicts across all personas.
 4. Return to **Step 2** (Author) with the revision pass delegation, passing the page list and fail details.
 5. Then proceed through **Step 3** (Editor on changed pages) and **Step 4** (Persona with reused scenarios).
 6. Return here to re-evaluate verdicts.
@@ -171,7 +171,7 @@ After {pass_count} passes, the following issues could not be resolved automatica
 ### Remaining FAILs
 
 {For each FAIL verdict:}
-- **Audience:** {audience_name}
+- **Audience:** {persona_name}
 - **Scenario:** {scenario_id} -- {goal}
 - **Page:** {page_path}
 - **Issue:** {what failed and why}
@@ -182,19 +182,19 @@ After {pass_count} passes, the following issues could not be resolved automatica
 These issues may require manual intervention. Consider:
 1. Reviewing the flagged pages directly
 2. Running `/doc-writer:edit` with specific instructions
-3. Adjusting audience definitions in `/doc-writer:setup` if expectations are miscalibrated
+3. Adjusting persona definitions in `/doc-writer:setup` if expectations are miscalibrated
 ```
 
 - After presenting the escalation, proceed to Step 6 if there are PARTIAL verdicts, or Step 7 if not.
 
-**Case D: Only PARTIAL verdicts (no FAIL across any audience)**
+**Case D: Only PARTIAL verdicts (no FAIL across any persona)**
 - Go to Step 6 (PARTIAL Approval).
 
 ---
 
 ## Step 6: PARTIAL Approval
 
-Collect all PARTIAL fix suggestions from all persona reports across all audiences.
+Collect all PARTIAL fix suggestions from all persona reports across all personas.
 
 Use AskUserQuestion to present them for approval:
 - header: "Approve"
@@ -244,8 +244,8 @@ Present a completion summary to the project author:
 - Cross-reference updates: {count}
 
 ### Persona Verdicts
-{For each audience:}
-**{audience_name}:**
+{For each persona:}
+**{persona_name}:**
 {For each scenario:}
 - {scenario_id}: {verdict} -- {one-line summary}
 

@@ -28,7 +28,7 @@ Follow these steps in order. Complete each step before moving to the next.
    - **If missing:** Tell the user: "No doc-writer configuration found. Run `/doc-writer:setup` first to configure your project." Stop.
 
 2. Extract from config:
-   - `audiences` array
+   - `user_personas` array
    - `paths.docs_root`
    - `paths.source_root`
 
@@ -108,7 +108,7 @@ Use the Agent tool to spawn `doc-author` with this delegation message:
 > {For freeform instructions:}
 > - **Instruction:** {user's freeform text}
 >
-> Revise only the listed pages. Apply your standard quality rules and audience calibration from the config.
+> Revise only the listed pages. Apply your standard quality rules and persona calibration from the config.
 
 Wait for the Author agent to complete. Note which pages were modified.
 

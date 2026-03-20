@@ -32,8 +32,8 @@ All inline `code` mentions in prose must be linked to the relevant API Reference
 
 **What violation looks like:** A tutorial mentions `client.connect()` in a paragraph but the text is plain inline code with no link to the `connect()` reference page. An explanation discusses the `RetryPolicy` class without linking to its reference entry. Code mentions are formatted as inline code but serve as dead ends rather than navigation points.
 
-## Rule 5: Audience-Calibrated Language
+## Rule 5: Persona-Calibrated Language
 
-Vocabulary, assumed knowledge, and explanation depth must match the configured audience. Never assume knowledge listed in the audience's `never_assume` list. If the audience is "beginner Python developers," do not skip over virtual environment setup or assume familiarity with async patterns. If the audience is "advanced systems programmers," do not over-explain basic memory management concepts. The calibration comes from the project's `.doc-writer/config.yaml` audience definition.
+Vocabulary, assumed knowledge, and explanation depth must match the configured user persona. Never assume knowledge listed in the persona's `never_assume` list. If the persona is "beginner Python developers," do not skip over virtual environment setup or assume familiarity with async patterns. If the persona is "advanced systems programmers," do not over-explain basic memory management concepts. The calibration comes from the project's `.doc-writer/config.yaml` user persona definition.
 
 **What violation looks like:** Documentation for beginners uses jargon without definition — "memoize the callback" assumes the reader knows what memoization means. Documentation for advanced users spends three paragraphs explaining what a function is. A never-assume item like "database ORMs" is referenced without explanation in a getting-started guide.

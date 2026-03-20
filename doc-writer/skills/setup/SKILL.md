@@ -33,7 +33,7 @@ First, check whether this project already has a doc-writer configuration:
 1. Use Glob to check if `.doc-writer/config.yaml` exists.
 
 2. **If `$ARGUMENTS` contains `--refresh-context`:**
-   - Verify `.doc-writer/config.yaml` exists. If it does not, tell the user: "No configuration found. Run `/doc-writer:setup` first to configure audiences, doc system, and paths." Stop.
+   - Verify `.doc-writer/config.yaml` exists. If it does not, tell the user: "No configuration found. Run `/doc-writer:setup` first to configure user personas, doc system, and paths." Stop.
    - Skip all Q&A. Jump directly to Step 5 (Context Enrichment) to re-run the researcher.
    - Stop after Step 5 completes.
 
@@ -57,7 +57,7 @@ First, check whether this project already has a doc-writer configuration:
      ```
      ## Current Configuration
 
-     **Audiences:**
+     **User Personas:**
      1. [name] (skill_level)
         - Assumed knowledge: [list]
         - Never assume: [list]
@@ -72,7 +72,7 @@ First, check whether this project already has a doc-writer configuration:
      - header: "Update"
      - question: "What would you like to update in your doc-writer configuration?"
      - options:
-       - { label: "Audiences", description: "Edit, add, or remove target audiences" }
+       - { label: "User Personas", description: "Edit, add, or remove user personas" }
        - { label: "Tone", description: "Change documentation writing tone (currently: {tone})" }
        - { label: "Doc system", description: "Change documentation system (currently: {doc_system})" }
        - { label: "Paths", description: "Change docs root or source root directories" }
@@ -80,7 +80,7 @@ First, check whether this project already has a doc-writer configuration:
        - { label: "Done", description: "Finish updating configuration" }
        - { label: "Type something else", description: "Describe a different change" }
        - { label: "Chat about this", description: "Discuss configuration options" }
-   - **"Audiences":** Jump to Step 4 audiences handling.
+   - **"User Personas":** Jump to Step 4 persona handling.
    - **"Tone":** Jump to Step 2a.5 (Tone Selection). After tone is updated, write updated config and return to re-run menu.
    - **"Doc system":** Jump to Step 4 doc system handling.
    - **"Paths":** Jump to Step 4 paths handling.
@@ -96,137 +96,120 @@ First, check whether this project already has a doc-writer configuration:
 
 Run through these questions interactively. Wait for user response after each question before proceeding to the next.
 
-#### 2a: Audience Definition
+#### 2a: User Persona Definition
 
-Ask the user to define their primary audience. Each field is collected individually using infer+suggest AskUserQuestion interactions, except where noted as freeform.
+Before asking any questions, display this introduction:
 
-**Audience name** -- freeform (too specific to infer):
+```
+## User Personas
 
-Ask the user in plain text:
-"Who is the primary audience for this library's documentation? Describe them in a short phrase (e.g., 'Python developers building REST APIs', 'DevOps engineers managing Kubernetes clusters')."
+Before writing docs, we define who will read them. A **User Persona** captures
+your reader's background, skill level, and goals. The pipeline uses it to
+calibrate language, generate test scenarios, and validate that docs actually
+work for real people.
 
-**Skill level** -- infer+suggest AskUserQuestion:
+You can define multiple personas if you have distinct audiences (e.g., end
+users vs. contributors). Most projects need just one.
+```
 
-Using the Project Detection Results and README content, infer 2-3 likely skill levels. Mark the most likely as Recommended.
-
-Use AskUserQuestion:
-- header: "Skill level"
-- question: "What skill level should docs target for {audience_name}?"
-- options:
-  - { label: "{inferred level} (Recommended)", description: "{why this fits based on project signals}" }
-  - { label: "{alternative level}", description: "{brief description}" }
-  - { label: "{alternative level}", description: "{brief description}" }
-  - { label: "Type something else", description: "Describe a different skill level" }
-  - { label: "Chat about this", description: "Discuss what skill levels mean for docs" }
-
-Example inference logic:
-- README mentions "getting started" prominently, uses simple examples -> suggest Intermediate (Recommended)
-- Heavy type hints, abstract patterns, no tutorial content -> suggest Advanced (Recommended)
-- Explicit "for beginners" in README or package description -> suggest Beginner (Recommended)
-
-**Assumed knowledge** -- infer+suggest multiSelect AskUserQuestion:
-
-Using dependencies, README, and code patterns, infer 3-5 knowledge areas the audience likely has. All pre-selected by default.
-
-Use AskUserQuestion:
-- header: "Assumed"
-- question: "What can {audience_name} be assumed to already know? Deselect items they might NOT know."
-- multiSelect: true
-- options:
-  - { label: "{knowledge area 1} (Recommended)", description: "{specific description}" }
-  - { label: "{knowledge area 2}", description: "{specific description}" }
-  - { label: "{knowledge area 3}", description: "{specific description}" }
-  - { label: "{knowledge area 4}", description: "{specific description}" }
-  - { label: "Type something else", description: "Add a different knowledge area" }
-  - { label: "Chat about this", description: "Discuss assumed knowledge" }
-
-Example inference logic:
-- Python project with requests dependency -> "HTTP/REST APIs" as assumed knowledge
-- TypeScript project -> "TypeScript basics" and "npm/Node.js" as assumed knowledge
-- Has CLI entrypoint -> "Command-line usage" as assumed knowledge
-- Uses async/await patterns -> "Async programming" as assumed knowledge
-
-**Never assume** -- infer+suggest multiSelect AskUserQuestion:
-
-Infer 3-5 topics that should always be explained, based on project complexity and common confusion points.
-
-Use AskUserQuestion:
-- header: "Explain"
-- question: "What must ALWAYS be explained for {audience_name}? These topics will never be assumed as prior knowledge."
-- multiSelect: true
-- options:
-  - { label: "{topic 1} (Recommended)", description: "{why this needs explanation}" }
-  - { label: "{topic 2}", description: "{why this needs explanation}" }
-  - { label: "{topic 3}", description: "{why this needs explanation}" }
-  - { label: "Type something else", description: "Add a different topic" }
-  - { label: "Chat about this", description: "Discuss what needs explanation" }
-
-Example inference logic:
-- Library has custom config format -> "Configuration syntax" as never-assume
-- Library uses non-standard patterns -> those patterns as never-assume
-- Library has specific terminology -> that terminology as never-assume
-
-**Domain context** -- infer+suggest AskUserQuestion:
-
-Using README and package description, infer 2-4 domain context options.
-
-Use AskUserQuestion:
-- header: "Domain"
-- question: "What problem domain does {audience_name} work in?"
-- options:
-  - { label: "{inferred domain 1} (Recommended)", description: "{expanded description}" }
-  - { label: "{inferred domain 2}", description: "{expanded description}" }
-  - { label: "Type something else", description: "Describe a different domain" }
-  - { label: "Chat about this", description: "Discuss domain context" }
-
-**User persona tasks** -- infer+suggest multiSelect AskUserQuestion:
-
-Using the codebase scan (public API surface, README examples, test patterns), infer 3-5 common tasks users perform with this library.
-
-Use AskUserQuestion:
-- header: "Tasks"
-- question: "What tasks does {audience_name} typically perform with this library? These inform User Persona scenario generation."
-- multiSelect: true
-- options:
-  - { label: "{task 1}", description: "{brief context}" }
-  - { label: "{task 2}", description: "{brief context}" }
-  - { label: "{task 3}", description: "{brief context}" }
-  - { label: "{task 4}", description: "{brief context}" }
-  - { label: "Type something else", description: "Add a different task" }
-  - { label: "Chat about this", description: "Discuss common user tasks" }
-
-Example inference logic:
-- Rate-limiting library -> "Set up rate limiting", "Configure per-route limits", "Handle 429 responses", "Monitor rate limit usage"
-- HTTP client library -> "Make API requests", "Handle authentication", "Configure retries", "Process response data"
-
-**Discovery story** -- freeform (too specific to infer):
+**Step 1: Freeform description**
 
 Ask the user in plain text:
-"How would a typical {audience_name} discover this library? (e.g., 'searching for a Python HTTP client that handles retries', 'recommended by a colleague for rate limiting'). This helps the User Persona generate realistic scenarios. Press Enter to skip."
 
-**Adding more audiences:**
+"Describe your first user persona -- who are they, what do they already know, and what are they trying to do with this library? Write as much or as little as you want.
 
-After completing all fields for the primary audience, use AskUserQuestion:
-- header: "Audiences"
-- question: "Do you have a secondary audience? (e.g., contributors vs. end users)"
+Things you might cover (but just write naturally):
+- Their role and skill level
+- What they can be assumed to already know
+- What should always be explained
+- What problem domain they work in
+- Common tasks they perform with this library
+- How they discovered it"
+
+Wait for the user's freeform response.
+
+**Step 2: Extract structured fields**
+
+From the user's freeform response, extract these fields:
+
+- `name`: a short descriptive label for this persona (e.g., "Python developers building REST APIs")
+- `skill_level`: beginner, intermediate, advanced, or expert
+- `assumed_knowledge`: list of things this persona already knows
+- `never_assume`: list of things that must always be explained
+- `domain_context`: the problem space they work in
+- `user_tasks`: common tasks they perform with this library
+- `discovery_story`: how they found the library
+
+For any field the user did not mention, infer a value using the Project Detection Results and README content. Use the same inference logic as the examples below:
+
+Skill level inference:
+- README mentions "getting started" prominently, uses simple examples -> Intermediate
+- Heavy type hints, abstract patterns, no tutorial content -> Advanced
+- Explicit "for beginners" in README or package description -> Beginner
+
+Assumed knowledge inference:
+- Python project with requests dependency -> "HTTP/REST APIs"
+- TypeScript project -> "TypeScript basics" and "npm/Node.js"
+- Has CLI entrypoint -> "Command-line usage"
+- Uses async/await patterns -> "Async programming"
+
+Never-assume inference:
+- Library has custom config format -> "Configuration syntax"
+- Library uses non-standard patterns -> those patterns
+- Library has specific terminology -> that terminology
+
+User tasks inference:
+- Rate-limiting library -> "Set up rate limiting", "Configure per-route limits", "Handle 429 responses"
+- HTTP client library -> "Make API requests", "Handle authentication", "Configure retries"
+
+**Step 3: Confirm the persona**
+
+Present the extracted persona as a formatted summary:
+
+```
+### {name}
+
+**Skill level:** {skill_level}
+**Assumed knowledge:** {comma-separated list}
+**Always explain:** {comma-separated list}
+**Domain:** {domain_context}
+**Tasks:** {comma-separated list}
+**Discovery:** {discovery_story}
+```
+
+Use AskUserQuestion:
+- header: "Persona"
+- question: "Does this capture your user persona?"
 - options:
-  - { label: "Add audience", description: "Define another target audience" }
+  - { label: "Looks good", description: "Save this persona and continue" }
+  - { label: "Edit", description: "Change specific fields" }
+  - { label: "Chat about this", description: "Discuss what these fields mean and how they're used" }
+
+- **"Looks good":** Save the persona and continue.
+- **"Edit":** Ask in plain text which fields to change. Update accordingly, then re-present the summary.
+- **"Chat about this":** Explain how personas flow through the pipeline -- the User Tester agent generates scenarios from `user_tasks` and `discovery_story`, validates docs against `assumed_knowledge` and `never_assume`, and calibrates expectations to `skill_level`. After discussion, re-present the question.
+
+**Step 4: Additional personas**
+
+After confirming the persona, use AskUserQuestion:
+- header: "Personas"
+- question: "Add another user persona? (e.g., contributors, ops engineers)"
+- options:
+  - { label: "Add persona", description: "Define another target persona" }
   - { label: "No, continue", description: "Move on to tone selection" }
-  - { label: "Type something else", description: "Describe your audience setup differently" }
-  - { label: "Chat about this", description: "Discuss audience configuration" }
+  - { label: "Chat about this", description: "Discuss when multiple personas are useful" }
 
-- **"Add audience":** Repeat the audience definition questions (name, skill level, assumed knowledge, never assume, domain context, user tasks, discovery story) using the same infer+suggest pattern. After collecting answers, ask again if there are more audiences.
+- **"Add persona":** Repeat Steps 1-3 for the new persona. After confirming, ask again if there are more.
 - **"No, continue":** Proceed to Step 2a.5 (Tone Selection).
-- **"Type something else":** Ask in plain text. User may want to modify the primary audience just defined or describe a non-standard setup.
-- **"Chat about this":** Explain how multiple audiences affect the pipeline (separate Persona agents per audience, independent verdicts). After discussion, re-present the question.
+- **"Chat about this":** Explain how multiple personas affect the pipeline (separate User Tester agents per persona, independent verdicts). After discussion, re-present the question.
 
-Continue offering additional audiences until the user selects "No, continue" or indicates they are done.
+Continue offering additional personas until the user selects "No, continue" or indicates they are done.
 
-Store all audiences in an array -- even if only one audience is configured, it must be stored as a single-element array.
+Store all user personas in an array -- even if only one persona is configured, it must be stored as a single-element array.
 
 #### 2a.5: Tone Selection
 
-After audience definition is complete (all audiences collected), present tone selection.
+After user persona definition is complete (all personas collected), present tone selection.
 
 Use AskUserQuestion:
 - header: "Tone"
@@ -402,7 +385,7 @@ After Q&A completes, create the project configuration:
 
 1. **Create `.doc-writer/` directory** if it does not exist.
 
-2. **Write `.doc-writer/config.yaml`** -- Read the config template from `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/config-template.yaml` and populate it with the Q&A answers. The config MUST use `audiences:` as an array, even for a single audience. Include the `detected:` section with auto-detection results from the Project Detection Results above. The config MUST include `tone: "{selected_tone}"` as a top-level field. Each audience entry MUST include `user_tasks: [{selected_tasks}]`.
+2. **Write `.doc-writer/config.yaml`** -- Read the config template from `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/config-template.yaml` and populate it with the Q&A answers. The config MUST use `user_personas:` as an array, even for a single persona. Include the `detected:` section with auto-detection results from the Project Detection Results above. The config MUST include `tone: "{selected_tone}"` as a top-level field. Each persona entry MUST include `user_tasks: [{selected_tasks}]`.
 
 3. **Copy the selected guidance file:**
    - Read `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/{doc_system}.md`
@@ -419,7 +402,7 @@ After Q&A completes, create the project configuration:
    ## Setup Complete
 
    Created `.doc-writer/` with:
-   - config.yaml -- [N] audience(s), tone: {tone}, doc system: [system], paths configured
+   - config.yaml -- [N] user persona(s), tone: {tone}, doc system: [system], paths configured
    - [doc_system].md -- Documentation system guidance (editable)
    - rules.md -- Project-specific rules template (editable)
 
@@ -432,16 +415,16 @@ This section handles field-by-field editing when an existing config is detected.
 
 Based on user selection from Step 1:
 
-- **`audiences`** (from "Audiences" selection above): Show current audiences. Use AskUserQuestion:
-  - header: "Audiences"
-  - question: "What would you like to do with your audience configuration?"
+- **`user_personas`** (from "User Personas" selection above): Show current personas. Use AskUserQuestion:
+  - header: "Personas"
+  - question: "What would you like to do with your user persona configuration?"
   - options:
-    - { label: "Edit audience", description: "Modify an existing audience's settings" }
-    - { label: "Add audience", description: "Define a new target audience" }
-    - { label: "Remove audience", description: "Delete an existing audience" }
-    - { label: "Type something else", description: "Describe a different audience change" }
-    - { label: "Chat about this", description: "Discuss audience configuration" }
-  - Handle each selection with plain-text follow-ups as needed (which audience to edit/remove, new audience details).
+    - { label: "Edit persona", description: "Modify an existing persona's settings" }
+    - { label: "Add persona", description: "Define a new user persona" }
+    - { label: "Remove persona", description: "Delete an existing persona" }
+    - { label: "Type something else", description: "Describe a different persona change" }
+    - { label: "Chat about this", description: "Discuss persona configuration" }
+  - Handle each selection with plain-text follow-ups as needed (which persona to edit/remove, new persona details).
   - Write updated config preserving all other fields.
 
 - **`tone`** (from "Tone" selection above): Present the tone selection AskUserQuestion (same as Step 2a.5). Write updated config preserving all other fields.
@@ -466,7 +449,7 @@ After file creation (Step 3) completes, or when triggered by --refresh-context o
 
 Use the Agent tool to spawn `doc-researcher` with this message:
 
-> Enrich the project configuration. Read `.doc-writer/config.yaml` for audiences, tone, and doc system. Scan the codebase (README, source files, framework config) and produce `.doc-writer/context.md` with expanded audience guidance, project domain summary, tone-specific writing rules, and framework usage preferences.
+> Enrich the project configuration. Read `.doc-writer/config.yaml` for user personas, tone, and doc system. Scan the codebase (README, source files, framework config) and produce `.doc-writer/context.md` with expanded persona guidance, project domain summary, tone-specific writing rules, and framework usage preferences.
 >
 > Framework Q&A answers: {framework_answers or "none -- use defaults from framework config detection"}
 
@@ -481,9 +464,9 @@ Both first-time setup and --reset flows end at Step 5. The --refresh-context flo
 
 - All plugin-internal file references use `${CLAUDE_PLUGIN_ROOT}` for portability across different installation locations.
 - The detection script runs automatically via `!`bash`` dynamic context injection when this skill is loaded.
-- Config schema uses `audiences:` (plural, array) -- never `audience:` (singular).
+- Config schema uses `user_personas:` (array) -- even for a single persona.
 - Guidance files are opinionated preferences, not syntax references. Agents already understand doc system syntax.
 - Rules in `.doc-writer/rules.md` are additive to universal quality rules -- they extend but cannot override the baseline.
 - `tone` field in config.yaml stores a label; expanded writing rules live in `.doc-writer/context.md`.
-- `user_tasks` on each audience entry stores the user's selections; expanded task descriptions live in `context.md`.
+- `user_tasks` on each persona entry stores the user's selections; expanded task descriptions live in `context.md`.
 - The researcher agent is spawned at the end of every setup flow (first-time, --reset, --refresh-context) to ensure context.md is always current.

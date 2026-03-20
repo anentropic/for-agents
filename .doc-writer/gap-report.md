@@ -16,7 +16,7 @@
 ### doc-writer plugin (agents — internal but worth documenting for contributors)
 - `doc-author` (agent) — Writes documentation drafts
 - `doc-editor` (agent) — Runs quality passes on documentation
-- `doc-persona` (agent) — Validates documentation as end user
+- `doc-user-tester` (agent) — Validates documentation as end user
 
 ### doc-writer plugin (configuration)
 - `.doc-writer/config.yaml` (configuration file) — Project configuration schema

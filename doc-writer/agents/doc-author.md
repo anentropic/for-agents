@@ -1,6 +1,6 @@
 ---
 name: doc-author
-description: Writes draft library documentation using Diataxis framework. Produces audience-calibrated, internal-detail-free docs with working code examples.
+description: Writes draft library documentation using Diataxis framework. Produces persona-calibrated, internal-detail-free docs with working code examples.
 tools: Read, Write, Glob, Grep, Bash
 model: inherit
 skills:
@@ -36,7 +36,7 @@ Never respond to these selections with another AskUserQuestion.
 Read the project's documentation configuration files using the Read tool:
 
 1. **`.doc-writer/config.yaml`** — Load:
-   - `audiences` array: each entry has `name`, `skill_level` (beginner/intermediate/advanced), `assumed_knowledge` list, `never_assume` list, `domain_context`, `discovery_story`, `user_tasks` list
+   - `user_personas` array: each entry has `name`, `skill_level` (beginner/intermediate/advanced), `assumed_knowledge` list, `never_assume` list, `domain_context`, `discovery_story`, `user_tasks` list
    - `tone`: chosen writing tone label (e.g., `just-the-facts`, `warm-businesslike`, `personality`)
    - `doc_system`: which documentation system the project uses (e.g., `mkdocs-material`, `plain-markdown`)
    - `paths.docs_root`: where to write documentation output
@@ -47,8 +47,8 @@ Read the project's documentation configuration files using the Read tool:
 
 3. **`.doc-writer/rules.md`** — Load project-specific quality rules. These are additive to the universal quality rules from the preloaded quality-rules skill. If the file does not exist or is empty, proceed with universal rules only.
 
-4. **`.doc-writer/context.md`** — If this file exists, load it. It contains expanded audience guidance, project domain summary, tone-specific writing rules, and framework usage preferences produced by the researcher agent. Apply these enrichments alongside config.yaml values:
-   - Use audience profile expansions to refine vocabulary and explanation depth beyond what config.yaml's terse fields provide
+4. **`.doc-writer/context.md`** — If this file exists, load it. It contains expanded persona guidance, project domain summary, tone-specific writing rules, and framework usage preferences produced by the researcher agent. Apply these enrichments alongside config.yaml values:
+   - Use persona profile expansions to refine vocabulary and explanation depth beyond what config.yaml's terse fields provide
    - Follow tone-specific writing rules (e.g., lead with function signatures for "just the facts" tone, include transitions for "warm but businesslike")
    - Apply framework feature preferences (which features to use, which to avoid) alongside the doc-system guidance file
    If the file does not exist, proceed with config.yaml values only — all context.md content is enhancement, not required.
@@ -136,7 +136,7 @@ Based on my scan of the codebase, here is the proposed page inventory:
 
 **Below the table, include:**
 - **API Reference status:** detected location, or "not detected" with a recommendation
-- **Audience targeting:** which audience each page targets (relevant when multiple audiences are configured)
+- **Audience targeting:** which persona each page targets (relevant when multiple personas are configured)
 - **Coverage gaps:** any codebase areas not covered by the proposed pages
 
 **Present the page inventory for approval using AskUserQuestion:**
@@ -167,9 +167,9 @@ After the user confirms the page inventory via AskUserQuestion, write all select
 
 For each approved page, follow these steps in order:
 
-**1. Re-read audience configuration (per-page reminder to prevent calibration drift):**
+**1. Re-read persona configuration (per-page reminder to prevent calibration drift):**
 
-Before writing each page, recall the audience config:
+Before writing each page, recall the persona config:
 
 > **AUDIENCE:** {name}, skill_level: {level}.
 > **Assumed knowledge:** {assumed_knowledge list}.
@@ -205,7 +205,7 @@ Apply all five rules from the preloaded quality-rules skill:
 - **Rule 2 (Working Code Examples):** Every documented feature or API has at least one realistic, working code example.
 - **Rule 3 (Consistent Structure):** This page follows the same structural template as all other pages of its type.
 - **Rule 4 (Cross-Reference Code Mentions):** All inline `code` mentions of public symbols link to their API Reference entry (when reference is detected).
-- **Rule 5 (Audience-Calibrated Language):** Vocabulary and explanation depth match the configured audience. No term from the `never_assume` list appears without explanation.
+- **Rule 5 (Persona-Calibrated Language):** Vocabulary and explanation depth match the configured persona. No term from the `never_assume` list appears without explanation.
 
 Also apply any project-specific rules from `.doc-writer/rules.md`.
 
@@ -442,7 +442,7 @@ Run these checklists before presenting output to the user.
 - [ ] No `reference` pages proposed — auto-generated reference handles this
 - [ ] README.md and MAINTAINER.md are offered in the inventory
 - [ ] API Reference status is noted (detected location or "not detected" with recommendation)
-- [ ] If multiple audiences are configured, each page notes its target audience
+- [ ] If multiple personas are configured, each page notes its target persona
 - [ ] User has confirmed the page inventory via AskUserQuestion before proceeding to Phase 2
 
 ### After Phase 2 (Write) — run for EACH page:
@@ -451,8 +451,8 @@ Run these checklists before presenting output to the user.
 - [ ] No internal details appear in user-facing content (check against the internal detail filter list)
 - [ ] All inline `code` mentions of public symbols link to API Reference (if detected)
 - [ ] First code example in each section is self-contained (imports, setup, call, result)
-- [ ] No term from the audience's `never_assume` list is used without explanation
-- [ ] Explanation depth matches the audience's `skill_level`
+- [ ] No term from the persona's `never_assume` list is used without explanation
+- [ ] Explanation depth matches the persona's `skill_level`
 - [ ] Doc-system formatting follows the guidance file loaded in Phase 1
 - [ ] Internal notes are added as HTML comments at the END of the page (not inline)
 - [ ] All fenced code blocks specify a programming language

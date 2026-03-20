@@ -111,8 +111,8 @@ setup() {
   [ -f "${PROJECT_ROOT}/doc-writer/agents/doc-editor.md" ]
 }
 
-@test "PKG-05: doc-writer/agents/doc-persona.md exists" {
-  [ -f "${PROJECT_ROOT}/doc-writer/agents/doc-persona.md" ]
+@test "PKG-05: doc-writer/agents/doc-user-tester.md exists" {
+  [ -f "${PROJECT_ROOT}/doc-writer/agents/doc-user-tester.md" ]
 }
 
 # ---------------------------------------------------------------------------

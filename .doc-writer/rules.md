@@ -7,7 +7,7 @@ documentation guidelines.
 ## How Rules Work
 
 - Universal rules (no internal details, working examples, consistent structure,
-  cross-references, audience calibration) are always enforced and cannot be
+  cross-references, persona calibration) are always enforced and cannot be
   overridden.
 - Rules in this file are additive — they add project-specific requirements on
   top of the universal baseline.

@@ -7,7 +7,7 @@ setup() {
 }
 
 # ---------------------------------------------------------------------------
-# SETUP-01: Setup command asks about audiences, persists config
+# SETUP-01: Setup command asks about user personas, persists config
 # ---------------------------------------------------------------------------
 
 @test "SETUP-01: setup SKILL.md exists" {
@@ -18,28 +18,28 @@ setup() {
   [ -f "${PROJECT_ROOT}/doc-writer/skills/setup/defaults/config-template.yaml" ]
 }
 
-@test "SETUP-01: config-template has audiences as array (not singular)" {
-  run grep -n "^audiences:" "${PROJECT_ROOT}/doc-writer/skills/setup/defaults/config-template.yaml"
+@test "SETUP-01: config-template has user_personas as array" {
+  run grep -n "^user_personas:" "${PROJECT_ROOT}/doc-writer/skills/setup/defaults/config-template.yaml"
   [ "$status" -eq 0 ]
-  [[ "$output" == *"audiences:"* ]]
+  [[ "$output" == *"user_personas:"* ]]
 }
 
-@test "SETUP-01: config-template audiences entry has skill_level field" {
+@test "SETUP-01: config-template user_personas entry has skill_level field" {
   run grep "skill_level" "${PROJECT_ROOT}/doc-writer/skills/setup/defaults/config-template.yaml"
   [ "$status" -eq 0 ]
 }
 
-@test "SETUP-01: config-template audiences entry has assumed_knowledge field" {
+@test "SETUP-01: config-template user_personas entry has assumed_knowledge field" {
   run grep "assumed_knowledge" "${PROJECT_ROOT}/doc-writer/skills/setup/defaults/config-template.yaml"
   [ "$status" -eq 0 ]
 }
 
-@test "SETUP-01: config-template audiences entry has never_assume field" {
+@test "SETUP-01: config-template user_personas entry has never_assume field" {
   run grep "never_assume" "${PROJECT_ROOT}/doc-writer/skills/setup/defaults/config-template.yaml"
   [ "$status" -eq 0 ]
 }
 
-@test "SETUP-01: setup SKILL.md asks for audience name field" {
+@test "SETUP-01: setup SKILL.md asks for persona name field" {
   run grep -i "name" "${PROJECT_ROOT}/doc-writer/skills/setup/SKILL.md"
   [ "$status" -eq 0 ]
 }
@@ -64,7 +64,7 @@ setup() {
   [ "$status" -eq 0 ]
 }
 
-@test "SETUP-01: setup SKILL.md instructs to store audiences as array even for single audience" {
+@test "SETUP-01: setup SKILL.md instructs to store user_personas as array even for single persona" {
   run grep -i "array\|single-element\|even if only one" "${PROJECT_ROOT}/doc-writer/skills/setup/SKILL.md"
   [ "$status" -eq 0 ]
 }
@@ -214,29 +214,28 @@ setup() {
 # SETUP-05: Audience Q&A determines persona count
 # ---------------------------------------------------------------------------
 
-@test "SETUP-05: config-template stores audiences as YAML array (dash entry)" {
+@test "SETUP-05: config-template stores user_personas as YAML array (dash entry)" {
   # Must have an array entry (- name: ...) not a scalar
   run grep "^  - name:" "${PROJECT_ROOT}/doc-writer/skills/setup/defaults/config-template.yaml"
   [ "$status" -eq 0 ]
 }
 
-@test "SETUP-05: setup SKILL.md asks about secondary audience" {
-  run grep -i "secondary audience\|secondary\|additional audience" "${PROJECT_ROOT}/doc-writer/skills/setup/SKILL.md"
+@test "SETUP-05: setup SKILL.md asks about additional personas" {
+  run grep -i "additional persona\|Add persona\|another user persona" "${PROJECT_ROOT}/doc-writer/skills/setup/SKILL.md"
   [ "$status" -eq 0 ]
 }
 
-@test "SETUP-05: setup SKILL.md has loop logic for multiple audiences" {
+@test "SETUP-05: setup SKILL.md has loop logic for multiple personas" {
   run grep -i "continue\|loop\|until.*no\|repeat\|additional" "${PROJECT_ROOT}/doc-writer/skills/setup/SKILL.md"
   [ "$status" -eq 0 ]
 }
 
-@test "SETUP-05: doc-persona agent reads audiences from config" {
-  run grep -i "audiences\|audience\|config.yaml" "${PROJECT_ROOT}/doc-writer/agents/doc-persona.md"
+@test "SETUP-05: doc-user-tester agent reads user_personas from config" {
+  run grep -i "user_personas\|persona\|config.yaml" "${PROJECT_ROOT}/doc-writer/agents/doc-user-tester.md"
   [ "$status" -eq 0 ]
 }
 
-@test "SETUP-05: config-template uses plural audiences key (never singular audience)" {
-  # Must have 'audiences:' key, must NOT have a top-level 'audience:' key
-  run grep "^audience:" "${PROJECT_ROOT}/doc-writer/skills/setup/defaults/config-template.yaml"
-  [ "$status" -ne 0 ]
+@test "SETUP-05: config-template uses user_personas key" {
+  run grep "^user_personas:" "${PROJECT_ROOT}/doc-writer/skills/setup/defaults/config-template.yaml"
+  [ "$status" -eq 0 ]
 }

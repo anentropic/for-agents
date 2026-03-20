@@ -33,7 +33,7 @@ Never respond to these selections with another AskUserQuestion.
    - **If missing:** Tell the user: "No doc-writer configuration found. Run `/doc-writer:setup` first to configure your project." Stop.
 
 3. Extract from config:
-   - `audiences` array (each entry has `name`, `skill_level`)
+   - `user_personas` array (each entry has `name`, `skill_level`)
    - `detected.language` (e.g., `typescript`, `python`)
    - `paths.docs_root` (e.g., `docs/`)
    - `paths.source_root` (e.g., `src/`)
@@ -117,17 +117,17 @@ Wait for the Editor agent to complete before proceeding.
 
 ### Step 3: Persona Evaluation
 
-For each audience in `config.audiences`, spawn a doc-persona agent to evaluate the documentation from that audience's perspective.
+For each persona in `config.user_personas`, spawn a doc-user-tester agent to evaluate the documentation from that persona's perspective.
 
-For each audience entry:
+For each persona entry:
 
-Use the Agent tool to spawn `doc-persona` with this delegation message:
+Use the Agent tool to spawn `doc-user-tester` with this delegation message:
 
-> Evaluate documentation as the '{audience.name}' audience. Read the docs in {paths.docs_root} and run your full three-phase workflow: generate scenarios, simulate user journeys, and produce your report. Write your report to .doc-writer/persona-report-{audience_name_slug}.md.
+> Evaluate documentation as the '{persona.name}' persona. Read the docs in {paths.docs_root} and run your full three-phase workflow: generate scenarios, simulate user journeys, and produce your report. Write your report to .doc-writer/persona-report-{persona_name_slug}.md.
 
-Where `{audience_name_slug}` is the audience name lowercased with spaces replaced by hyphens.
+Where `{persona_name_slug}` is the persona name lowercased with spaces replaced by hyphens.
 
-If there is only one audience, also write to `.doc-writer/persona-report.md` for compatibility.
+If there is only one persona, also write to `.doc-writer/persona-report.md` for compatibility.
 
 Wait for all Persona agents to complete before proceeding.
 
@@ -160,12 +160,12 @@ Note: {If edit_mode is true and user confirmed: "The Editor has applied fixes to
 
 ### Persona Verdicts
 
-**{audience_name}** ({skill_level}):
+**{persona_name}** ({skill_level}):
 | Scenario | Verdict | Notes |
 |----------|---------|-------|
 | {goal}   | {PASS/PARTIAL/FAIL} | {brief note} |
 
-{repeat for each audience}
+{repeat for each persona}
 
 ### Overall Assessment
 {1-2 sentence summary of documentation health}

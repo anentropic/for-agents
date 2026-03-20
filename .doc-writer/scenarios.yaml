@@ -1,0 +1,39 @@
+version: 1
+audiences:
+  - name: "Paul — solo developer building projects with Claude Code and open source libraries"
+    skill_level: "expert"
+    generated_at: "2026-03-16"
+    doc_pages:
+      - "README.md"
+      - "docs/doc-writer.md"
+      - "docs/copilot-review.md"
+    scenarios:
+      - id: S1
+        goal: "I want to install both plugins and get doc-writer running on a new project"
+        starting_point: "README.md"
+        audience_relevance: "Paul starts every new project by wiring up his tooling. This is the first thing he would do after cloning or creating a repo."
+        done_when: "Can identify the install command, run setup, and know which command kicks off documentation generation — with confidence about the order of steps."
+
+      - id: S2
+        goal: "I want to re-run only the persona validation step after manually editing a doc page, without regenerating everything"
+        starting_point: "README.md"
+        audience_relevance: "Paul edits docs by hand sometimes and wants to validate without blowing away his work. Knowing which command does evaluation-only vs full regeneration matters."
+        done_when: "Identifies the correct command and understands that it runs Persona without running Author (i.e., docs are not regenerated)."
+
+      - id: S3
+        goal: "I want to understand what the copilot-review 'wheels' dimension specifically checks for, so I know whether to include it when reviewing AI-generated code"
+        starting_point: "README.md"
+        audience_relevance: "Paul uses Claude Code heavily and suspects AI-generated code patterns in his projects. He wants to know if the wheels dimension is worth running."
+        done_when: "Can articulate what the wheels dimension checks, what it does and does not flag, and whether it is relevant to AI-generated code."
+
+      - id: S4
+        goal: "I want to add a project-specific rule requiring all code examples to include error handling, and understand when that rule takes effect"
+        starting_point: "README.md"
+        audience_relevance: "Paul has strong opinions about error handling in examples. He wants to know how to encode this as a standing rule rather than repeating it as a prompt each time."
+        done_when: "Knows the file to edit, the format to use, and when agents pick up the new rule."
+
+      - id: S5
+        goal: "I want to run a focused copilot-review on just my src/auth/ directory, checking only architecture and error handling, using a faster model"
+        starting_point: "README.md"
+        audience_relevance: "Paul is about to merge a targeted change to the auth module and wants a fast, focused sanity check without paying the full review cost."
+        done_when: "Can construct the exact command with path, --focus flags, and --reasoning or --model flags."

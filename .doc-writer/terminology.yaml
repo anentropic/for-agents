@@ -1,0 +1,25 @@
+version: 1
+
+source_terms: []
+
+proper_nouns:
+  - canonical: "GitHub Copilot CLI"
+    variants: []
+    notes: "Full product name; 'Copilot' is acceptable as shorthand within a page after first use"
+  - canonical: "GitHub"
+    variants: ["Github"]
+  - canonical: "Diataxis"
+    variants: []
+
+project_terms:
+  - canonical: "plugin"
+    variants: ["skill"]
+    notes: "Both doc-writer and copilot-review are referred to as plugins (the install mechanism is /plugin install). 'skill' is the internal SKILL.md file type but not the user-facing term."
+  - canonical: "Doc Author"
+    variants: []
+  - canonical: "Doc Editor"
+    variants: []
+  - canonical: "Doc Persona"
+    variants: []
+
+overrides: {}

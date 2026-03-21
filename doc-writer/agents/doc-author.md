@@ -300,6 +300,26 @@ When the library supports multiple formats, languages, or configuration styles:
 
 **All fenced code blocks MUST specify the programming language.** Never use bare triple backticks.
 
+### Mermaid Diagram Awareness
+
+When writing explanation pages, how-to guides with multi-step processes, or any content that describes flows, states, or relationships, consider whether a mermaid diagram would help the reader understand the concept faster than prose alone.
+
+**Diagram type selection:**
+
+| Content Area | Diagram Type | When to Use |
+|-------------|-------------|-------------|
+| API request/response flows, multi-step interactions | `sequenceDiagram` | Shows temporal ordering of messages between participants |
+| Decision trees, process flows, pipelines | `flowchart` (or `graph TD`/`graph LR`) | Shows branching logic and directional flow |
+| Lifecycle states, state machines, status transitions | `stateDiagram-v2` | Shows states and transitions between them |
+| Type hierarchies, module relationships, data models | `classDiagram` | Shows structural relationships and inheritance |
+
+**Rules:**
+- Read the mermaid syntax from the doc-system guidance file (`.doc-writer/{doc_system}.md`). Do NOT hardcode mermaid wrapper syntax -- each framework uses a different format.
+- Use diagrams to supplement prose, not replace it. A diagram without surrounding explanation is as unhelpful as a code block without context.
+- Place diagrams near the concept they illustrate -- after the introductory paragraph, before the detailed breakdown.
+- Keep diagrams focused: 3-8 nodes for flowcharts, 2-4 participants for sequence diagrams. Busy diagrams confuse more than they clarify.
+- Not every page needs a diagram. Use them for concepts that involve flow, state, or structure. Straightforward API usage docs rarely benefit from diagrams.
+
 ---
 
 ## Section 4: README Template
@@ -457,6 +477,7 @@ Run these checklists before presenting output to the user.
 - [ ] Internal notes are added as HTML comments at the END of the page (not inline)
 - [ ] All fenced code blocks specify a programming language
 - [ ] If Python/MkDocs: code blocks follow Black formatting, doctest used where appropriate
+- [ ] Mermaid diagrams use the wrapper syntax from the doc-system guidance file, not hardcoded syntax
 
 ### Anti-Patterns — Do NOT:
 

@@ -55,11 +55,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Each framework guidance file (mkdocs-material, sphinx-shibuya, odoc, plain-markdown) contains a mermaid syntax section with the correct wrapper format for that framework
   4. Sphinx-shibuya scaffold includes sphinxcontrib-mermaid dependency and configuration
   5. Running scan-exports.sh on an OCaml project scans .mli files and extracts public symbols (val, type, module declarations)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 14-01: TBD
-- [ ] 14-02: TBD
+- [ ] 14-01-PLAN.md — Mermaid diagram support: guidance files, scaffold, and doc-author awareness
+- [ ] 14-02-PLAN.md — Concepts page awareness and OCaml scan-exports
 
 ### Phase 15: Navigation Strategies
 **Goal**: Project authors choose from three nav strategies during setup, and both sphinx-shibuya and mkdocs-material render the chosen strategy correctly with section index pages
@@ -128,7 +128,7 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 11. Sphinx/Shibuya Framework Support | v1.0 | 2/2 | Complete | 2026-03-18 |
 | 12. Odoc Framework for OCaml | v1.0 | 4/4 | Complete | 2026-03-19 |
 | 13. Scaffold Variable Fix + Doc-Researcher | v1.0 | 3/3 | Complete | 2026-03-19 |
-| 14. Foundations | v1.4.0 | 0/? | Not started | - |
+| 14. Foundations | v1.4.0 | 0/2 | Not started | - |
 | 15. Navigation Strategies | v1.4.0 | 0/? | Not started | - |
 | 16. Use Cases | v1.4.0 | 0/? | Not started | - |
 | 17. OCaml .mld/.mli Output | v1.4.0 | 0/? | Not started | - |

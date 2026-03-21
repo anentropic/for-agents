@@ -41,7 +41,17 @@ Produce library documentation that the project author can publish with minimal t
 
 ### Active
 
-(None — all v1.0 requirements shipped. See next milestone for v1.1 scope.)
+## Current Milestone: v1.4.0 Content & Navigation
+
+**Goal:** Richer content types (Use Cases, Concepts), smarter nav structure for sphinx-shibuya and mkdocs-material, close OCaml/odoc gaps, and mermaid diagram support.
+
+**Target features:**
+- Use Cases setup Q&A context capture (before User Personas), optional promotion to docs section
+- Default Concepts page proposal under Explanation
+- Sphinx-shibuya nav: three top-tab strategies (none, "Docs" tab, sections-as-tabs with dropdowns), section index abstracts
+- MkDocs-material nav: same top-tab strategies (without dropdowns), section index abstracts
+- Mermaid diagram awareness in doc-author across all frameworks
+- OCaml/odoc: scan-exports.sh language case, doc-author .mld/.mli handling
 
 ### Out of Scope
 
@@ -49,7 +59,7 @@ Produce library documentation that the project author can publish with minimal t
 - Doc site hosting or deployment — this writes content, not infrastructure
 - Non-library docs (blog posts, marketing pages, internal wikis) — scoped to library/package documentation
 - Automated publishing — the maintainer decides when to publish
-- OCaml doc-author .mld/.mli file handling — doc-author writes .md to docs_root; odoc output routing deferred to v2
+- ~~OCaml doc-author .mld/.mli file handling~~ — moved to v1.4.0 Active scope
 
 ## Context
 
@@ -91,4 +101,22 @@ Tech stack: Markdown skill files, bash test scripts (bats), YAML config template
 | doc-researcher agent for context enrichment | Separate agent reads source + framework config, writes context.md before pipeline | ✓ Good — downstream agents get enriched context without doing their own scanning |
 
 ---
-*Last updated: 2026-03-19 after v1.0 milestone*
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd:transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/gsd:complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
+
+---
+*Last updated: 2026-03-21 after v1.4.0 milestone start*

@@ -1,36 +1,34 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: completed
-stopped_at: Completed 13-03-PLAN.md
-last_updated: "2026-03-19T23:43:42.818Z"
-last_activity: "2026-03-19 — Completed 13-03: WebFetch in doc-researcher tools and generic Framework Preferences conditional"
+milestone: v1.4.0
+milestone_name: Content & Navigation
+status: defining_requirements
+stopped_at: null
+last_updated: "2026-03-21"
+last_activity: "2026-03-21 — Milestone v1.4.0 started"
 progress:
-  total_phases: 13
-  completed_phases: 13
-  total_plans: 28
-  completed_plans: 28
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-02)
+See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** Produce library documentation that the project author can publish with minimal tweaks — docs written from the end user's perspective, not the builder's.
-**Current focus:** Phase 13 -- Scaffold variable fix and doc-researcher improvements
+**Current focus:** Defining requirements for v1.4.0
 
 ## Current Position
 
-Phase: 13 of 13 (Scaffold Variable Fix and Doc-Researcher Improvements)
-Plan: 3 of 3 in current phase
-Status: Complete — All phases and plans finished
-Last activity: 2026-03-19 — Completed 13-03: WebFetch in doc-researcher tools and generic Framework Preferences conditional
-
-Progress: [██████████] 100%
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-21 — Milestone v1.4.0 started
 
 ## Performance Metrics
 

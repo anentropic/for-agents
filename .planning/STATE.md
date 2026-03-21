@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.4.0
 milestone_name: Content & Navigation
 status: unknown
-stopped_at: Completed 14-01-PLAN.md
-last_updated: "2026-03-21T23:31:37.993Z"
+stopped_at: Completed 14-02-PLAN.md
+last_updated: "2026-03-21T23:34:50.519Z"
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -47,6 +47,7 @@ Plan: 2 of 2
 
 *Updated after each plan completion*
 | Phase 14 P01 | 2min | 2 tasks | 6 files |
+| Phase 14 P02 | 1min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,8 @@ Recent decisions affecting current work:
 - [Research]: OCaml .mld needs external author-notes.md instead of HTML comments
 - [Phase 14]: Mermaid syntax lives in guidance files, not hardcoded in doc-author prompt -- keeps agent framework-agnostic
 - [Phase 14]: odoc mermaid uses verbatim block + external SVG workaround, not experimental extensions
+- [Phase 14]: Concepts pages use explanation type, not a new concepts type -- aligns with diataxis 4-quadrant model
+- [Phase 14]: OCaml scan-exports scans only .mli files (public interface), not .ml files (implementation)
 
 ### Pending Todos
 
@@ -75,6 +78,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-21T23:31:37.991Z
-Stopped at: Completed 14-01-PLAN.md
+Last session: 2026-03-21T23:34:50.517Z
+Stopped at: Completed 14-02-PLAN.md
 Resume file: None

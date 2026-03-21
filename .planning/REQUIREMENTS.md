@@ -12,7 +12,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [ ] **CONT-01**: Setup Q&A captures use cases before user personas (skippable; infers from persona context if skipped)
 - [ ] **CONT-02**: Use cases stored in config.yaml and expanded in context.md by researcher agent
 - [ ] **CONT-03**: Use cases optionally promoted to a docs section at same level as diataxis quadrants, with typical and advanced cases as pages
-- [ ] **CONT-04**: Author proposes optional Concepts page(s) under Explanation by default, refined in page inventory Q&A
+- [x] **CONT-04**: Author proposes optional Concepts page(s) under Explanation by default, refined in page inventory Q&A
 - [x] **CONT-05**: Author recommends appropriate mermaid diagram types (flowchart, sequence, state, class) based on content area
 
 ### Navigation
@@ -35,7 +35,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### OCaml/Odoc
 
-- [ ] **OCML-01**: scan-exports.sh has OCaml language case scanning .mli files for public symbols (val, type, module)
+- [x] **OCML-01**: scan-exports.sh has OCaml language case scanning .mli files for public symbols (val, type, module)
 - [ ] **OCML-02**: Doc-author writes .mld files with odoc syntax when doc_system is odoc
 - [ ] **OCML-03**: Doc-author registers .mld pages in doc/dune during write pass
 - [ ] **OCML-04**: Doc-author proposes doc comment enrichment for undocumented public values in .mli files
@@ -75,7 +75,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONT-01 | Phase 16 | Pending |
 | CONT-02 | Phase 16 | Pending |
 | CONT-03 | Phase 16 | Pending |
-| CONT-04 | Phase 14 | Pending |
+| CONT-04 | Phase 14 | Complete |
 | CONT-05 | Phase 14 | Complete |
 | NAV-01 | Phase 15 | Pending |
 | NAV-02 | Phase 15 | Pending |
@@ -89,7 +89,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MERM-02 | Phase 14 | Complete |
 | MERM-03 | Phase 14 | Complete |
 | MERM-04 | Phase 14 | Complete |
-| OCML-01 | Phase 14 | Pending |
+| OCML-01 | Phase 14 | Complete |
 | OCML-02 | Phase 17 | Pending |
 | OCML-03 | Phase 17 | Pending |
 | OCML-04 | Phase 17 | Pending |

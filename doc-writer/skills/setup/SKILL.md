@@ -458,7 +458,20 @@ After the researcher completes, display the updated confirmation:
    - context.md -- Expanded context for downstream agents (editable)
 ```
 
-Both first-time setup and --reset flows end at Step 5. The --refresh-context flow jumps directly to Step 5 and stops after.
+For --refresh-context flows: Stop here. Do not show next steps.
+
+For first-time setup and --reset flows, display this guidance after the confirmation:
+
+```
+## Next Steps
+
+Setup is complete. To generate documentation:
+
+1. Run `/clear` to free up context
+2. Run `/doc-writer:write` to start the documentation pipeline
+
+You can also run `/doc-writer:review` to audit existing docs without generating new ones.
+```
 
 ## Notes
 

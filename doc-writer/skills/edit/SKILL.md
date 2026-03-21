@@ -1,6 +1,6 @@
 ---
 name: doc-writer:edit
-description: Make targeted fixes to documentation based on report issues or freeform instructions.
+description: Fix specific documentation issues from report findings or freeform instructions. Targeted changes only — no full pipeline.
 disable-model-invocation: true
 allowed-tools: Agent, Read, Write, Glob, Grep
 argument-hint: "[issue description or page path]"

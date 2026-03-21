@@ -465,12 +465,13 @@ For first-time setup and --reset flows, display this guidance after the confirma
 ```
 ## Next Steps
 
-Setup is complete. To generate documentation:
+Setup is complete. Choose your next command:
 
-1. Run `/clear` to free up context
-2. Run `/doc-writer:write` to start the documentation pipeline
+- `/doc-writer:write` — Generate docs (new project) or add docs for new features (existing project)
+- `/doc-writer:review` — Audit existing docs for quality and coverage gaps
+- `/doc-writer:edit` — Fix specific issues from a prior review
 
-You can also run `/doc-writer:review` to audit existing docs without generating new ones.
+Run `/clear` first to free up context, then run your chosen command.
 ```
 
 ## Notes

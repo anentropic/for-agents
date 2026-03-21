@@ -1,6 +1,6 @@
 ---
 name: doc-writer:write
-description: Generate new documentation using the full Author > Editor > Persona pipeline with gap detection, revision loop, and quality validation.
+description: Generate or update documentation. Auto-detects existing docs — creates from scratch for new projects, or adds coverage for undocumented features while leaving existing pages untouched.
 disable-model-invocation: true
 allowed-tools: Agent, Read, Write, Glob, Grep, Bash
 argument-hint: "[--skip-gap-scan]"
@@ -8,7 +8,12 @@ argument-hint: "[--skip-gap-scan]"
 
 # Doc Writer: Full Pipeline
 
-You are orchestrating the doc-writer documentation pipeline. Follow these steps exactly in order. Do NOT use `context: fork`. Do NOT commit any generated documentation -- leave all changes uncommitted for the project author to review.
+You are orchestrating the doc-writer documentation pipeline. This pipeline operates in two modes:
+
+- **Create mode:** No existing docs found — generates documentation from scratch using the full Author > Editor > Persona pipeline with revision loops.
+- **Update mode:** Existing docs detected — runs gap detection to find undocumented symbols, then generates documentation for only the new features while leaving existing pages untouched.
+
+The mode is auto-detected based on what's in `paths.docs_root`. Follow these steps exactly in order. Do NOT use `context: fork`. Do NOT commit any generated documentation -- leave all changes uncommitted for the project author to review.
 
 ## User Interaction Pattern
 
@@ -36,6 +41,34 @@ Never respond to these selections with another AskUserQuestion.
 4. Initialize pipeline state:
    - `pass_count = 1`
    - `max_passes = 3`
+
+---
+
+## Step 0: Mode Detection
+
+Determine whether this is a create or update run.
+
+1. Use Glob to find `.md` files in `{paths.docs_root}` (pattern: `{paths.docs_root}/**/*.md`).
+
+2. Filter out bare scaffold pages — an `index.md` that contains only a title and a "Welcome to..." line is not a substantive doc page.
+
+3. Count remaining substantive doc pages.
+
+4. **Determine `pipeline_mode`:**
+
+   - **`"create"`** if:
+     - 0 substantive doc pages in `docs_root`
+     - OR only a bare scaffold `index.md`
+     - Note: a README.md in the project root does NOT count as existing docs (unless `doc_system` is `plain-markdown` AND the README is substantial — more than 50 lines with multiple headings)
+
+   - **`"update"`** if:
+     - 2 or more substantive doc pages exist in `docs_root`
+
+5. Display mode to user:
+   - Create: `"No existing documentation found in {paths.docs_root}. Running full pipeline."`
+   - Update: `"Existing documentation detected ({N} pages in {paths.docs_root}). Running incremental update — documenting new features only."`
+
+6. Store `pipeline_mode` and `existing_page_count` for use in subsequent steps.
 
 ---
 
@@ -83,11 +116,19 @@ Never respond to these selections with another AskUserQuestion.
 
 Spawn the doc-author agent to generate documentation.
 
-**Initial pass delegation:**
+**Initial pass delegation depends on `pipeline_mode`:**
 
-Use the Agent tool to spawn `doc-author` with this message:
+**Create mode** — use the Agent tool to spawn `doc-author` with this message:
 
 > Generate documentation for this project. Read `.doc-writer/config.yaml` for persona and paths configuration. Read `.doc-writer/gap-report.md` for undocumented symbols to prioritize in your coverage.
+
+**Update mode** — first check the gap report from Step 1:
+
+- If gap-report shows **0 undocumented symbols**: display "All exported symbols are already documented. No new pages needed." Skip the Author step entirely and proceed directly to Step 3 (Editor) for a quality pass on existing docs.
+
+- If gap-report shows **undocumented symbols**: use the Agent tool to spawn `doc-author` with this message:
+
+> Existing documentation is in {paths.docs_root} ({existing_page_count} pages). Generate documentation ONLY for the undocumented symbols listed in `.doc-writer/gap-report.md`. Do NOT modify or regenerate existing pages. Create new pages as needed for the undocumented symbols, following the same structure and conventions as the existing docs. Read `.doc-writer/config.yaml` for persona and paths configuration.
 
 **Revision pass delegation** (when returning here from Step 5):
 
@@ -103,11 +144,17 @@ Wait for the Author agent to complete before proceeding.
 
 Spawn the doc-editor agent to run quality passes on the authored documentation.
 
-**Initial pass delegation:**
+**Initial pass delegation depends on `pipeline_mode`:**
 
-Use the Agent tool to spawn `doc-editor` with this message:
+**Create mode** — use the Agent tool to spawn `doc-editor` with this message:
 
 > Edit the documentation in {paths.docs_root}. Run all four passes: terminology consistency, Diataxis type integrity, humanizer, and cross-reference linking.
+
+**Update mode** — scope the Editor to new pages, but run terminology across all:
+
+> Edit the NEW documentation pages: {new_page_list}. Run all four passes on the new pages. Run the terminology pass on ALL documentation pages in {paths.docs_root} since term changes can ripple across files.
+
+Where `{new_page_list}` is the list of pages created by the Author in Step 2. If Author was skipped (0 gaps), run the Editor on all existing pages instead (full quality pass).
 
 **Revision pass delegation** (when returning here from Step 5):
 
@@ -154,11 +201,13 @@ After all Persona evaluations complete, read all persona report files and collec
    - Which pages failed
    - What specific gaps or issues were identified
    - Which persona(s) reported the failure
-2. Increment `pass_count` by 1.
-3. Compile the targeted page list from all FAIL verdicts across all personas.
-4. Return to **Step 2** (Author) with the revision pass delegation, passing the page list and fail details.
-5. Then proceed through **Step 3** (Editor on changed pages) and **Step 4** (Persona with reused scenarios).
-6. Return here to re-evaluate verdicts.
+2. **Update mode only:** If the FAIL is on a pre-existing page (not a page created in this run), escalate it immediately instead of revising — pre-existing pages were working before and should not be modified by the update pipeline. Add these to the escalation list in Case C.
+3. Increment `pass_count` by 1.
+4. Compile the targeted page list from all FAIL verdicts on **new pages** across all personas.
+5. If no new pages have FAILs (all FAILs were on pre-existing pages), skip revision and go to Case C or Step 6.
+6. Return to **Step 2** (Author) with the revision pass delegation, passing the page list and fail details.
+7. Then proceed through **Step 3** (Editor on changed pages) and **Step 4** (Persona with reused scenarios).
+8. Return here to re-evaluate verdicts.
 
 **Case C: Any FAIL verdict exists AND pass_count >= max_passes (3)**
 - **ESCALATION.** Present the remaining failures to the project author:
@@ -234,6 +283,9 @@ Present a completion summary to the project author:
 
 ```
 ## Documentation Pipeline Complete
+
+### Pipeline Mode
+{Create: "Full documentation generated from scratch." | Update: "Incremental update — {N} new pages added for undocumented symbols."}
 
 ### Pages Written/Revised
 {List each doc page that was created or modified, with status: new/revised}

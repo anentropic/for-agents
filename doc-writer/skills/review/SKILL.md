@@ -1,6 +1,6 @@
 ---
 name: doc-writer:review
-description: Audit existing documentation without generating new content. Runs gap detection, Persona validation, and optionally Editor quality fixes (--edit flag).
+description: Audit documentation quality and coverage. Finds undocumented symbols, tests user journeys, and reports issues. Use --edit to apply quality fixes.
 disable-model-invocation: true
 allowed-tools: Agent, Read, Write, Glob, Grep, Bash
 argument-hint: "[--edit]"

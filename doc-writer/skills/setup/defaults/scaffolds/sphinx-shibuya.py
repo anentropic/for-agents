@@ -16,6 +16,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_design",
     "autoapi.extension",
+    "sphinxcontrib.mermaid",
 ]
 
 # -- Napoleon (Google docstring style) ---------------------------------------
@@ -40,6 +41,10 @@ autoapi_member_order = "bysource"
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
 }
+
+# -- Mermaid diagrams ----------------------------------------------------------
+
+mermaid_version = ""  # empty string = use bundled version from sphinxcontrib-mermaid
 
 # -- Shibuya theme -----------------------------------------------------------
 

@@ -55,3 +55,23 @@ Opinionated preferences for writing documentation with MkDocs Material. These ar
 - Use reference-style links `[text][reference]` for internal links that appear in multiple places. Define references at the bottom of the page.
 - Inline code mentions of functions, classes, and config keys should link to their API Reference page: `` [`connect()`](../reference/client.md#connect) ``.
 - Prefer relative paths for internal links. Absolute paths break when the site root changes.
+
+## Mermaid Diagrams
+
+MkDocs Material renders mermaid diagrams natively through the pymdownx.superfences custom fence already configured in the scaffold. No additional plugins or configuration needed.
+
+- Use standard fenced code blocks with the `mermaid` language identifier:
+
+  ````markdown
+  ```mermaid
+  sequenceDiagram
+      participant User
+      participant API
+      User->>API: POST /items
+      API-->>User: 201 Created
+  ```
+  ````
+
+- Mermaid diagrams render in both light and dark mode automatically via Material's built-in theme integration.
+- Do NOT add `mkdocs-mermaid2-plugin` -- it is redundant with the pymdownx.superfences custom fence and can cause conflicts.
+- Diagram source is written inline in the Markdown file. No external files or build steps required.

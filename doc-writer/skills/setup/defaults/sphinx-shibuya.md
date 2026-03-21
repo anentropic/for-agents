@@ -117,3 +117,23 @@ sphinx-design provides grids, cards, dropdowns, badges, and buttons as RST direc
 - Set `autoapi_add_toctree_entry = False` and manually include `api/index` in `reference/index.rst` toctree. This prevents autoapi from injecting at the root toctree level, which would break the clean Diataxis tab structure.
 - Set `autoapi_python_class_content = "both"` to show both class-level and `__init__` docstrings. Users need to see both the class purpose and constructor parameters.
 - Include `sphinx.ext.napoleon` in conf.py extensions alongside `autoapi.extension`. Napoleon parses Google-style docstrings into structured parameter lists.
+
+## Mermaid Diagrams
+
+Sphinx renders mermaid diagrams via the `sphinxcontrib-mermaid` extension (already included in the scaffold conf.py). The extension must be installed: `pip install sphinxcontrib-mermaid`.
+
+- Use the `.. mermaid::` RST directive. The diagram source is indented under the directive:
+
+  ```rst
+  .. mermaid::
+
+     sequenceDiagram
+        participant User
+        participant API
+        User->>API: POST /items
+        API-->>User: 201 Created
+  ```
+
+- Shibuya theme handles dark/light mode diagram rendering automatically.
+- The scaffold sets `mermaid_version = ""` which uses the bundled version from sphinxcontrib-mermaid. Do not override this unless a specific mermaid.js version is required.
+- Do NOT use fenced code blocks (` ```mermaid `) in RST files -- Sphinx does not recognize them. Always use the `.. mermaid::` directive.

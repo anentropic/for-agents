@@ -135,6 +135,22 @@ Based on my scan of the codebase, here is the proposed page inventory:
 - README.md and MAINTAINER.md appear as proposed entries that the user can include or exclude.
 - Classify each page using the classification decision guide from the preloaded diataxis skill.
 
+**Concepts pages under Explanation:**
+
+During inventory, consider whether the project has core abstractions or domain concepts that warrant dedicated "What is X?" pages. These are classified as `explanation` type and follow the Concept Explanation pattern from the explanation reference file:
+
+- **When to propose:** The project uses domain-specific terminology, has non-obvious architectural patterns, or implements algorithms/protocols that users need to understand conceptually before using the API effectively.
+- **How to title:** "Understanding {Concept}" or "How {Feature} Works" or "{Concept A} vs {Concept B}"
+- **How to classify:** Type is `explanation`. They sit under the Explanation section in the documentation hierarchy. Do NOT create a new `concepts` type -- Concepts pages ARE explanation pages.
+- **How many:** Start with 1-2 for most projects. Propose more only for complex domains with many interrelated concepts.
+- **Refinement:** The project author can accept, reject, or modify Concepts page proposals during page inventory approval.
+
+Example inventory entry for a Concepts page:
+
+```
+| 5 | explanation | Understanding {Core Concept} | What it is, why it exists, how it works, trade-offs | docs/explanation/understanding-{concept}.md |
+```
+
 **Below the table, include:**
 - **API Reference status:** detected location, or "not detected" with a recommendation
 - **Audience targeting:** which persona each page targets (relevant when multiple personas are configured)
@@ -464,6 +480,8 @@ Run these checklists before presenting output to the user.
 - [ ] Inventory file includes File Path column for each proposed page
 - [ ] Did NOT use AskUserQuestion (orchestrator handles user interaction)
 - [ ] Did NOT proceed to Phase 2 (plan mode stops here)
+- [ ] At least one Concepts page proposed under `explanation` type if the project has domain-specific concepts
+- [ ] Concepts pages use type `explanation`, NOT a custom `concepts` type
 
 ### After Phase 2 (Write) — run for EACH page:
 

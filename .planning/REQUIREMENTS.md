@@ -72,34 +72,34 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CONT-01 | — | Pending |
-| CONT-02 | — | Pending |
-| CONT-03 | — | Pending |
-| CONT-04 | — | Pending |
-| CONT-05 | — | Pending |
-| NAV-01 | — | Pending |
-| NAV-02 | — | Pending |
-| NAV-03 | — | Pending |
-| NAV-04 | — | Pending |
-| NAV-05 | — | Pending |
-| NAV-06 | — | Pending |
-| NAV-07 | — | Pending |
-| NAV-08 | — | Pending |
-| MERM-01 | — | Pending |
-| MERM-02 | — | Pending |
-| MERM-03 | — | Pending |
-| MERM-04 | — | Pending |
-| OCML-01 | — | Pending |
-| OCML-02 | — | Pending |
-| OCML-03 | — | Pending |
-| OCML-04 | — | Pending |
-| OCML-05 | — | Pending |
+| CONT-01 | Phase 16 | Pending |
+| CONT-02 | Phase 16 | Pending |
+| CONT-03 | Phase 16 | Pending |
+| CONT-04 | Phase 14 | Pending |
+| CONT-05 | Phase 14 | Pending |
+| NAV-01 | Phase 15 | Pending |
+| NAV-02 | Phase 15 | Pending |
+| NAV-03 | Phase 15 | Pending |
+| NAV-04 | Phase 15 | Pending |
+| NAV-05 | Phase 15 | Pending |
+| NAV-06 | Phase 15 | Pending |
+| NAV-07 | Phase 15 | Pending |
+| NAV-08 | Phase 15 | Pending |
+| MERM-01 | Phase 14 | Pending |
+| MERM-02 | Phase 14 | Pending |
+| MERM-03 | Phase 14 | Pending |
+| MERM-04 | Phase 14 | Pending |
+| OCML-01 | Phase 14 | Pending |
+| OCML-02 | Phase 17 | Pending |
+| OCML-03 | Phase 17 | Pending |
+| OCML-04 | Phase 17 | Pending |
+| OCML-05 | Phase 17 | Pending |
 
 **Coverage:**
 - v1.4.0 requirements: 22 total
-- Mapped to phases: 0
-- Unmapped: 22 ⚠️
+- Mapped to phases: 22
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-21*
-*Last updated: 2026-03-21 after initial definition*
+*Last updated: 2026-03-21 after roadmap creation*

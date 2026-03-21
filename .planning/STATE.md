@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v1.4.0
 milestone_name: Content & Navigation
-status: defining_requirements
+status: ready_to_plan
 stopped_at: null
 last_updated: "2026-03-21"
-last_activity: "2026-03-21 — Milestone v1.4.0 started"
+last_activity: "2026-03-21 — Roadmap created for v1.4.0 (4 phases, 22 requirements)"
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -21,61 +21,35 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** Produce library documentation that the project author can publish with minimal tweaks — docs written from the end user's perspective, not the builder's.
-**Current focus:** Defining requirements for v1.4.0
+**Current focus:** Phase 14 — Foundations (Concepts, mermaid, scan-exports)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-03-21 — Milestone v1.4.0 started
+Phase: 14 of 17 (Foundations)
+Plan: Ready to plan
+Status: Ready to plan Phase 14
+Last activity: 2026-03-21 — Roadmap created for v1.4.0
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
+- Total plans completed: 28 (from v1.0)
 - Average duration: 3.2 min
-- Total execution time: 0.32 hours
+- Total execution time: ~1.5 hours
 
-**By Phase:**
+**By Phase:** (v1.0 data — v1.4.0 tracking starts fresh)
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01 | 2 | 7 min | 3.5 min |
-| 02 | 1 | 2 min | 2 min |
-| 03 | 1 | 3 min | 3 min |
-| 04 | 1 | 4 min | 4 min |
-| 06 | 1 | 3 min | 3 min |
+| v1.0 aggregate | 28 | ~90 min | ~3.2 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (4 min), 02-01 (2 min), 03-01 (3 min), 04-01 (4 min), 06-01 (3 min)
-- Trend: consistent
+- Last 3 plans (v1.0): 13-01 (2 min), 13-02 (2 min), 13-03 (1 min)
+- Trend: Stable
 
 *Updated after each plan completion*
-| Phase 04 P01 | 4 | 2 tasks | 2 files |
-| Phase 05 P01 | 4 | 1 tasks | 2 files |
-| Phase 05 P02 | 3 | 2 tasks | 2 files |
-| Phase 06 P01 | 3 | 2 tasks | 7 files |
-| Phase 07-doc-writer-plugin-packaging P02 | 2 | 2 tasks | 22 files |
-| Phase 07-doc-writer-plugin-packaging P03 | 3 | 1 tasks | 2 files |
-| Phase 08-doc-writer-skills-polish P01 | 3 | 2 tasks | 3 files |
-| Phase 08-doc-writer-skills-polish P02 | 3 | 2 tasks | 2 files |
-| Phase 08 P02 | 3 | 2 tasks | 2 files |
-| Phase 09 P01 | 3 | 2 tasks | 2 files |
-| Phase 09 P02 | 3 | 2 tasks | 3 files |
-| Phase 09 P03 | 4 | 2 tasks | 1 files |
-| Phase 10 P01 | 2 | 2 tasks | 3 files |
-| Phase 10 P02 | 2 | 1 tasks | 1 files |
-| Phase 10 P03 | 3 | 2 tasks | 1 files |
-| Phase 11 P01 | 2 | 2 tasks | 2 files |
-| Phase 11 P02 | 3 | 2 tasks | 1 files |
-| Phase 12 P01 | 1 | 1 tasks | 1 files |
-| Phase 12 P02 | 2 | 2 tasks | 5 files |
-| Phase 12 P03 | 2 | 1 tasks | 1 files |
-| Phase 12 P04 | 6 | 2 tasks | 1 files |
-| Phase 13 P01 | 2 | 1 tasks | 1 files |
-| Phase 13 P02 | 2 | 1 tasks | 1 files |
-| Phase 13 P03 | 1 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -84,113 +58,24 @@ Last activity: 2026-03-21 — Milestone v1.4.0 started
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- [Pre-planning]: Three-agent serial pipeline (Author > Editor > Persona) — mirrors how real doc teams work; separates writing, quality, and audience validation
-- [Pre-planning]: Config-first build order — agents cannot function without knowing audience, doc system, and quality rules; config schema must be Phase 1
-- [Pre-planning]: User Persona generates its own scenarios — maintainer should not have to author test cases
-- [Research flag]: CC plugin frontmatter conventions carry MEDIUM confidence — verify against current Anthropic docs before Phase 1 design decisions are locked
-- [01-01]: Used doc-writer: namespace prefix for skill references in agent frontmatter (consistent with CC plugin namespacing)
-- [01-02]: Setup skill uses disable-model-invocation: true to prevent auto-invocation
-- [01-02]: Config template enforces audiences as array from day one (prevents Phase 4 refactoring)
-- [01-02]: Guidance files are opinionated preferences, not syntax references
-- [02-01]: Agent uses two-phase workflow (Scan+Plan then Write) with single user approval gate between phases
-- [02-01]: Skills referenced by name, never duplicated in agent body — keeps prompt under 430 lines
-- [02-01]: Internal notes use HTML comments at end of each page — Editor reads them, renderers strip them
-- [02-01]: Author does NOT write reference pages — defers to auto-generated API reference
-- [02-01]: Per-page audience reminder pattern prevents calibration drift on later pages
-- [02-01]: README and MAINTAINER templates embedded directly in agent prompt as locked structure
-- [03-01]: Three sequential passes (Terminology > Humanizer > Cross-references) with full completion before moving to next
-- [03-01]: Humanizer patterns embedded directly in prompt with documentation-specific adaptations (no personality, no first-person, code blocks untouched)
-- [03-01]: Term map priority: user overrides > source code canonical > standard proper nouns > most frequent form
-- [03-01]: Accuracy mismatches are BLOCKING, missing source files are SUGGESTION (not BLOCKING)
-- [03-01]: Only INTERNAL NOTES FOR EDITOR HTML comments are stripped; all others preserved
-- [03-01]: Editor edits docs directly rather than producing a separate review document
-- [04-01]: Three-phase workflow (Generate Scenarios, Simulate, Report) mirrors real user testing methodology
-- [04-01]: Navigation rules prohibit Grep and source code access -- simulates actual end-user doc experience
-- [04-01]: PASS/PARTIAL/FAIL distinction: PASS = smooth path, PARTIAL = achievable with friction, FAIL = goal impossible
-- [04-01]: Only FAIL verdicts trigger revision passes; PARTIAL issues presented to project author for approval
-- [04-01]: Scenarios reused during revision passes to ensure consistent evaluation across iterations
-- [04-01]: Multi-audience via invocation message parameter with audience-specific report filenames for parallel safety
-- [04-01]: domain_context and discovery_story are optional config fields with graceful degradation
-- [Phase 05]: Skill-body orchestration over orchestrator agent (subagents cannot spawn subagents)
-- [Phase 05]: PARTIAL approval batched at pipeline end rather than inline during Persona evaluation
-- [Phase 05]: Explicit Bash tool call for gap detection over dynamic context injection (needs config values)
-- [Phase 05]: Editor edits docs directly during review (Phase 3 design); review value is reports + Persona evaluation
-- [Phase 05]: Edit skill excludes Bash and does NOT run Persona after changes (locked decisions)
-- [Phase 07]: Tests use PROJECT_ROOT hardcoded path consistent with phase-01-validation.bats pattern
-- [Phase 07]: PKG-06 negative path checks (grep -r /Users/) trivially pass in RED state — correctly remain passing in GREEN state as long as Plan 02 does not add hardcoded absolute paths
-- [Phase 07-doc-writer-plugin-packaging]: marketplace.json uses name: doc-writer-plugins (not doc-writer-agent) to signal multi-plugin repo intent
-- [Phase 07-doc-writer-plugin-packaging]: git mv used for all moves to preserve per-file git history; no content changes during move
-- [Phase 07-doc-writer-plugin-packaging]: No logic changes in test path updates — only path prefix insertions; all test assertions, grep patterns, and structure unchanged
-- [Phase 08]: User Interaction Pattern section added to each skill defining shared freeform handling rules (DRY approach)
-- [Phase 08]: All AskUserQuestion blocks include mandatory "Type something else" and "Chat about this" trailing options per CONTEXT.md decisions
-- [Phase 08]: Kept rules and guidance file as Type something else paths instead of explicit menu items (informational responses, not structured workflows)
-- [Phase 08]: Used multiSelect: true for page inventory approval with all pages pre-selected — user deselects to exclude
-- [Phase 08]: Setup skill Step 2c paths confirmation kept as plain-text (confirmation of auto-detected values with freeform override)
-- [09-01]: Researcher agent has no skills field -- it reads codebase and config, does not write docs
-- [09-01]: Single context.md file (no split into agent-specific files) -- under 200 lines for any project
-- [09-01]: tone defaults to warm-businesslike when empty string
-- [09-01]: context.md is fully overwritten on each regeneration, not merged
-- [09-02]: Doc Author context.md already committed by Plan 09-01 -- no duplicate commit needed
-- [09-02]: Editor context.md item placed as item 5 after terminology.yaml for logical config loading order
-- [09-02]: Persona context.md reading integrated inline in Step 1 (not separate numbered item) to keep scenario guidance close to audience config
-- [09-03]: Framework Q&A answers stored in-memory during setup, passed to researcher via Agent invocation message -- not persisted in config.yaml
-- [09-03]: Complete setup skill rewrite done atomically (465 lines) with all Phase 9 enhancements in single file write
-- [10-01]: Q&A files use Detection section for auto-detect metadata (config file, features list)
-- [10-01]: Scaffold template uses only two template variables: {site_name} and {site_description}
-- [10-01]: Q&A files placed alongside existing guidance files in defaults/ for consistent discovery
-- [10-02]: WebFetch tool used (not WebSearch) for framework research -- consistent with available tool names
-- [10-02]: LOW confidence flag when WebFetch unavailable, with explicit review recommendation
-- [10-02]: Three-level fallback: global plugin defaults/ > project-local .doc-writer/ > error message
-- [10-03]: framework_root variable set in Step 2b, used in Steps 2b.3 and 2b.5 for consistent path resolution
-- [10-03]: Scaffold Check runs for ALL doc systems (known and researcher-generated) before framework Q&A
-- [10-03]: Install commands surfaced as informational text, never auto-executed
-- [11-01]: nav_links mechanism for Shibuya top tabs (explicit dict entries, not auto-derived from toctree)
-- [11-01]: autoapi_root = reference/api with manual toctree placement for clean Reference tab
-- [11-01]: 4 template variables ({project_name}, {author_name}, {copyright_year}, {github_url}) in string literals only
-- [11-01]: napoleon_google_docstring = True for consistency with mkdocstrings in mkdocs-material
-- [11-02]: sphinx-shibuya.md already created by Plan 11-01 -- verified all 20 acceptance criteria pass, no changes needed
-- [11-02]: SKILL.md modified with exactly 3 touch points: option, handler, built-in frameworks list
-- [12-01]: Used portable PROJECT_ROOT pattern (BATS_TEST_FILENAME-relative) instead of hardcoded path for repo-agnostic test execution
-- [Phase 12]: Config file: doc/dune (NOT dune-project) to avoid false positive detection since every OCaml project has dune-project
-- [Phase 12]: Follow-on sub-topic questions define scan instructions and question template but NOT static option lists -- options generated dynamically at setup time
-- [Phase 12]: Directory-based scaffold with 4 separate template files for primary and secondary package variants (new pattern alongside single-file scaffolds)
-- [Phase 12]: odoc 2.x is the primary documented syntax path; odoc 3.x features noted as forward-looking preview only
-- [Phase 12]: 4 SKILL.md changes (not 3 like Phase 11) because odoc needs directory scaffold support in addition to option, handler, and built-in list
-- [Phase 12]: Directory scaffold check is generic (checks for scaffolds/{doc_system}/ directory) benefiting any future multi-file framework
-- [Phase 13-01]: Tests follow exact grep commands from plan even though 2 of 10 pass in RED state (Test 8 and Test 10 match pre-existing body content in doc-researcher.md)
-- [Phase 13-02]: Generic 9-variable inference table replaces hardcoded 2-variable substitution in SKILL.md Step 2b.3
-- [Phase 13]: No decisions required -- both changes were specified exactly in the plan
-
-### Roadmap Evolution
-
-- Phase 7 added: Doc-Writer Plugin Packaging — reorganise into `doc-writer/` subdir and configure as a Claude plugin (repo will host multiple plugins in future milestones)
-- Phase 8 added: doc-writer skills polish
-- Phase 9 added: enhanced setup Q&A, tone, user persona, and new planner/researcher agents
-- Phase 10 added: framework scaffolding and unknown framework research+guidance generation
-- Phase 11 added: sphinx-shibuya doc framework support (top tabs, 3-level nav, sphinx-design, sphinx-autoapi)
-- Phase 12 added: Odoc framework for OCaml projects (index-based nav, multi-library support, dune/.mli configuration)
+- [Research]: doc-author.md is the hotspot file — all 4 phases touch it; build sequentially
+- [Research]: Nav strategy answers flow through researcher into context.md, NOT into config.yaml
+- [Research]: Use Cases Q&A goes AFTER user personas (not before) — skippable, infers from persona context
+- [Research]: Use Cases template in doc-author parallels README/MAINTAINER template pattern
+- [Research]: Editor must recognize (use-case) page type in Pass 2 blur detection
+- [Research]: OCaml .mld needs external author-notes.md instead of HTML comments
 
 ### Pending Todos
 
 None yet.
 
-### Quick Tasks Completed
-
-| # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
-| 1 | Diataxis deep integration across all three agents | 2026-03-04 | b126e44 | [1-commit-latest-changes](./quick/1-commit-latest-changes/) |
-| 260315-qru | add the copilot-review skill I just copied here into our marketplace config | 2026-03-15 | a0e17ee | [260315-qru-add-the-copilot-review-skill-i-just-copi](./quick/260315-qru-add-the-copilot-review-skill-i-just-copi/) |
-| 260316-had | Fix invalid source schema in marketplace.json for plugins 56, 63, 67, 71-75 | 2026-03-16 | n/a (external) | [260316-had-fix-invalid-source-schema-in-marketplace](./quick/260316-had-fix-invalid-source-schema-in-marketplace/) |
-| 260321-0pt | Add next-steps prompt at end of setup flow | 2026-03-21 | 32876eb | [260321-0pt-add-next-steps-prompt-at-end-of-setup-fl](./quick/260321-0pt-add-next-steps-prompt-at-end-of-setup-fl/) |
-
 ### Blockers/Concerns
 
-- [Phase 1]: CC plugin frontmatter syntax (name, description, tools fields in agent .md files) needs verification against current CC docs before committing to file format
-- [Phase 4]: RESOLVED — User Persona goal-oriented simulation implemented successfully in 04-01 (403-line agent with three-phase workflow)
-- [Phase 5]: CC Marketplace distribution format is TBD — needs research before Phase 5 planning begins
+- [Phase 17]: .mli enrichment output format unresolved — resolve during Phase 17 planning
+- [Phase 15]: Scaffold nav strategy conditional processing needs confirmation during Phase 15 planning
 
 ## Session Continuity
 
-Last session: 2026-03-21T00:34:06Z
-Stopped at: Completed quick task 260321-0pt
+Last session: 2026-03-21
+Stopped at: Roadmap created for v1.4.0 milestone
 Resume file: None

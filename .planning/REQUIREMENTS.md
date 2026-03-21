@@ -13,7 +13,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [ ] **CONT-02**: Use cases stored in config.yaml and expanded in context.md by researcher agent
 - [ ] **CONT-03**: Use cases optionally promoted to a docs section at same level as diataxis quadrants, with typical and advanced cases as pages
 - [ ] **CONT-04**: Author proposes optional Concepts page(s) under Explanation by default, refined in page inventory Q&A
-- [ ] **CONT-05**: Author recommends appropriate mermaid diagram types (flowchart, sequence, state, class) based on content area
+- [x] **CONT-05**: Author recommends appropriate mermaid diagram types (flowchart, sequence, state, class) based on content area
 
 ### Navigation
 
@@ -28,10 +28,10 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Mermaid
 
-- [ ] **MERM-01**: Doc-author aware of mermaid diagrams and uses them when appropriate across all four doc systems
-- [ ] **MERM-02**: Each framework guidance file includes mermaid syntax section with correct wrapper format
-- [ ] **MERM-03**: sphinxcontrib-mermaid added to sphinx-shibuya scaffold and guidance
-- [ ] **MERM-04**: Odoc mermaid handled as guidance-only workaround (no native support)
+- [x] **MERM-01**: Doc-author aware of mermaid diagrams and uses them when appropriate across all four doc systems
+- [x] **MERM-02**: Each framework guidance file includes mermaid syntax section with correct wrapper format
+- [x] **MERM-03**: sphinxcontrib-mermaid added to sphinx-shibuya scaffold and guidance
+- [x] **MERM-04**: Odoc mermaid handled as guidance-only workaround (no native support)
 
 ### OCaml/Odoc
 
@@ -76,7 +76,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONT-02 | Phase 16 | Pending |
 | CONT-03 | Phase 16 | Pending |
 | CONT-04 | Phase 14 | Pending |
-| CONT-05 | Phase 14 | Pending |
+| CONT-05 | Phase 14 | Complete |
 | NAV-01 | Phase 15 | Pending |
 | NAV-02 | Phase 15 | Pending |
 | NAV-03 | Phase 15 | Pending |
@@ -85,10 +85,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | NAV-06 | Phase 15 | Pending |
 | NAV-07 | Phase 15 | Pending |
 | NAV-08 | Phase 15 | Pending |
-| MERM-01 | Phase 14 | Pending |
-| MERM-02 | Phase 14 | Pending |
-| MERM-03 | Phase 14 | Pending |
-| MERM-04 | Phase 14 | Pending |
+| MERM-01 | Phase 14 | Complete |
+| MERM-02 | Phase 14 | Complete |
+| MERM-03 | Phase 14 | Complete |
+| MERM-04 | Phase 14 | Complete |
 | OCML-01 | Phase 14 | Pending |
 | OCML-02 | Phase 17 | Pending |
 | OCML-03 | Phase 17 | Pending |

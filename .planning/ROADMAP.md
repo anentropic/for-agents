@@ -58,7 +58,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 2 plans
 
 Plans:
-- [ ] 14-01-PLAN.md — Mermaid diagram support: guidance files, scaffold, and doc-author awareness
+- [x] 14-01-PLAN.md — Mermaid diagram support: guidance files, scaffold, and doc-author awareness
 - [ ] 14-02-PLAN.md — Concepts page awareness and OCaml scan-exports
 
 ### Phase 15: Navigation Strategies
@@ -128,7 +128,7 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 11. Sphinx/Shibuya Framework Support | v1.0 | 2/2 | Complete | 2026-03-18 |
 | 12. Odoc Framework for OCaml | v1.0 | 4/4 | Complete | 2026-03-19 |
 | 13. Scaffold Variable Fix + Doc-Researcher | v1.0 | 3/3 | Complete | 2026-03-19 |
-| 14. Foundations | v1.4.0 | 0/2 | Not started | - |
+| 14. Foundations | v1.4.0 | 1/2 | In Progress|  |
 | 15. Navigation Strategies | v1.4.0 | 0/? | Not started | - |
 | 16. Use Cases | v1.4.0 | 0/? | Not started | - |
 | 17. OCaml .mld/.mli Output | v1.4.0 | 0/? | Not started | - |

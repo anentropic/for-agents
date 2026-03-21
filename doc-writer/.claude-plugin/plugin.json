@@ -3,7 +3,7 @@
   "version": "1.3.0",
   "description": "AI-powered library documentation generator. Produces persona-calibrated, Diataxis-structured docs via a full Author > Editor > Persona pipeline.",
   "author": {
-    "name": "Your Name"
+    "name": "Anentropic"
   },
   "homepage": "https://github.com/you/doc-writer-agent",
   "repository": "https://github.com/you/doc-writer-agent",

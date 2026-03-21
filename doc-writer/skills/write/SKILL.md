@@ -112,29 +112,73 @@ Determine whether this is a create or update run.
 
 ---
 
-## Step 2: Author
+## Step 2a: Author — Plan
 
-Spawn the doc-author agent to generate documentation.
+Spawn the doc-author agent in **plan-only mode** to scan the codebase and propose a page inventory. The author writes the inventory to a file and exits without writing any documentation pages.
 
-**Initial pass delegation depends on `pipeline_mode`:**
+**Skip this step on revision passes** (when returning from Step 5). On revision passes, go directly to Step 2c.
 
 **Create mode** — use the Agent tool to spawn `doc-author` with this message:
 
-> Generate documentation for this project. Read `.doc-writer/config.yaml` for persona and paths configuration. Read `.doc-writer/gap-report.md` for undocumented symbols to prioritize in your coverage.
+> Run Phase 1 only (plan mode). Scan the codebase and produce a page inventory. Write the inventory to `.doc-writer/page-inventory.md`. Do NOT write any documentation pages. Do NOT use AskUserQuestion. Read `.doc-writer/config.yaml` for persona and paths configuration. If `.doc-writer/gap-report.md` exists, read it for undocumented symbols to prioritize in your coverage.
 
 **Update mode** — first check the gap report from Step 1:
 
-- If gap-report shows **0 undocumented symbols**: display "All exported symbols are already documented. No new pages needed." Skip the Author step entirely and proceed directly to Step 3 (Editor) for a quality pass on existing docs.
+- If gap-report shows **0 undocumented symbols**: display "All exported symbols are already documented. No new pages needed." Skip Steps 2a–2c entirely and proceed directly to Step 3 (Editor) for a quality pass on existing docs.
 
 - If gap-report shows **undocumented symbols**: use the Agent tool to spawn `doc-author` with this message:
 
-> Existing documentation is in {paths.docs_root} ({existing_page_count} pages). Generate documentation ONLY for the undocumented symbols listed in `.doc-writer/gap-report.md`. Do NOT modify or regenerate existing pages. Create new pages as needed for the undocumented symbols, following the same structure and conventions as the existing docs. Read `.doc-writer/config.yaml` for persona and paths configuration.
+> Run Phase 1 only (plan mode). Existing documentation is in {paths.docs_root} ({existing_page_count} pages). Scan the codebase and produce a page inventory for ONLY the undocumented symbols listed in `.doc-writer/gap-report.md`. Do NOT propose pages for already-documented features. Write the inventory to `.doc-writer/page-inventory.md`. Do NOT write any documentation pages. Do NOT use AskUserQuestion. Read `.doc-writer/config.yaml` for persona and paths configuration.
 
-**Revision pass delegation** (when returning here from Step 5):
+Wait for the Author agent to complete before proceeding.
+
+---
+
+## Step 2b: Page Inventory Approval
+
+Read `.doc-writer/page-inventory.md`. Parse the page table to extract each proposed page's number, type, title, key sections, and file path.
+
+**Skip this step on revision passes** (when returning from Step 5).
+
+Use AskUserQuestion to present the inventory for approval:
+- header: "Pages"
+- question: "Confirm the page inventory. Deselect pages to exclude, or choose an action."
+- multiSelect: true
+- options: [dynamically generated from the inventory file, all pre-selected:]
+  - { label: "{title} ({type})", description: "{key sections}" }
+  - ... (one per proposed page)
+  - { label: "Type something else", description: "Add pages or modify the plan" }
+  - { label: "Chat about this", description: "Discuss the page inventory" }
+
+**Handling responses:**
+- **Individual selections (multiSelect):** Build the `approved_pages` list from selected pages. Pages that were deselected are excluded.
+- **"Type something else":** Ask the user in plain text what pages to add, remove, or modify. Update the inventory based on their response. Then re-present the AskUserQuestion with the updated list.
+- **"Chat about this":** Read `.doc-writer/page-inventory.md` and explain why specific pages were proposed, what each page type means, and how the inventory was derived. After discussion, re-present the AskUserQuestion.
+- **"Other" (auto-added):** Ask the user in plain text what they want to change. Wait for response. Update inventory if needed and re-present.
+
+If all pages are deselected, inform the user that no documentation will be generated and stop.
+
+Store `approved_pages` (list of page entries with number, type, title, key sections, file path) for Step 2c.
+
+---
+
+## Step 2c: Author — Write
+
+Spawn the doc-author agent in **write-only mode** with the approved page list.
+
+**Initial pass** — use the Agent tool to spawn `doc-author` with this message:
+
+> Run Phase 2 only (write mode). The following pages have been approved by the project author. Write ONLY these pages. Do NOT scan or plan. Do NOT use AskUserQuestion. Read `.doc-writer/config.yaml` for persona and paths configuration.
+>
+> Approved pages:
+> {for each page in approved_pages:}
+> - [{number}] {type}: "{title}" — {key sections} → {file_path}
+
+**Revision pass** (when returning here from Step 5):
 
 Use the Agent tool to spawn `doc-author` with this message:
 
-> This is revision pass {pass_count} of {max_passes}. Revise ONLY the following pages based on Persona FAIL verdicts: {page_list}. Read the persona report(s) in `.doc-writer/` for specific gaps identified. Do NOT regenerate pages that passed evaluation.
+> Run Phase 2 only (write mode). This is revision pass {pass_count} of {max_passes}. Revise ONLY the following pages based on Persona FAIL verdicts: {page_list}. Read the persona report(s) in `.doc-writer/` for specific gaps identified. Do NOT regenerate pages that passed evaluation. Do NOT use AskUserQuestion.
 
 Wait for the Author agent to complete before proceeding.
 
@@ -205,7 +249,7 @@ After all Persona evaluations complete, read all persona report files and collec
 3. Increment `pass_count` by 1.
 4. Compile the targeted page list from all FAIL verdicts on **new pages** across all personas.
 5. If no new pages have FAILs (all FAILs were on pre-existing pages), skip revision and go to Case C or Step 6.
-6. Return to **Step 2** (Author) with the revision pass delegation, passing the page list and fail details.
+6. Return to **Step 2c** (Author — Write) with the revision pass delegation, passing the page list and fail details.
 7. Then proceed through **Step 3** (Editor on changed pages) and **Step 4** (Persona with reused scenarios).
 8. Return here to re-evaluate verdicts.
 

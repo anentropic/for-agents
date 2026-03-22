@@ -164,8 +164,13 @@ Use the Read tool to load `skills/diataxis/references/framework-overview.md`. Fo
 
 For each doc file, determine its declared type:
 
-1. **Check the Author's internal notes** for the `## Page Classification` section. The Author declares the type (tutorial, how-to, explanation) and which reference file was used.
+1. **Check the Author's internal notes** for the `## Page Classification` section. The Author declares the type (tutorial, how-to, explanation, use-case, use-case-index) and which reference file was used.
 2. **If no classification in notes** (legacy pages or README/MAINTAINER), infer the type from the page structure and content using the Diataxis compass from the preloaded skill.
+
+**Non-diataxis page types:** The following types are NOT diataxis types and have their own validation rules: `(readme)`, `(maintainer)`, `(use-case)`, `(use-case-index)`. Do NOT attempt to apply diataxis blur rules to these types. Do NOT attempt to load a reference file from `skills/diataxis/references/` for these types -- they have no reference file. Instead:
+- `(readme)` and `(maintainer)`: skip blur detection entirely (these follow their own templates)
+- `(use-case)`: apply use-case-specific blur signals (see Step 3 below)
+- `(use-case-index)`: validate as a section index page (list of children with abstracts)
 
 ### Step 3: Detect Type Blur
 
@@ -188,6 +193,15 @@ For each page, check for blur signals specific to its declared type. Use the Rea
 - Comprehensive API parameter listings (blur toward reference)
 - Goal-oriented "achieve X" framing (blur toward how-to)
 - Code examples that are instructional rather than illustrative (blur toward tutorial)
+
+**(use-case) blur signals:**
+- Step-by-step instructions with sequential numbered tasks, "Step 1:", "Step 2:" patterns (blur toward tutorial)
+- "How to" or goal-oriented task framing with prerequisites or requirements sections (blur toward how-to)
+- Extended conceptual discussion without problem/capability/outcome structure (blur toward explanation)
+- "Let's build", "we'll", "let me show you" framing (blur toward tutorial)
+- Missing "Learn More" section linking to tutorials or how-to guides (use-case pages must always link out for implementation details)
+
+A clean use-case page is discovery-oriented: it presents a problem, shows what is possible, and describes the outcome. It does NOT teach, instruct, or explain at length. If a use-case page reads like you could follow along and build something, it has blurred toward tutorial.
 
 ### Step 4: Fix or Flag Blur
 

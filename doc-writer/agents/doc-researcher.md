@@ -122,6 +122,32 @@ If the project has a framework config file (e.g., `mkdocs.yml`, `conf.py`, `doc/
 3. Generate usage guidance for each detected feature: when to use it, how to use it, and what it looks like in the framework's markup language.
 4. Note features NOT detected (absent from config) as "Features NOT to Use" -- agents should not generate syntax for features the project has not enabled.
 
+### Navigation Strategy Expansion
+
+If the framework Q&A answers include a navigation strategy selection, expand it into concrete guidance in the Framework Preferences section of context.md:
+
+**Sections as top tabs:**
+- Document which sections become tabs (Tutorials, How-To Guides, Explanation, Reference)
+- Note that each tab maps to a section index page
+- Specify that the sidebar shows only the active section's pages (not the full docs tree)
+- Remind that section index pages must list children with 1-sentence abstracts
+- For sphinx-shibuya: note that nav_links are static URLs in conf.py, not derived from toctree
+- For mkdocs-material: note that tabs are flat (no dropdowns), derived from top-level nav entries
+
+**Single "Docs" tab:**
+- Document that one "Docs" tab contains all documentation sections
+- Note that the sidebar shows the full docs tree under the Docs tab
+- Specify that the Docs tab acts as a landing page with section links
+- For sphinx-shibuya: single nav_link "Docs" with children listing section indexes
+- For mkdocs-material: single top-level "Docs" key wrapping all section keys
+
+**Sidebar only:**
+- Document that all pages appear in the left sidebar with no top tabs
+- Note that sections are rendered as expandable groups
+- No tabs configuration needed; navigation is sidebar-driven
+
+If no navigation strategy was selected in Q&A (e.g., plain-markdown or odoc frameworks), do NOT add a Navigation Strategy section to context.md.
+
 ---
 
 ## Step 4: Write context.md
@@ -167,8 +193,10 @@ Write the output to `.doc-writer/context.md` using this structure:
 
 ## Framework Preferences: {doc_system}
 
-### Navigation
-- {detected navigation approach or default}
+### Navigation Strategy
+- Strategy: {selected strategy name or "not configured"}
+- {expanded guidance from Navigation Strategy Expansion above}
+- Section index pages: {whether section indexes should include abstracts}
 
 ### Features to Use
 - {feature 1}: {when and how to use it}

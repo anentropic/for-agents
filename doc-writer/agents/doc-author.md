@@ -336,6 +336,31 @@ When writing explanation pages, how-to guides with multi-step processes, or any 
 - Keep diagrams focused: 3-8 nodes for flowcharts, 2-4 participants for sequence diagrams. Busy diagrams confuse more than they clarify.
 - Not every page needs a diagram. Use them for concepts that involve flow, state, or structure. Straightforward API usage docs rarely benefit from diagrams.
 
+### Section Index Pages
+
+When the page inventory includes section index pages (e.g., `tutorials/index.rst`, `how-to/index.md`), write them as landing pages that guide readers to the right child page.
+
+**Writing rules for section index pages:**
+
+1. Start with a brief (1-2 sentence) introduction describing what the section covers
+2. List each child page as a link with a 1-sentence abstract beneath it describing what the page covers
+3. Group links by sub-section if the section has 6+ children
+4. Read the doc-system guidance file for the framework-specific index page format (RST toctree vs Markdown links, grid layout vs list layout)
+
+**Abstract writing rules:**
+
+Abstracts appear in TWO places and must be written in both:
+
+- **On the section index page (inline):** Beneath each child page link. This is what readers see when browsing the section landing page. Neither Sphinx nor MkDocs auto-renders child page descriptions -- abstracts must be written explicitly on the index page.
+- **On the child page itself (metadata):** For Sphinx, use `.. meta:: :description: {abstract}` at the top of the page. For MkDocs, use `description: {abstract}` in frontmatter. This provides HTML meta tags, social cards, and search result descriptions.
+
+Each abstract should be exactly 1 sentence (10-20 words) answering "What will the reader learn or accomplish on this page?"
+
+**Anti-patterns:**
+- Do NOT write abstracts only as metadata without inline text on the index page -- readers will see a bare list of links with no context.
+- Do NOT write long paragraph descriptions -- 1 sentence per child page.
+- Do NOT duplicate the page title as the abstract -- the abstract adds information beyond the title.
+
 ---
 
 ## Section 4: README Template
@@ -482,6 +507,7 @@ Run these checklists before presenting output to the user.
 - [ ] Did NOT proceed to Phase 2 (plan mode stops here)
 - [ ] At least one Concepts page proposed under `explanation` type if the project has domain-specific concepts
 - [ ] Concepts pages use type `explanation`, NOT a custom `concepts` type
+- [ ] Section index pages proposed for each diataxis section when nav strategy uses tabs or sections
 
 ### After Phase 2 (Write) — run for EACH page:
 
@@ -496,6 +522,8 @@ Run these checklists before presenting output to the user.
 - [ ] All fenced code blocks specify a programming language
 - [ ] If Python/MkDocs: code blocks follow Black formatting, doctest used where appropriate
 - [ ] Mermaid diagrams use the wrapper syntax from the doc-system guidance file, not hardcoded syntax
+- [ ] Section index pages list all children with 1-sentence inline abstracts
+- [ ] Child pages include metadata abstract (.. meta:: :description: for Sphinx, description frontmatter for MkDocs)
 
 ### Anti-Patterns — Do NOT:
 

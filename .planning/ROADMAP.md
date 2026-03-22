@@ -39,7 +39,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 14: Foundations** - Concepts pages, mermaid diagram awareness, OCaml scan-exports (completed 2026-03-21)
-- [ ] **Phase 15: Navigation Strategies** - Three-strategy nav for sphinx-shibuya and mkdocs-material with section indexes
+- [x] **Phase 15: Navigation Strategies** - Three-strategy nav for sphinx-shibuya and mkdocs-material with section indexes (completed 2026-03-22)
 - [ ] **Phase 16: Use Cases** - Use Cases Q&A capture in setup and optional docs section
 - [ ] **Phase 17: OCaml .mld/.mli Output** - Doc-author writes odoc-native .mld files, editor handles .mld discovery
 
@@ -76,7 +76,7 @@ Plans:
 
 Plans:
 - [x] 15-01-PLAN.md — Q&A nav strategy questions, scaffold template variables, and SKILL.md variable table
-- [ ] 15-02-PLAN.md — Guidance file nav strategies, researcher expansion, and doc-author section index pages
+- [x] 15-02-PLAN.md — Guidance file nav strategies, researcher expansion, and doc-author section index pages
 
 ### Phase 16: Use Cases
 **Goal**: Project authors can capture use cases during setup (optionally), and those use cases flow into researcher context and optionally become a docs section
@@ -129,6 +129,6 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 12. Odoc Framework for OCaml | v1.0 | 4/4 | Complete | 2026-03-19 |
 | 13. Scaffold Variable Fix + Doc-Researcher | v1.0 | 3/3 | Complete | 2026-03-19 |
 | 14. Foundations | v1.4.0 | 2/2 | Complete    | 2026-03-21 |
-| 15. Navigation Strategies | v1.4.0 | 1/2 | In Progress|  |
+| 15. Navigation Strategies | v1.4.0 | 2/2 | Complete   | 2026-03-22 |
 | 16. Use Cases | v1.4.0 | 0/? | Not started | - |
 | 17. OCaml .mld/.mli Output | v1.4.0 | 0/? | Not started | - |

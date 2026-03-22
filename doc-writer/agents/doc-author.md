@@ -365,6 +365,83 @@ Unregistered .mld files silently do not appear in generated docs. This step is c
 
 Create the file fresh at the start of the write pass. Append each page's notes section after writing that page.
 
+### .mli Doc Comment Enrichment Proposals
+
+When `doc_system` is `odoc` AND the project configuration includes .mli doc comment improvements in the author scope (from the odoc setup Q&A Question 2), run this enrichment workflow AFTER writing all .mld pages.
+
+**Scope control:** Check the odoc scope configuration. If the user chose ".mld pages only" during setup, skip this entire section. The scope choice is stored in `.doc-writer/config.yaml` under the odoc-specific settings.
+
+**Step 1: Identify undocumented public values**
+
+Scan all .mli files in `paths.source_root`:
+1. Use Glob to find all `.mli` files (pattern: `{paths.source_root}/**/*.mli`)
+2. For each .mli file, use Read to examine its contents
+3. Identify `val`, `type`, `module`, and `exception` declarations that do NOT have a preceding `(** ... *)` doc comment
+4. A declaration is "undocumented" if the line above it does not contain `*)` (the end of a doc comment block)
+
+**Step 2: Write enrichment proposals**
+
+For each undocumented public value, write a complete doc comment proposal. Use the value's type signature, module context, any related .ml implementation, and the odoc doc comment patterns from the guidance file (`.doc-writer/odoc.md`).
+
+Write all proposals to `.doc-writer/mli-enrichment.md` with this format:
+
+```markdown
+# .mli Doc Comment Enrichment Proposals
+
+**Generated:** {date}
+**Source files scanned:** {count of .mli files}
+**Undocumented public symbols:** {count}
+
+## {relative path to .mli file}
+
+### `{declaration}` (line {N})
+
+**Current:** No doc comment
+
+**Proposed:**
+```ocaml
+(** {Summary line -- what this value does.}
+
+    {Extended description if the type signature or implementation reveals
+    non-obvious behavior. Include realistic usage example.}
+
+    {[
+      let result = Module.function_name arg
+      (* val result : return_type *)
+    ]}
+
+    @param {name} {description}
+    @return {description}
+    @raise {Exception} {when} *)
+```
+
+---
+
+## {next .mli file}
+...
+```
+
+**Enrichment quality rules:**
+- Every proposed doc comment must have a summary line (first sentence)
+- Functions with parameters must include `@param` tags for each parameter
+- Functions must include `@return` tag describing the return value
+- Functions that can raise exceptions must include `@raise` tags
+- Include at least one `{[ ... ]}` usage example for functions and significant types
+- Examples must show result types/values as comments (per odoc.md guidance)
+- Use the type signature and module context to write meaningful descriptions, not just stubs like "(** TODO *)"
+- Do NOT propose changes to declarations that already have doc comments -- preserve existing comments
+
+**Step 3: Report**
+
+After writing the enrichment file:
+- If proposals were generated: note "Wrote {N} doc comment proposals to `.doc-writer/mli-enrichment.md`. Review and apply manually."
+- If no undocumented values found: note "All public values in .mli files already have doc comments. No enrichment proposals needed." Do NOT create the file.
+
+**Important constraints:**
+- Do NOT use the Write tool on .mli files. Proposals go to the enrichment file only.
+- Do NOT propose changes to .mli files that are outside `paths.source_root`.
+- The user reviews and applies proposals manually. This matches the project convention of never auto-committing generated content.
+
 ### Code Example Rules
 
 **Sourcing:**
@@ -690,6 +767,9 @@ Run these checklists before presenting output to the user.
 - [ ] If doc_system is odoc: no .mld filenames contain hyphens (underscores only)
 - [ ] If doc_system is odoc: no HTML comments in .mld files (internal notes in `.doc-writer/author-notes.md`)
 - [ ] If doc_system is odoc: README.md and MAINTAINER.md still written as Markdown to project root
+- [ ] If doc_system is odoc and scope includes .mli: enrichment proposals written to `.doc-writer/mli-enrichment.md`
+- [ ] If doc_system is odoc and scope includes .mli: no Write tool calls on .mli files (proposals only)
+- [ ] If doc_system is odoc and scope is .mld only: enrichment section skipped entirely
 
 ### Anti-Patterns — Do NOT:
 

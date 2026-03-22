@@ -184,6 +184,8 @@ Use the Agent tool to spawn `doc-author` with this message:
 
 > Run Phase 2 only (write mode). This is revision pass {pass_count} of {max_passes}. Revise ONLY the following pages based on Persona FAIL verdicts: {page_list}. Read the persona report(s) in `.doc-writer/` for specific gaps identified. Do NOT regenerate pages that passed evaluation. Do NOT use AskUserQuestion.
 
+**Odoc projects:** The Author will also generate .mli enrichment proposals (if scope includes .mli improvements) after writing all .mld pages. The proposals file `.doc-writer/mli-enrichment.md` is a separate deliverable, not part of the page inventory.
+
 Wait for the Author agent to complete before proceeding.
 
 ---
@@ -348,6 +350,13 @@ Present a completion summary to the project author:
 **{persona_name}:**
 {For each scenario:}
 - {scenario_id}: {verdict} -- {one-line summary}
+
+### .mli Enrichment (odoc only)
+{If `.doc-writer/mli-enrichment.md` exists:}
+- **Proposals:** {N} doc comment proposals in `.doc-writer/mli-enrichment.md`
+- **Action required:** Review proposals and apply to .mli files manually
+{If file does not exist:}
+- No enrichment proposals generated (all public values documented, or scope set to .mld only)
 
 ### Pipeline Statistics
 - Total passes: {pass_count}

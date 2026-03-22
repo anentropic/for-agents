@@ -34,6 +34,7 @@ theme:
     - content.code.annotate
     - search.suggest
     - search.highlight
+{nav_feature_flags}
 
 plugins:
   - search

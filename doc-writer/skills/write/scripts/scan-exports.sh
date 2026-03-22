@@ -44,6 +44,19 @@ case "$LANG" in
     echo "## Go Exported Constants"
     grep -rn '^const [A-Z]' "$SOURCE_ROOT" --include="*.go" $EXCLUDE 2>/dev/null || true
     ;;
+  ocaml)
+    echo "## OCaml Public Values"
+    grep -rn '^val ' "$SOURCE_ROOT" --include="*.mli" $EXCLUDE 2>/dev/null || true
+    echo ""
+    echo "## OCaml Type Declarations"
+    grep -rn '^type ' "$SOURCE_ROOT" --include="*.mli" $EXCLUDE 2>/dev/null || true
+    echo ""
+    echo "## OCaml Module Declarations"
+    grep -rn '^module ' "$SOURCE_ROOT" --include="*.mli" $EXCLUDE 2>/dev/null || true
+    echo ""
+    echo "## OCaml Exception Declarations"
+    grep -rn '^exception ' "$SOURCE_ROOT" --include="*.mli" $EXCLUDE 2>/dev/null || true
+    ;;
   *)
     echo "Language '$LANG' not directly supported for export scanning."
     echo "Claude will scan source files manually to identify exported symbols."

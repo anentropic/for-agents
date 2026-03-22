@@ -59,12 +59,21 @@ Read `.doc-writer/scenarios.yaml` if it exists. Existing scenarios may be reused
 
 ### Step 3: Discover Documentation Files
 
-Use Glob to find all `.md` files in `paths.docs_root`. Also check for `README.md` in the project root.
+When `doc_system` is `odoc`:
+- Use Glob to find all `.mld` files in `doc/` (pattern: `doc/**/*.mld`)
+- Also check for `README.md` in the project root
+
+When `doc_system` is NOT `odoc`:
+- Use Glob to find all `.md` files in `paths.docs_root`. Also check for `README.md` in the project root.
 
 ### Step 4: Identify Docs Homepage
 
-Determine the starting point for all scenarios using this fallback chain:
+When `doc_system` is `odoc`, use this fallback chain:
+1. `README.md` in the project root
+2. `doc/index.mld`
+3. First `.mld` file alphabetically in `doc/`
 
+When `doc_system` is NOT `odoc`, use the existing fallback chain:
 1. `README.md` in the project root
 2. `index.md` in `paths.docs_root`
 3. First file alphabetically in `paths.docs_root`

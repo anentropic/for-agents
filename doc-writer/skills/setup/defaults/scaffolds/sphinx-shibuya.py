@@ -16,6 +16,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_design",
     "autoapi.extension",
+    "sphinxcontrib.mermaid",
 ]
 
 # -- Napoleon (Google docstring style) ---------------------------------------
@@ -41,6 +42,10 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
 }
 
+# -- Mermaid diagrams ----------------------------------------------------------
+
+mermaid_version = ""  # empty string = use bundled version from sphinxcontrib-mermaid
+
 # -- Shibuya theme -----------------------------------------------------------
 
 html_theme = "shibuya"
@@ -51,10 +56,5 @@ html_theme_options = {
     "globaltoc_expand_depth": 1,
     "toctree_maxdepth": 3,
     "toctree_titles_only": True,
-    "nav_links": [
-        {"title": "Tutorials", "url": "tutorials/index"},
-        {"title": "How-To Guides", "url": "how-to/index"},
-        {"title": "Explanation", "url": "explanation/index"},
-        {"title": "Reference", "url": "reference/index"},
-    ],
+{nav_links_config}
 }

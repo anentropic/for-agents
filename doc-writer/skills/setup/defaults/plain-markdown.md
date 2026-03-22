@@ -47,3 +47,22 @@ Preferences for writing documentation in standard Markdown without a specific do
   - `> **Tip:** best practices and recommendations`
 - Keep callouts to one paragraph. For longer callout content, consider making it a regular section with a descriptive heading.
 - Do not stack multiple callouts back-to-back. Consolidate related warnings or notes into a single callout with a list.
+
+## Mermaid Diagrams
+
+GitHub renders mermaid diagrams natively in Markdown files, Issues, PRs, and wikis. Other Markdown renderers may not support mermaid.
+
+- Use standard fenced code blocks with the `mermaid` language identifier:
+
+  ````markdown
+  ```mermaid
+  flowchart LR
+      A[Input] --> B{Validate}
+      B -->|Valid| C[Process]
+      B -->|Invalid| D[Error]
+      C --> E[Output]
+  ```
+  ````
+
+- Mermaid blocks render as diagrams on GitHub. On renderers without mermaid support, they appear as syntax-highlighted code blocks -- still readable, just not visual.
+- Keep diagrams simple. Complex diagrams with many nodes may not render well in narrow views (mobile, GitHub PR diffs).

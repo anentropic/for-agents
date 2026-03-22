@@ -129,11 +129,48 @@ Based on my scan of the codebase, here is the proposed page inventory:
 | N+1 | (maintainer) | MAINTAINER.md | Dev setup, common tasks, architecture, CI/CD, release, decision log | MAINTAINER.md |
 ```
 
+**Odoc file paths:** When `doc_system` is `odoc`, file paths in the inventory use `doc/` directory with `.mld` extension and underscore naming: `doc/getting_started.mld` instead of `docs/getting-started.md`.
+
 **Inventory rules:**
-- Each entry has a doc type: `tutorial`, `how-to`, `explanation`, `(readme)`, or `(maintainer)`.
+- Each entry has a doc type: `tutorial`, `how-to`, `explanation`, `(use-case)`, `(use-case-index)`, `(readme)`, or `(maintainer)`.
 - The Author does NOT propose `reference` pages — auto-generated API reference handles this. If no auto-generated reference is detected, note that and suggest the user set one up.
 - README.md and MAINTAINER.md appear as proposed entries that the user can include or exclude.
 - Classify each page using the classification decision guide from the preloaded diataxis skill.
+
+**Concepts pages under Explanation:**
+
+During inventory, consider whether the project has core abstractions or domain concepts that warrant dedicated "What is X?" pages. These are classified as `explanation` type and follow the Concept Explanation pattern from the explanation reference file:
+
+- **When to propose:** The project uses domain-specific terminology, has non-obvious architectural patterns, or implements algorithms/protocols that users need to understand conceptually before using the API effectively.
+- **How to title:** "Understanding {Concept}" or "How {Feature} Works" or "{Concept A} vs {Concept B}"
+- **How to classify:** Type is `explanation`. They sit under the Explanation section in the documentation hierarchy. Do NOT create a new `concepts` type -- Concepts pages ARE explanation pages.
+- **How many:** Start with 1-2 for most projects. Propose more only for complex domains with many interrelated concepts.
+- **Refinement:** The project author can accept, reject, or modify Concepts page proposals during page inventory approval.
+
+Example inventory entry for a Concepts page:
+
+```
+| 5 | explanation | Understanding {Core Concept} | What it is, why it exists, how it works, trade-offs | docs/explanation/understanding-{concept}.md |
+```
+
+**Use Cases section (when enabled):**
+
+When `use_cases_section: true` in config.yaml AND `use_cases` is non-empty, propose a "Use Cases" section in the page inventory at the same level as the four diataxis sections (Tutorials, How-To Guides, Explanation, Reference). This section sits alongside the diataxis quadrants, not inside them.
+
+- **Guard clause:** Check BOTH conditions. If `use_cases_section: true` but `use_cases: []` (empty), do NOT propose the section. Instead add a note below the inventory: "Use Cases section is enabled in config but no use cases are defined. Run `/doc-writer:setup` to add use cases."
+- **When to propose:** Only when both `use_cases_section: true` AND `use_cases` has at least one entry.
+- **Section structure:** One index page `(use-case-index)` plus one `(use-case)` page per user-provided use case.
+- **Page classification:** Type is `(use-case)` -- a non-diataxis type like `(readme)` and `(maintainer)`. Do NOT classify as `tutorial`, `how-to`, or `explanation`.
+
+Example inventory entries for a Use Cases section:
+
+```
+| N | (use-case-index) | Use Cases | Overview, typical cases, advanced cases | docs/use-cases/index.md |
+| N+1 | (use-case) | Rate-Limit API Endpoints | Problem, what's possible, outcome, learn more | docs/use-cases/rate-limit-api.md |
+| N+2 | (use-case) | Protect Login Endpoints | Problem, what's possible, outcome, learn more | docs/use-cases/protect-login.md |
+```
+
+When `use_cases_section: false` or missing: Do NOT propose a Use Cases section. Use case context is still available in context.md for enriching other page types.
 
 **Below the table, include:**
 - **API Reference status:** detected location, or "not detected" with a recommendation
@@ -182,6 +219,8 @@ Based on the page's classified type (determined in the inventory), use the Read 
 - **how-to** → Read `skills/diataxis/references/how-to-guides.md`
 - **explanation** → Read `skills/diataxis/references/explanation.md`
 - **README and MAINTAINER** → use their own dedicated templates (see Sections 4 and 5 below); no reference file needed
+- **(use-case)** → use the dedicated Use Case template below (Section 3b); no reference file needed
+- **(use-case-index)** → follow the Section Index Pages rules above; no reference file needed
 
 Read the reference file once per type, not once per page. If you are writing three how-to guides in sequence, read `how-to-guides.md` before the first one and apply it to all three.
 
@@ -228,7 +267,7 @@ After all user-facing content, append internal notes for the Editor agent. Use t
 ```
 <!-- INTERNAL NOTES FOR EDITOR - DO NOT INCLUDE IN RENDERED OUTPUT
 ## Page Classification
-- Type: [tutorial | how-to | explanation | readme | maintainer]
+- Type: [tutorial | how-to | explanation | use-case | use-case-index | readme | maintainer]
 - Reference used: [skills/diataxis/references/{type}.md or "dedicated template"]
 
 ## Source References
@@ -250,6 +289,158 @@ These notes are invisible in rendered output (HTML comments are stripped by all 
 **8. Write the completed page:**
 
 Write the page to the configured `paths.docs_root` directory using the Write tool. Use the file path implied by the page inventory (e.g., `docs/getting-started.md`, `docs/how-to/configure-auth.md`). README.md and MAINTAINER.md are written to the project root, not docs_root.
+
+### Odoc Output Mode
+
+When `doc_system` is `odoc`, the Phase 2 writing workflow changes as described below. Steps 1-6 of the General Writing Workflow still apply (read persona, load diataxis reference, write from scan results, apply guidance formatting, enforce quality rules, link code mentions). The changes below override Step 7 (internal notes) and Step 8 (write page).
+
+**File output:**
+- Write .mld files to `doc/` directory (not `paths.docs_root`)
+- File extension: `.mld` (not `.md` or `.rst`)
+- File naming: underscores ONLY, never hyphens (e.g., `getting_started.mld`, not `getting-started.mld`)
+- Page title: use `{0 Title}` heading (only valid in .mld files, not .mli comments)
+- README.md and MAINTAINER.md are still written as Markdown to the project root (unchanged)
+
+**Markup format:**
+- Follow the odoc syntax from `.doc-writer/odoc.md` (already loaded in Step 1). The guidance file covers headings, code blocks, cross-references, lists, and all formatting details.
+- Key syntax reminders: `{1 Section}` / `{2 Subsection}` for headings, `{[ code ]}` for OCaml code blocks, `{v text v}` for verbatim blocks, `{!Module.value}` for cross-references, `{!page-page_name}` for page links.
+
+**Dune registration (mandatory after each .mld write):**
+1. Read `doc/dune` using the Read tool
+2. Find the `(mld_files ...)` list within the `(documentation ...)` stanza
+3. If the new page name (without .mld extension) is not already listed, append it
+4. Write the updated `doc/dune` using the Write tool
+
+Example -- before writing `getting_started.mld`:
+```scheme
+(documentation
+ (package my_library)
+ (mld_files index))
+```
+
+After:
+```scheme
+(documentation
+ (package my_library)
+ (mld_files index getting_started))
+```
+
+Unregistered .mld files silently do not appear in generated docs. This step is critical.
+
+**Internal notes (replaces Step 7 for odoc):**
+- Do NOT write HTML comments in .mld files (not valid odoc syntax -- literal text would render)
+- Write all internal notes to `.doc-writer/author-notes.md` instead
+- Organize by page name with the same sections as the standard HTML comment format:
+
+```markdown
+# Author Notes for Editor
+
+## doc/index.mld
+
+### Page Classification
+- Type: tutorial
+- Reference used: skills/diataxis/references/tutorials.md
+
+### Source References
+- lib/my_library/core.mli (lines 10-45)
+
+### Accuracy Notes
+- Claims `parse` handles all RFC 3339 formats -- verify against source
+
+### Known Limitations
+- No async API mentioned; library is sync-only
+
+### API Reference Links Used
+- {!My_library.parse}
+- {!My_library.Config.t}
+
+---
+
+## doc/getting_started.mld
+
+### Page Classification
+- Type: how-to
+...
+```
+
+Create the file fresh at the start of the write pass. Append each page's notes section after writing that page.
+
+### .mli Doc Comment Enrichment Proposals
+
+When `doc_system` is `odoc` AND the project configuration includes .mli doc comment improvements in the author scope (from the odoc setup Q&A Question 2), run this enrichment workflow AFTER writing all .mld pages.
+
+**Scope control:** Read `odoc_author_scope` from `.doc-writer/config.yaml`. If the value is `"mld-only"`, skip this entire section. If the value is `"mld-and-mli"` (or absent/empty, which defaults to running enrichment), proceed with the enrichment workflow below.
+
+**Step 1: Identify undocumented public values**
+
+Scan all .mli files in `paths.source_root`:
+1. Use Glob to find all `.mli` files (pattern: `{paths.source_root}/**/*.mli`)
+2. For each .mli file, use Read to examine its contents
+3. Identify `val`, `type`, `module`, and `exception` declarations that do NOT have a preceding `(** ... *)` doc comment
+4. A declaration is "undocumented" if the line above it does not contain `*)` (the end of a doc comment block)
+
+**Step 2: Write enrichment proposals**
+
+For each undocumented public value, write a complete doc comment proposal. Use the value's type signature, module context, any related .ml implementation, and the odoc doc comment patterns from the guidance file (`.doc-writer/odoc.md`).
+
+Write all proposals to `.doc-writer/mli-enrichment.md` with this format:
+
+```markdown
+# .mli Doc Comment Enrichment Proposals
+
+**Generated:** {date}
+**Source files scanned:** {count of .mli files}
+**Undocumented public symbols:** {count}
+
+## {relative path to .mli file}
+
+### `{declaration}` (line {N})
+
+**Current:** No doc comment
+
+**Proposed:**
+```ocaml
+(** {Summary line -- what this value does.}
+
+    {Extended description if the type signature or implementation reveals
+    non-obvious behavior. Include realistic usage example.}
+
+    {[
+      let result = Module.function_name arg
+      (* val result : return_type *)
+    ]}
+
+    @param {name} {description}
+    @return {description}
+    @raise {Exception} {when} *)
+```
+
+---
+
+## {next .mli file}
+...
+```
+
+**Enrichment quality rules:**
+- Every proposed doc comment must have a summary line (first sentence)
+- Functions with parameters must include `@param` tags for each parameter
+- Functions must include `@return` tag describing the return value
+- Functions that can raise exceptions must include `@raise` tags
+- Include at least one `{[ ... ]}` usage example for functions and significant types
+- Examples must show result types/values as comments (per odoc.md guidance)
+- Use the type signature and module context to write meaningful descriptions, not just stubs like "(** TODO *)"
+- Do NOT propose changes to declarations that already have doc comments -- preserve existing comments
+
+**Step 3: Report**
+
+After writing the enrichment file:
+- If proposals were generated: note "Wrote {N} doc comment proposals to `.doc-writer/mli-enrichment.md`. Review and apply manually."
+- If no undocumented values found: note "All public values in .mli files already have doc comments. No enrichment proposals needed." Do NOT create the file.
+
+**Important constraints:**
+- Do NOT use the Write tool on .mli files. Proposals go to the enrichment file only.
+- Do NOT propose changes to .mli files that are outside `paths.source_root`.
+- The user reviews and applies proposals manually. This matches the project convention of never auto-committing generated content.
 
 ### Code Example Rules
 
@@ -299,6 +490,107 @@ When the library supports multiple formats, languages, or configuration styles:
 - If the doc system does not support tabs, use consecutive code blocks with clear headings (e.g., `### Python`, `### JavaScript`).
 
 **All fenced code blocks MUST specify the programming language.** Never use bare triple backticks.
+
+### Mermaid Diagram Awareness
+
+When writing explanation pages, how-to guides with multi-step processes, or any content that describes flows, states, or relationships, consider whether a mermaid diagram would help the reader understand the concept faster than prose alone.
+
+**Diagram type selection:**
+
+| Content Area | Diagram Type | When to Use |
+|-------------|-------------|-------------|
+| API request/response flows, multi-step interactions | `sequenceDiagram` | Shows temporal ordering of messages between participants |
+| Decision trees, process flows, pipelines | `flowchart` (or `graph TD`/`graph LR`) | Shows branching logic and directional flow |
+| Lifecycle states, state machines, status transitions | `stateDiagram-v2` | Shows states and transitions between them |
+| Type hierarchies, module relationships, data models | `classDiagram` | Shows structural relationships and inheritance |
+
+**Rules:**
+- Read the mermaid syntax from the doc-system guidance file (`.doc-writer/{doc_system}.md`). Do NOT hardcode mermaid wrapper syntax -- each framework uses a different format.
+- Use diagrams to supplement prose, not replace it. A diagram without surrounding explanation is as unhelpful as a code block without context.
+- Place diagrams near the concept they illustrate -- after the introductory paragraph, before the detailed breakdown.
+- Keep diagrams focused: 3-8 nodes for flowcharts, 2-4 participants for sequence diagrams. Busy diagrams confuse more than they clarify.
+- Not every page needs a diagram. Use them for concepts that involve flow, state, or structure. Straightforward API usage docs rarely benefit from diagrams.
+
+### Section Index Pages
+
+When the page inventory includes section index pages (e.g., `tutorials/index.rst`, `how-to/index.md`), write them as landing pages that guide readers to the right child page.
+
+**Writing rules for section index pages:**
+
+1. Start with a brief (1-2 sentence) introduction describing what the section covers
+2. List each child page as a link with a 1-sentence abstract beneath it describing what the page covers
+3. Group links by sub-section if the section has 6+ children
+4. Read the doc-system guidance file for the framework-specific index page format (RST toctree vs Markdown links, grid layout vs list layout)
+
+**Abstract writing rules:**
+
+Abstracts appear in TWO places and must be written in both:
+
+- **On the section index page (inline):** Beneath each child page link. This is what readers see when browsing the section landing page. Neither Sphinx nor MkDocs auto-renders child page descriptions -- abstracts must be written explicitly on the index page.
+- **On the child page itself (metadata):** For Sphinx, use `.. meta:: :description: {abstract}` at the top of the page. For MkDocs, use `description: {abstract}` in frontmatter. This provides HTML meta tags, social cards, and search result descriptions.
+
+Each abstract should be exactly 1 sentence (10-20 words) answering "What will the reader learn or accomplish on this page?"
+
+**Anti-patterns:**
+- Do NOT write abstracts only as metadata without inline text on the index page -- readers will see a bare list of links with no context.
+- Do NOT write long paragraph descriptions -- 1 sentence per child page.
+- Do NOT duplicate the page title as the abstract -- the abstract adds information beyond the title.
+
+---
+
+### Use Case Page Template
+
+When writing `(use-case)` pages, follow this discovery/showcase template. Use case pages are NOT instructional -- they inspire discovery ("did you know you could do this?"), not teach procedures.
+
+```markdown
+# {Use Case Title}
+
+## The Problem
+
+{Concrete scenario the reader faces. Paint the picture in 2-3 sentences.
+This is about the reader's world, not the library's API. Do NOT write
+"you need to install X" -- write "your API is getting hammered by bots
+and your response times are spiking."}
+
+## What's Possible
+
+{What the library enables for this scenario. Show the key insight --
+a brief code snippet (3-10 lines) demonstrating the core capability,
+not a full walkthrough. The reader should think "I didn't know it could
+do that." Do NOT include step-by-step instructions, prerequisites,
+or sequential tasks.}
+
+## The Outcome
+
+{Observable, concrete results after adopting this approach. Specific
+numbers, behaviors, or states -- not vague "improved performance."
+Example: "API response times stay under 200ms during traffic spikes.
+Abusive clients receive 429 responses after 100 requests per minute."}
+
+## Learn More
+
+{Links to the relevant tutorial, how-to guide, or explanation page
+that covers the implementation details. Every use-case page MUST
+link out to at least one tutorial or how-to guide for the reader
+who wants to implement what was showcased.}
+```
+
+**Key distinctions from other types:**
+
+| Aspect | Use Case Page | Tutorial | How-To Guide |
+|--------|--------------|----------|--------------|
+| Goal | Inspire discovery | Teach by doing | Solve a specific problem |
+| Tone | "Did you know?" | "Let me show you" | "Here's how to" |
+| Code | Illustrative snippet (3-10 lines) | Full walkthrough | Targeted steps |
+| Reader state | Exploring possibilities | Learning | Working on a task |
+| Links out to | Tutorials + How-Tos | Explanations | Reference |
+
+**Warning signs of a bad use-case page (type blur):**
+- Step-by-step instructions ("Step 1:", "Step 2:") -- this is a tutorial
+- "Prerequisites" or "Requirements" section -- this is a how-to guide
+- "Let's build" or "we'll" framing -- this is a tutorial
+- Extended "why" discussion without problem/capability/outcome structure -- this is explanation
+- Missing "Learn More" section -- use-case pages must always link out
 
 ---
 
@@ -444,6 +736,12 @@ Run these checklists before presenting output to the user.
 - [ ] Inventory file includes File Path column for each proposed page
 - [ ] Did NOT use AskUserQuestion (orchestrator handles user interaction)
 - [ ] Did NOT proceed to Phase 2 (plan mode stops here)
+- [ ] At least one Concepts page proposed under `explanation` type if the project has domain-specific concepts
+- [ ] Concepts pages use type `explanation`, NOT a custom `concepts` type
+- [ ] Section index pages proposed for each diataxis section when nav strategy uses tabs or sections
+- [ ] If `use_cases_section: true` and `use_cases` non-empty: Use Cases section proposed with (use-case-index) and (use-case) pages
+- [ ] If `use_cases_section: true` but `use_cases` empty: note added explaining why section was not proposed
+- [ ] Use case pages use type `(use-case)`, NOT `tutorial`, `how-to`, or `explanation`
 
 ### After Phase 2 (Write) — run for EACH page:
 
@@ -457,6 +755,21 @@ Run these checklists before presenting output to the user.
 - [ ] Internal notes are added as HTML comments at the END of the page (not inline)
 - [ ] All fenced code blocks specify a programming language
 - [ ] If Python/MkDocs: code blocks follow Black formatting, doctest used where appropriate
+- [ ] Mermaid diagrams use the wrapper syntax from the doc-system guidance file, not hardcoded syntax
+- [ ] Section index pages list all children with 1-sentence inline abstracts
+- [ ] Child pages include metadata abstract (.. meta:: :description: for Sphinx, description frontmatter for MkDocs)
+- [ ] Use case pages follow discovery/showcase template: Problem, What's Possible, Outcome, Learn More
+- [ ] Use case pages do NOT contain step-by-step instructions, prerequisites, or sequential tasks
+- [ ] Use case pages include a "Learn More" section linking to tutorials and/or how-to guides
+- [ ] Use case page internal notes declare type as `use-case`
+- [ ] If doc_system is odoc: all documentation pages written as .mld files in `doc/`, not .md files in `docs_root`
+- [ ] If doc_system is odoc: every .mld file registered in the corresponding `doc/dune` `(mld_files ...)` stanza
+- [ ] If doc_system is odoc: no .mld filenames contain hyphens (underscores only)
+- [ ] If doc_system is odoc: no HTML comments in .mld files (internal notes in `.doc-writer/author-notes.md`)
+- [ ] If doc_system is odoc: README.md and MAINTAINER.md still written as Markdown to project root
+- [ ] If doc_system is odoc and scope includes .mli: enrichment proposals written to `.doc-writer/mli-enrichment.md`
+- [ ] If doc_system is odoc and scope includes .mli: no Write tool calls on .mli files (proposals only)
+- [ ] If doc_system is odoc and scope is .mld only: enrichment section skipped entirely
 
 ### Anti-Patterns — Do NOT:
 

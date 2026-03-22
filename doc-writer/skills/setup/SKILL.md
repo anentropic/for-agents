@@ -64,6 +64,8 @@ First, check whether this project already has a doc-writer configuration:
         - User tasks: [list or "none"]
 
      **Tone:** {tone or "not set"}
+     **Use Cases:** {count} use case(s) configured {or "none (inferred from persona context)"}
+     **Use Cases Section:** {enabled or disabled}
      **Doc system:** [doc_system]
      **Docs root:** [paths.docs_root]
      **Source root:** [paths.source_root]
@@ -74,6 +76,7 @@ First, check whether this project already has a doc-writer configuration:
      - options:
        - { label: "User Personas", description: "Edit, add, or remove user personas" }
        - { label: "Tone", description: "Change documentation writing tone (currently: {tone})" }
+       - { label: "Use Cases", description: "Edit, add, or remove use cases" }
        - { label: "Doc system", description: "Change documentation system (currently: {doc_system})" }
        - { label: "Paths", description: "Change docs root or source root directories" }
        - { label: "Re-run researcher", description: "Regenerate context.md from current config" }
@@ -82,6 +85,7 @@ First, check whether this project already has a doc-writer configuration:
        - { label: "Chat about this", description: "Discuss configuration options" }
    - **"User Personas":** Jump to Step 4 persona handling.
    - **"Tone":** Jump to Step 2a.5 (Tone Selection). After tone is updated, write updated config and return to re-run menu.
+   - **"Use Cases":** Jump to Step 4 use cases handling.
    - **"Doc system":** Jump to Step 4 doc system handling.
    - **"Paths":** Jump to Step 4 paths handling.
    - **"Re-run researcher":** Jump to Step 5 (Context Enrichment). After researcher completes, return to re-run menu.
@@ -95,6 +99,77 @@ First, check whether this project already has a doc-writer configuration:
 ### Step 2: Full Q&A Flow (First-Time Setup)
 
 Run through these questions interactively. Wait for user response after each question before proceeding to the next.
+
+#### 2a.0: Use Cases
+
+Before asking any questions, display this introduction:
+
+```
+## Use Cases
+
+Before defining who reads your docs, let's capture what they do with
+your library. Use cases help calibrate the docs to real-world scenarios.
+
+You can skip this if you prefer -- the system will infer use cases
+from your persona descriptions later.
+```
+
+**Step 1: Capture use cases**
+
+Use AskUserQuestion:
+- header: "Use Cases"
+- question: "Describe a typical use case -- what problem does someone solve with this library?"
+- options:
+  - { label: "Describe a use case", description: "Write a freeform description of what someone accomplishes" }
+  - { label: "Skip", description: "Infer use cases from persona context later" }
+  - { label: "Chat about this", description: "Discuss what makes a good use case description" }
+
+- **"Describe a use case":** Ask in plain text: "Describe what someone accomplishes with this library -- what problem they face, what the library makes possible, and the outcome." Wait for freeform response. Extract these structured fields:
+  - `title`: short label (e.g., "Rate-limit API endpoints")
+  - `problem`: what problem the user faces without this library
+  - `capability`: what the library makes possible
+  - `outcome`: the end result when the use case is accomplished
+
+  Present the extracted use case:
+  ```
+  ### {title}
+  **Problem:** {problem}
+  **What's possible:** {capability}
+  **Outcome:** {outcome}
+  ```
+
+  Then use AskUserQuestion:
+  - header: "Use Cases"
+  - question: "Use case captured. Add another?"
+  - options:
+    - { label: "Add another", description: "Describe another use case" }
+    - { label: "Done", description: "Continue to next step" }
+    - { label: "Edit", description: "Change this use case" }
+
+  - **"Add another":** Repeat the capture flow.
+  - **"Done":** Proceed to Step 2a.0.2 (Promotion Question) if at least one use case was provided. If no use cases were provided (should not happen on this path), proceed to Step 2a (User Persona Definition).
+  - **"Edit":** Ask in plain text which fields to change. Update accordingly, then re-present the summary.
+
+- **"Skip":** Store empty `use_cases: []` in config. The researcher will infer basic use cases from persona context for internal context.md only. Skip the promotion question. Proceed directly to Step 2a (User Persona Definition).
+- **"Chat about this":** Explain how use cases help calibrate documentation to real-world scenarios. After discussion, re-present the question.
+
+**Step 2: Promotion question (only if user provided at least one use case)**
+
+Use AskUserQuestion:
+- header: "Use Cases Section"
+- question: "Should use cases become a documentation section alongside Tutorials, How-To Guides, Explanation, and Reference?"
+- options:
+  - { label: "Yes, add Use Cases section", description: "Typical and advanced cases become pages readers can browse" }
+  - { label: "No, context only", description: "Use cases inform doc writing but don't appear as their own section" }
+  - { label: "Chat about this", description: "Discuss what a Use Cases documentation section looks like" }
+
+- **"Yes, add Use Cases section":** Record `use_cases_section: true`.
+- **"No, context only":** Record `use_cases_section: false`.
+- **"Chat about this":** Explain that a Use Cases section sits alongside the four diataxis quadrants (Tutorials, How-To Guides, Explanation, Reference) with pages that showcase what the library enables in a "did you know you could do this?" discovery format. After discussion, re-present the question.
+
+After promotion question, proceed to Step 2a (User Persona Definition).
+
+**Guard clause:** If `use_cases` is empty (user skipped capture), do NOT ask the promotion question. The skip-and-infer path and the docs-section path are fully decoupled.
 
 #### 2a: User Persona Definition
 
@@ -290,6 +365,10 @@ After doc system selection, check whether the project already has a framework co
         | `{package_name}` | dune-project `(name ...)` sexp or inferred from project structure | Same as `{site_name}` | Ask user: "Package name:" |
         | `{library_name}` | dune-project `(public_name ...)` sexp or library name from Q1 answer | Same as `{package_name}` | Ask user: "Library name:" |
         | `{synopsis}` | Same as `{site_description}` | opam file synopsis field | Ask user: "One-line synopsis:" |
+        | `{nav_links_config}` | Q&A answer for "Navigation strategy" question (sphinx-shibuya only). "Sections as top tabs": full `"nav_links": [...]` Python dict with per-section entries including title, url, children with title/url/summary. "Single 'Docs' tab": single `"nav_links": [{"title": "Docs", "url": "index", "children": [...]}]` entry. "Sidebar only": empty string (no nav_links key). | If no Q&A answer: empty string | -- |
+        | `{nav_feature_flags}` | Q&A answer for "Navigation strategy" question (mkdocs-material only). "Sections as top tabs" or "Single 'Docs' tab": `    - navigation.tabs\n    - navigation.tabs.sticky\n    - navigation.indexes`. "Sidebar only": empty string. | If no Q&A answer: empty string | -- |
+
+        **Nav strategy variable resolution:** The `{nav_links_config}` and `{nav_feature_flags}` variables are multi-line replacements. The agent generating the scaffold reads the navigation strategy Q&A answer and produces the appropriate block. For `{nav_links_config}`, the replacement includes proper Python indentation (4 spaces for the key, 8 spaces for list items). For `{nav_feature_flags}`, the replacement includes proper YAML indentation (4 spaces with `- ` prefix). When the strategy is "Sidebar only", both variables resolve to empty string (the line is removed).
 
         Variables not in this table: ask the user in plain text for a value.
         Variables with an automatic source (e.g., `{copyright_year}`): never ask -- always use the computed value.
@@ -361,6 +440,8 @@ After scaffold check, present framework-specific questions. These are read dynam
 
 4. **Record all answers.** Framework Q&A answers do NOT go into config.yaml. Store them in-memory and pass them to the researcher via the Agent tool invocation message in Step 5.
 
+   **Exception:** If `doc_system` is `odoc`, persist the Question 2 answer (author scope) to `config.yaml` as `odoc_author_scope`. Set to `"mld-and-mli"` if the user chose ".mld pages + .mli doc comment improvements", or `"mld-only"` if they chose ".mld pages only". This value is needed by the doc-author agent at write time (across sessions) to gate the .mli enrichment workflow.
+
 **Passing framework answers to the researcher:**
 
 This is unchanged from the current behavior. Framework Q&A answers are passed to the researcher in the Agent tool invocation message in Step 5.
@@ -385,7 +466,7 @@ After Q&A completes, create the project configuration:
 
 1. **Create `.doc-writer/` directory** if it does not exist.
 
-2. **Write `.doc-writer/config.yaml`** -- Read the config template from `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/config-template.yaml` and populate it with the Q&A answers. The config MUST use `user_personas:` as an array, even for a single persona. Include the `detected:` section with auto-detection results from the Project Detection Results above. The config MUST include `tone: "{selected_tone}"` as a top-level field. Each persona entry MUST include `user_tasks: [{selected_tasks}]`.
+2. **Write `.doc-writer/config.yaml`** -- Read the config template from `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/config-template.yaml` and populate it with the Q&A answers. The config MUST use `user_personas:` as an array, even for a single persona. Include the `detected:` section with auto-detection results from the Project Detection Results above. The config MUST include `tone: "{selected_tone}"` as a top-level field. Each persona entry MUST include `user_tasks: [{selected_tasks}]`. The config MUST include `use_cases:` as an array (empty `[]` if user skipped, or populated with structured objects). The config MUST include `use_cases_section: true|false`.
 
 3. **Copy the selected guidance file:**
    - Read `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/{doc_system}.md`
@@ -428,6 +509,21 @@ Based on user selection from Step 1:
   - Write updated config preserving all other fields.
 
 - **`tone`** (from "Tone" selection above): Present the tone selection AskUserQuestion (same as Step 2a.5). Write updated config preserving all other fields.
+
+- **`use_cases`** (from "Use Cases" selection above): Show current use cases. If `use_cases` is non-empty, display each use case with title, problem, capability, outcome. If empty, display "No use cases configured (inferred from persona context)."
+  Use AskUserQuestion:
+  - header: "Use Cases"
+  - question: "What would you like to do with your use cases?"
+  - options:
+    - { label: "Add use case", description: "Describe a new use case" }
+    - { label: "Edit use case", description: "Modify an existing use case" }
+    - { label: "Remove use case", description: "Delete an existing use case" }
+    - { label: "Toggle section", description: "Enable or disable Use Cases documentation section (currently: {use_cases_section})" }
+    - { label: "Type something else", description: "Describe a different change" }
+    - { label: "Chat about this", description: "Discuss use case configuration" }
+  - Handle each selection with plain-text follow-ups as needed.
+  - **"Toggle section":** If toggling to `true` but `use_cases` is empty, display: "A Use Cases documentation section requires explicit use cases. Add at least one use case first." and re-present the menu. Otherwise, flip `use_cases_section` and write updated config.
+  - Write updated config preserving all other fields.
 
 - **`doc system`**: Show current doc system. Present selection options (same as Step 2b). If changed, copy new guidance file to `.doc-writer/`. Note: the old guidance file remains in `.doc-writer/` -- user can delete it manually if desired. If the new doc system triggers the unknown framework researcher flow, wait for it to complete and check for FALLBACK prefix to set framework_root. Then run Step 2b.3 (Scaffold Check) for the new framework.
 

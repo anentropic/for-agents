@@ -12,7 +12,16 @@ user_personas:
 
 tone: ""
 
+use_cases:
+  - title: ""
+    problem: ""
+    capability: ""
+    outcome: ""
+
+use_cases_section: false
+
 doc_system: ""
+odoc_author_scope: ""  # "mld-and-mli" or "mld-only" — set when doc_system is odoc
 api_reference: ""
 
 paths:

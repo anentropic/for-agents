@@ -368,3 +368,32 @@ Do NOT use odoc 3.x-only syntax in templates or examples. Stick to odoc 2.x synt
 - [ ] Every .mld file registered in `(mld_files ...)` in its doc/dune
 - [ ] Top-level pages link to GitHub repository
 - [ ] Generated HTML reviewed for navigation and broken links
+
+## Mermaid Diagrams
+
+odoc has no native mermaid rendering support. Use a workaround: include the mermaid source as a verbatim block for reference, and link to an externally-generated SVG for the rendered diagram.
+
+- Include mermaid source in a `{v ... v}` verbatim block so readers can see the diagram definition:
+
+  ```ocaml
+  (** Architecture overview.
+
+      The processing pipeline follows this flow:
+
+      {{:./diagrams/pipeline.svg} Pipeline diagram}
+
+      Mermaid source for reference:
+
+      {v
+      flowchart LR
+          A[Input] --> B{Validate}
+          B -->|Valid| C[Process]
+          B -->|Invalid| D[Error]
+          C --> E[Output]
+      v}
+  *)
+  ```
+
+- To generate the SVG, use the mermaid CLI (`mmdc`) outside of odoc: `mmdc -i pipeline.mmd -o diagrams/pipeline.svg`. Store `.mmd` source files alongside the generated SVGs.
+- Do NOT use or recommend `odoc-mermaid` or any experimental odoc mermaid extension -- these are not on opam stable and are not production-ready.
+- The `{v ... v}` block renders as preformatted text, not as a diagram. The SVG link provides the visual rendering.

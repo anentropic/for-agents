@@ -29,7 +29,7 @@ Produce library documentation that the project author can publish with minimal t
 - ✓ Per-project audience configuration via setup Q&A (remembered across sessions) — v1.0
 - ✓ User Persona generates test scenarios from project context without manual authoring — v1.0
 - ✓ Content-first output with doc-system-specific rules (mkdocs-material, sphinx-shibuya, odoc, plain-markdown) — v1.0
-- ✓ Works as standalone CC plugin (invokable by any CC user) — v1.0 (packaged with plugin.json + marketplace.json)
+- ✓ Works as standalone CC plugin (invokable by any CC user) — v1.0
 - ✓ Works as GSD integration (invokable at milestone boundaries) — v1.0
 - ✓ On-demand invocation via /doc-writer:write, /doc-writer:review, /doc-writer:edit — v1.0
 - ✓ Extensible quality rules — user can add custom rules to project config — v1.0
@@ -38,20 +38,17 @@ Produce library documentation that the project author can publish with minimal t
 - ✓ Unknown framework support: researcher generates guidance, Q&A, and scaffold files dynamically — v1.0
 - ✓ OCaml/odoc first-class support with .mld scaffolds, cross-reference rules, dune wiring — v1.0
 - ✓ Scaffold variable substitution covers all frameworks generically (9-variable inference table) — v1.0
+- ✓ Use Cases Q&A capture (before personas), optional promotion to docs section — v1.4.0
+- ✓ Concepts page proposal under Explanation — v1.4.0
+- ✓ Mermaid diagram awareness across all four doc systems — v1.4.0
+- ✓ Three-strategy navigation for sphinx-shibuya and mkdocs-material with section index pages — v1.4.0
+- ✓ OCaml scan-exports for public symbol detection from .mli files — v1.4.0
+- ✓ Odoc-native .mld output with dune registration — v1.4.0
+- ✓ .mli doc comment enrichment proposals — v1.4.0
 
 ### Active
 
-## Current Milestone: v1.4.0 Content & Navigation
-
-**Goal:** Richer content types (Use Cases, Concepts), smarter nav structure for sphinx-shibuya and mkdocs-material, close OCaml/odoc gaps, and mermaid diagram support.
-
-**Target features:**
-- Use Cases setup Q&A context capture (before User Personas), optional promotion to docs section
-- Default Concepts page proposal under Explanation
-- Sphinx-shibuya nav: three top-tab strategies (none, "Docs" tab, sections-as-tabs with dropdowns), section index abstracts
-- MkDocs-material nav: same top-tab strategies (without dropdowns), section index abstracts
-- Mermaid diagram awareness in doc-author across all frameworks
-- OCaml/odoc: scan-exports.sh language case, doc-author .mld/.mli handling
+(None — next milestone not yet defined)
 
 ### Out of Scope
 
@@ -59,11 +56,12 @@ Produce library documentation that the project author can publish with minimal t
 - Doc site hosting or deployment — this writes content, not infrastructure
 - Non-library docs (blog posts, marketing pages, internal wikis) — scoped to library/package documentation
 - Automated publishing — the maintainer decides when to publish
-- ~~OCaml doc-author .mld/.mli file handling~~ — moved to v1.4.0 Active scope
 
 ## Context
 
 **Shipped v1.0:** 13 phases, 28 plans, 164 commits. 34 files in `doc-writer/`, 8,167 lines inserted. 2026-03-02 → 2026-03-19 (17 days).
+
+**Shipped v1.4.0:** 4 phases, 8 plans, 52 commits. 57 files changed, +9,516 / -1,219 lines. 2026-03-21 → 2026-03-22 (2 days).
 
 Tech stack: Markdown skill files, bash test scripts (bats), YAML config templates, Python conf.py scaffold, Sexp dune templates.
 
@@ -75,9 +73,8 @@ Tech stack: Markdown skill files, bash test scripts (bats), YAML config template
 - `tests/`: bats test suites covering all phases
 
 **Known issues / v2 candidates:**
-- ~~doc-author has no .mld/.mli file handling for odoc projects~~ — resolved in Phase 17
-- ~~scan-exports.sh has no OCaml language case~~ — resolved in Phase 14
 - 8 phases have `nyquist_compliant: false` in VALIDATION.md (pre-dates Nyquist adoption; tests pass, frontmatter not updated)
+- Prior-phase bats tests reference stale PROJECT_ROOT path
 
 ## Constraints
 
@@ -103,6 +100,7 @@ Tech stack: Markdown skill files, bash test scripts (bats), YAML config template
 | Use case inference decoupled from docs section | Skipping use cases in setup infers agent context only; docs section requires explicit user-provided cases | ✓ Good — prevents thin auto-generated docs sections |
 | .mli enrichment as proposals, not auto-edits | Author writes enrichment proposals to a review file, never directly to source | ✓ Good — respects "never auto-commit generated content" principle |
 | External author-notes for odoc | .mld files can't contain HTML comments, so internal notes go to .doc-writer/author-notes.md | ✓ Good — clean separation without losing Editor context |
+| Nav strategy as scaffold variable, not scaffold variant | One scaffold per framework; nav strategy via {nav_links_config} / {nav_feature_flags} substitution | ✓ Good — avoids scaffold proliferation |
 
 ---
 ## Evolution
@@ -123,4 +121,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-22 after Phase 17 (OCaml .mld/.mli Output) complete — LAST PHASE of v1.4.0*
+*Last updated: 2026-03-22 after v1.4.0 Content & Navigation milestone complete*

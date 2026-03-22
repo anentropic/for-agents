@@ -51,6 +51,53 @@
 
 ---
 
+## Milestone: v1.4.0 — Content & Navigation
+
+**Shipped:** 2026-03-22
+**Phases:** 4 | **Plans:** 8 | **Timeline:** 2 days (2026-03-21 → 2026-03-22)
+
+### What Was Built
+
+- Mermaid diagram awareness across all 4 doc systems (mkdocs-material, sphinx-shibuya, odoc, plain-markdown) with framework-specific wrapper syntax
+- Three-strategy navigation (sections-as-tabs, single Docs tab, sidebar-only) for sphinx-shibuya and mkdocs-material with scaffold variable substitution and section index pages with dual-placement abstracts
+- Use Cases Q&A capture before user personas with skip/infer path, optional promotion to docs section with discovery/showcase page template, and editor blur detection
+- Odoc-native .mld output mode with conditional write workflow, dune registration, external author-notes, and .mld discovery across editor/tester/SKILL
+- .mli doc comment enrichment proposal workflow with scope control, quality rules, and pipeline summary integration
+- OCaml scan-exports language case for public symbol detection from .mli files
+
+### What Worked
+
+- **Assumptions discussion before planning**: `/gsd:list-phase-assumptions` for both phases 16 and 17 caught corrections early — ordering (use cases before personas), page template depth (discovery/showcase), and inference scope (agent-context only, not docs-section) were all corrected before a single plan was written
+- **Auto-advance pipeline**: Phases 16 and 17 both ran assumptions → plan → execute → verify in a single auto chain, completing the entire milestone in one session
+- **Integration checker caught a real bug**: OCML-04 scope persistence gap was invisible to per-phase verification but caught by the milestone integration check. The odoc Q&A scope answer wasn't being persisted to config.yaml — a cross-session wiring bug.
+- **Inline fix for small gaps**: Instead of creating a full gap-closure phase for the OCML-04 scope persistence issue (3 files, 3 edits), the user opted to fix inline — saving an entire phase cycle for a trivial fix.
+
+### What Was Inefficient
+
+- **No CONTEXT.md for either phase**: Both phases 16 and 17 skipped discuss-phase and planned from research + requirements only. The assumptions discussion substituted well, but formally captured CONTEXT.md would have been passed to all downstream agents automatically.
+- **Roadmap success criteria text contradicted requirements**: Phase 16 roadmap said "after user personas" but CONT-01 said "before". This was caught during assumptions but should have been caught during roadmap creation.
+
+### Patterns Established
+
+- **Non-diataxis page types follow README/MAINTAINER pattern**: Use-case pages get inline templates in doc-author.md (like Sections 4/5 for README/MAINTAINER) rather than diataxis reference files. Editor gets inline blur signals rather than loading a reference file.
+- **External author-notes for non-HTML-compatible doc systems**: When a doc system can't contain HTML comments (.mld for odoc), internal notes go to `.doc-writer/author-notes.md`. This pattern is extensible to future doc systems.
+- **Enrichment as proposals, not auto-edits**: When agents propose changes to user source files, write proposals to a review file — never edit source directly.
+- **odoc scope persistence exception**: Framework Q&A answers generally stay in-memory, but cross-session values (like odoc author scope) must be persisted to config.yaml.
+
+### Key Lessons
+
+1. **Integration checks catch cross-session wiring bugs that phase verification misses.** The OCML-04 scope gate was correct within a session (Q&A answer in memory) but broken across sessions (no persistence). Always verify data flow across the session boundary.
+2. **Assumptions discussion is cheap insurance.** Two 5-minute assumptions discussions saved hours of replanning. The user caught 3 corrections in Phase 16 and 1 in Phase 17 that would have produced incorrect plans.
+3. **Small gaps don't need phases.** The 3-edit OCML-04 fix was better done inline than through the full plan→execute→verify pipeline. A full phase would have cost ~10x more tokens for the same outcome.
+
+### Cost Observations
+
+- Model mix: ~70% opus (researcher + planner + executor), ~30% sonnet (plan-checker + verifier + integration-checker)
+- Sessions: 1 session for all 4 phases + audit + fix + milestone completion
+- Notable: Auto-advance eliminated context-switching overhead between phases
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -58,14 +105,18 @@
 | Milestone | Phases | Plans | Key Change |
 |-----------|--------|-------|------------|
 | v1.0 | 13 | 28 | Established wave-based execution, Nyquist validation, gap-closure pipeline |
+| v1.4.0 | 4 | 8 | Assumptions-first planning, auto-advance pipeline, inline gap fixes |
 
 ### Cumulative Quality
 
 | Milestone | Bats Tests | Phases w/ Tests | Notes |
 |-----------|------------|-----------------|-------|
 | v1.0 | 10 (phase-13) + 31 (pkg) + 42 (setup) + 49 (auth) = 132 | 7/13 | Pre-Nyquist phases (1-6) lack bats; all content-verifiable |
+| v1.4.0 | grep-based acceptance criteria per task | 4/4 | All phases have VALIDATION.md; grep-based verify per task |
 
 ### Top Lessons (Verified Across Milestones)
 
 1. **Additive changes are safer than modifying existing files** — validated throughout v1.0 framework additions
 2. **Runtime wiring bugs survive static verification** — must explicitly test end-to-end paths, not just file content
+3. **Integration checks catch cross-session bugs** — validated in v1.4.0 (OCML-04 scope persistence)
+4. **Assumptions discussion before planning catches corrections cheaply** — validated in v1.4.0 (3 corrections in Phase 16)

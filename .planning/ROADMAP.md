@@ -83,15 +83,15 @@ Plans:
 **Depends on**: Phase 15 (Use Cases section placement requires knowing available nav strategies)
 **Requirements**: CONT-01, CONT-02, CONT-03
 **Success Criteria** (what must be TRUE):
-  1. Setup Q&A includes a Use Cases step after user personas that is skippable (infers from persona context if skipped)
+  1. Setup Q&A includes a Use Cases step before user personas that is skippable (infers from persona context if skipped)
   2. Captured use cases are stored in config.yaml and expanded by the researcher agent into context.md
   3. Use cases can be optionally promoted to a docs section (at the same level as diataxis quadrants) with typical and advanced cases as pages
   4. Editor recognizes (use-case) page type in Pass 2 blur detection without misclassifying it
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 16-01: TBD
-- [ ] 16-02: TBD
+- [ ] 16-01-PLAN.md — Setup Q&A use cases step, config schema extension, and researcher use case expansion
+- [ ] 16-02-PLAN.md — Doc-author use-case page template and inventory awareness, editor Pass 2 recognition
 
 ### Phase 17: OCaml .mld/.mli Output
 **Goal**: Doc-author produces odoc-native .mld files (not Markdown) for odoc projects, and the full pipeline handles .mld discovery and syntax
@@ -130,5 +130,5 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 13. Scaffold Variable Fix + Doc-Researcher | v1.0 | 3/3 | Complete | 2026-03-19 |
 | 14. Foundations | v1.4.0 | 2/2 | Complete    | 2026-03-21 |
 | 15. Navigation Strategies | v1.4.0 | 2/2 | Complete    | 2026-03-22 |
-| 16. Use Cases | v1.4.0 | 0/? | Not started | - |
+| 16. Use Cases | v1.4.0 | 0/2 | Not started | - |
 | 17. OCaml .mld/.mli Output | v1.4.0 | 0/? | Not started | - |

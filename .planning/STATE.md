@@ -4,7 +4,7 @@ milestone: v1.4.0
 milestone_name: Content & Navigation
 status: unknown
 stopped_at: Completed 17-02-PLAN.md
-last_updated: "2026-03-22T02:15:21.829Z"
+last_updated: "2026-03-22T02:18:48.339Z"
 progress:
   total_phases: 4
   completed_phases: 4
@@ -23,8 +23,8 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 
 ## Current Position
 
-Phase: 17 (ocaml-mld-mli-output) — EXECUTING
-Plan: 2 of 2
+Phase: 17
+Plan: Not started
 
 ## Performance Metrics
 

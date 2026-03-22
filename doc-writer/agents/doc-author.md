@@ -130,7 +130,7 @@ Based on my scan of the codebase, here is the proposed page inventory:
 ```
 
 **Inventory rules:**
-- Each entry has a doc type: `tutorial`, `how-to`, `explanation`, `(readme)`, or `(maintainer)`.
+- Each entry has a doc type: `tutorial`, `how-to`, `explanation`, `(use-case)`, `(use-case-index)`, `(readme)`, or `(maintainer)`.
 - The Author does NOT propose `reference` pages — auto-generated API reference handles this. If no auto-generated reference is detected, note that and suggest the user set one up.
 - README.md and MAINTAINER.md appear as proposed entries that the user can include or exclude.
 - Classify each page using the classification decision guide from the preloaded diataxis skill.
@@ -150,6 +150,25 @@ Example inventory entry for a Concepts page:
 ```
 | 5 | explanation | Understanding {Core Concept} | What it is, why it exists, how it works, trade-offs | docs/explanation/understanding-{concept}.md |
 ```
+
+**Use Cases section (when enabled):**
+
+When `use_cases_section: true` in config.yaml AND `use_cases` is non-empty, propose a "Use Cases" section in the page inventory at the same level as the four diataxis sections (Tutorials, How-To Guides, Explanation, Reference). This section sits alongside the diataxis quadrants, not inside them.
+
+- **Guard clause:** Check BOTH conditions. If `use_cases_section: true` but `use_cases: []` (empty), do NOT propose the section. Instead add a note below the inventory: "Use Cases section is enabled in config but no use cases are defined. Run `/doc-writer:setup` to add use cases."
+- **When to propose:** Only when both `use_cases_section: true` AND `use_cases` has at least one entry.
+- **Section structure:** One index page `(use-case-index)` plus one `(use-case)` page per user-provided use case.
+- **Page classification:** Type is `(use-case)` -- a non-diataxis type like `(readme)` and `(maintainer)`. Do NOT classify as `tutorial`, `how-to`, or `explanation`.
+
+Example inventory entries for a Use Cases section:
+
+```
+| N | (use-case-index) | Use Cases | Overview, typical cases, advanced cases | docs/use-cases/index.md |
+| N+1 | (use-case) | Rate-Limit API Endpoints | Problem, what's possible, outcome, learn more | docs/use-cases/rate-limit-api.md |
+| N+2 | (use-case) | Protect Login Endpoints | Problem, what's possible, outcome, learn more | docs/use-cases/protect-login.md |
+```
+
+When `use_cases_section: false` or missing: Do NOT propose a Use Cases section. Use case context is still available in context.md for enriching other page types.
 
 **Below the table, include:**
 - **API Reference status:** detected location, or "not detected" with a recommendation
@@ -198,6 +217,8 @@ Based on the page's classified type (determined in the inventory), use the Read 
 - **how-to** → Read `skills/diataxis/references/how-to-guides.md`
 - **explanation** → Read `skills/diataxis/references/explanation.md`
 - **README and MAINTAINER** → use their own dedicated templates (see Sections 4 and 5 below); no reference file needed
+- **(use-case)** → use the dedicated Use Case template below (Section 3b); no reference file needed
+- **(use-case-index)** → follow the Section Index Pages rules above; no reference file needed
 
 Read the reference file once per type, not once per page. If you are writing three how-to guides in sequence, read `how-to-guides.md` before the first one and apply it to all three.
 
@@ -244,7 +265,7 @@ After all user-facing content, append internal notes for the Editor agent. Use t
 ```
 <!-- INTERNAL NOTES FOR EDITOR - DO NOT INCLUDE IN RENDERED OUTPUT
 ## Page Classification
-- Type: [tutorial | how-to | explanation | readme | maintainer]
+- Type: [tutorial | how-to | explanation | use-case | use-case-index | readme | maintainer]
 - Reference used: [skills/diataxis/references/{type}.md or "dedicated template"]
 
 ## Source References
@@ -360,6 +381,62 @@ Each abstract should be exactly 1 sentence (10-20 words) answering "What will th
 - Do NOT write abstracts only as metadata without inline text on the index page -- readers will see a bare list of links with no context.
 - Do NOT write long paragraph descriptions -- 1 sentence per child page.
 - Do NOT duplicate the page title as the abstract -- the abstract adds information beyond the title.
+
+---
+
+### Use Case Page Template
+
+When writing `(use-case)` pages, follow this discovery/showcase template. Use case pages are NOT instructional -- they inspire discovery ("did you know you could do this?"), not teach procedures.
+
+```markdown
+# {Use Case Title}
+
+## The Problem
+
+{Concrete scenario the reader faces. Paint the picture in 2-3 sentences.
+This is about the reader's world, not the library's API. Do NOT write
+"you need to install X" -- write "your API is getting hammered by bots
+and your response times are spiking."}
+
+## What's Possible
+
+{What the library enables for this scenario. Show the key insight --
+a brief code snippet (3-10 lines) demonstrating the core capability,
+not a full walkthrough. The reader should think "I didn't know it could
+do that." Do NOT include step-by-step instructions, prerequisites,
+or sequential tasks.}
+
+## The Outcome
+
+{Observable, concrete results after adopting this approach. Specific
+numbers, behaviors, or states -- not vague "improved performance."
+Example: "API response times stay under 200ms during traffic spikes.
+Abusive clients receive 429 responses after 100 requests per minute."}
+
+## Learn More
+
+{Links to the relevant tutorial, how-to guide, or explanation page
+that covers the implementation details. Every use-case page MUST
+link out to at least one tutorial or how-to guide for the reader
+who wants to implement what was showcased.}
+```
+
+**Key distinctions from other types:**
+
+| Aspect | Use Case Page | Tutorial | How-To Guide |
+|--------|--------------|----------|--------------|
+| Goal | Inspire discovery | Teach by doing | Solve a specific problem |
+| Tone | "Did you know?" | "Let me show you" | "Here's how to" |
+| Code | Illustrative snippet (3-10 lines) | Full walkthrough | Targeted steps |
+| Reader state | Exploring possibilities | Learning | Working on a task |
+| Links out to | Tutorials + How-Tos | Explanations | Reference |
+
+**Warning signs of a bad use-case page (type blur):**
+- Step-by-step instructions ("Step 1:", "Step 2:") -- this is a tutorial
+- "Prerequisites" or "Requirements" section -- this is a how-to guide
+- "Let's build" or "we'll" framing -- this is a tutorial
+- Extended "why" discussion without problem/capability/outcome structure -- this is explanation
+- Missing "Learn More" section -- use-case pages must always link out
 
 ---
 
@@ -508,6 +585,9 @@ Run these checklists before presenting output to the user.
 - [ ] At least one Concepts page proposed under `explanation` type if the project has domain-specific concepts
 - [ ] Concepts pages use type `explanation`, NOT a custom `concepts` type
 - [ ] Section index pages proposed for each diataxis section when nav strategy uses tabs or sections
+- [ ] If `use_cases_section: true` and `use_cases` non-empty: Use Cases section proposed with (use-case-index) and (use-case) pages
+- [ ] If `use_cases_section: true` but `use_cases` empty: note added explaining why section was not proposed
+- [ ] Use case pages use type `(use-case)`, NOT `tutorial`, `how-to`, or `explanation`
 
 ### After Phase 2 (Write) — run for EACH page:
 
@@ -524,6 +604,10 @@ Run these checklists before presenting output to the user.
 - [ ] Mermaid diagrams use the wrapper syntax from the doc-system guidance file, not hardcoded syntax
 - [ ] Section index pages list all children with 1-sentence inline abstracts
 - [ ] Child pages include metadata abstract (.. meta:: :description: for Sphinx, description frontmatter for MkDocs)
+- [ ] Use case pages follow discovery/showcase template: Problem, What's Possible, Outcome, Learn More
+- [ ] Use case pages do NOT contain step-by-step instructions, prerequisites, or sequential tasks
+- [ ] Use case pages include a "Learn More" section linking to tutorials and/or how-to guides
+- [ ] Use case page internal notes declare type as `use-case`
 
 ### Anti-Patterns — Do NOT:
 

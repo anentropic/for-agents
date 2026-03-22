@@ -72,11 +72,11 @@ Plans:
   4. MkDocs-material nav strategies use the correct feature flags (navigation.tabs, navigation.tabs.sticky, navigation.indexes) in mkdocs.yml
   5. When sections are promoted to top tabs, the left nav shows only the selected section's children (not the full docs tree)
   6. Section index pages include a short abstract beneath each sub-page link, using framework-native metadata where supported
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 15-01: TBD
-- [ ] 15-02: TBD
+- [ ] 15-01-PLAN.md — Q&A nav strategy questions, scaffold template variables, and SKILL.md variable table
+- [ ] 15-02-PLAN.md — Guidance file nav strategies, researcher expansion, and doc-author section index pages
 
 ### Phase 16: Use Cases
 **Goal**: Project authors can capture use cases during setup (optionally), and those use cases flow into researcher context and optionally become a docs section
@@ -129,6 +129,6 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 12. Odoc Framework for OCaml | v1.0 | 4/4 | Complete | 2026-03-19 |
 | 13. Scaffold Variable Fix + Doc-Researcher | v1.0 | 3/3 | Complete | 2026-03-19 |
 | 14. Foundations | v1.4.0 | 2/2 | Complete    | 2026-03-21 |
-| 15. Navigation Strategies | v1.4.0 | 0/? | Not started | - |
+| 15. Navigation Strategies | v1.4.0 | 0/2 | Not started | - |
 | 16. Use Cases | v1.4.0 | 0/? | Not started | - |
 | 17. OCaml .mld/.mli Output | v1.4.0 | 0/? | Not started | - |

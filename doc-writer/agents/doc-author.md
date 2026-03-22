@@ -129,6 +129,8 @@ Based on my scan of the codebase, here is the proposed page inventory:
 | N+1 | (maintainer) | MAINTAINER.md | Dev setup, common tasks, architecture, CI/CD, release, decision log | MAINTAINER.md |
 ```
 
+**Odoc file paths:** When `doc_system` is `odoc`, file paths in the inventory use `doc/` directory with `.mld` extension and underscore naming: `doc/getting_started.mld` instead of `docs/getting-started.md`.
+
 **Inventory rules:**
 - Each entry has a doc type: `tutorial`, `how-to`, `explanation`, `(use-case)`, `(use-case-index)`, `(readme)`, or `(maintainer)`.
 - The Author does NOT propose `reference` pages — auto-generated API reference handles this. If no auto-generated reference is detected, note that and suggest the user set one up.
@@ -287,6 +289,81 @@ These notes are invisible in rendered output (HTML comments are stripped by all 
 **8. Write the completed page:**
 
 Write the page to the configured `paths.docs_root` directory using the Write tool. Use the file path implied by the page inventory (e.g., `docs/getting-started.md`, `docs/how-to/configure-auth.md`). README.md and MAINTAINER.md are written to the project root, not docs_root.
+
+### Odoc Output Mode
+
+When `doc_system` is `odoc`, the Phase 2 writing workflow changes as described below. Steps 1-6 of the General Writing Workflow still apply (read persona, load diataxis reference, write from scan results, apply guidance formatting, enforce quality rules, link code mentions). The changes below override Step 7 (internal notes) and Step 8 (write page).
+
+**File output:**
+- Write .mld files to `doc/` directory (not `paths.docs_root`)
+- File extension: `.mld` (not `.md` or `.rst`)
+- File naming: underscores ONLY, never hyphens (e.g., `getting_started.mld`, not `getting-started.mld`)
+- Page title: use `{0 Title}` heading (only valid in .mld files, not .mli comments)
+- README.md and MAINTAINER.md are still written as Markdown to the project root (unchanged)
+
+**Markup format:**
+- Follow the odoc syntax from `.doc-writer/odoc.md` (already loaded in Step 1). The guidance file covers headings, code blocks, cross-references, lists, and all formatting details.
+- Key syntax reminders: `{1 Section}` / `{2 Subsection}` for headings, `{[ code ]}` for OCaml code blocks, `{v text v}` for verbatim blocks, `{!Module.value}` for cross-references, `{!page-page_name}` for page links.
+
+**Dune registration (mandatory after each .mld write):**
+1. Read `doc/dune` using the Read tool
+2. Find the `(mld_files ...)` list within the `(documentation ...)` stanza
+3. If the new page name (without .mld extension) is not already listed, append it
+4. Write the updated `doc/dune` using the Write tool
+
+Example -- before writing `getting_started.mld`:
+```scheme
+(documentation
+ (package my_library)
+ (mld_files index))
+```
+
+After:
+```scheme
+(documentation
+ (package my_library)
+ (mld_files index getting_started))
+```
+
+Unregistered .mld files silently do not appear in generated docs. This step is critical.
+
+**Internal notes (replaces Step 7 for odoc):**
+- Do NOT write HTML comments in .mld files (not valid odoc syntax -- literal text would render)
+- Write all internal notes to `.doc-writer/author-notes.md` instead
+- Organize by page name with the same sections as the standard HTML comment format:
+
+```markdown
+# Author Notes for Editor
+
+## doc/index.mld
+
+### Page Classification
+- Type: tutorial
+- Reference used: skills/diataxis/references/tutorials.md
+
+### Source References
+- lib/my_library/core.mli (lines 10-45)
+
+### Accuracy Notes
+- Claims `parse` handles all RFC 3339 formats -- verify against source
+
+### Known Limitations
+- No async API mentioned; library is sync-only
+
+### API Reference Links Used
+- {!My_library.parse}
+- {!My_library.Config.t}
+
+---
+
+## doc/getting_started.mld
+
+### Page Classification
+- Type: how-to
+...
+```
+
+Create the file fresh at the start of the write pass. Append each page's notes section after writing that page.
 
 ### Code Example Rules
 
@@ -608,6 +685,11 @@ Run these checklists before presenting output to the user.
 - [ ] Use case pages do NOT contain step-by-step instructions, prerequisites, or sequential tasks
 - [ ] Use case pages include a "Learn More" section linking to tutorials and/or how-to guides
 - [ ] Use case page internal notes declare type as `use-case`
+- [ ] If doc_system is odoc: all documentation pages written as .mld files in `doc/`, not .md files in `docs_root`
+- [ ] If doc_system is odoc: every .mld file registered in the corresponding `doc/dune` `(mld_files ...)` stanza
+- [ ] If doc_system is odoc: no .mld filenames contain hyphens (underscores only)
+- [ ] If doc_system is odoc: no HTML comments in .mld files (internal notes in `.doc-writer/author-notes.md`)
+- [ ] If doc_system is odoc: README.md and MAINTAINER.md still written as Markdown to project root
 
 ### Anti-Patterns — Do NOT:
 

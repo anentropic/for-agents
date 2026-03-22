@@ -90,7 +90,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 16-01-PLAN.md — Setup Q&A use cases step, config schema extension, and researcher use case expansion
+- [x] 16-01-PLAN.md — Setup Q&A use cases step, config schema extension, and researcher use case expansion
 - [ ] 16-02-PLAN.md — Doc-author use-case page template and inventory awareness, editor Pass 2 recognition
 
 ### Phase 17: OCaml .mld/.mli Output
@@ -130,5 +130,5 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 13. Scaffold Variable Fix + Doc-Researcher | v1.0 | 3/3 | Complete | 2026-03-19 |
 | 14. Foundations | v1.4.0 | 2/2 | Complete    | 2026-03-21 |
 | 15. Navigation Strategies | v1.4.0 | 2/2 | Complete    | 2026-03-22 |
-| 16. Use Cases | v1.4.0 | 0/2 | Not started | - |
+| 16. Use Cases | v1.4.0 | 1/2 | In Progress|  |
 | 17. OCaml .mld/.mli Output | v1.4.0 | 0/? | Not started | - |

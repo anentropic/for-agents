@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.4.0
 milestone_name: Content & Navigation
 status: unknown
-stopped_at: Completed 15-02-PLAN.md
-last_updated: "2026-03-22T00:18:47.636Z"
+stopped_at: Completed 16-01-PLAN.md
+last_updated: "2026-03-22T01:23:11.058Z"
 progress:
   total_phases: 4
   completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 6
+  completed_plans: 5
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** Produce library documentation that the project author can publish with minimal tweaks — docs written from the end user's perspective, not the builder's.
-**Current focus:** Phase 15 — Navigation Strategies
+**Current focus:** Phase 16 — use-cases
 
 ## Current Position
 
-Phase: 16
-Plan: Not started
+Phase: 16 (use-cases) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -50,6 +50,7 @@ Plan: Not started
 | Phase 14 P02 | 1min | 2 tasks | 2 files |
 | Phase 15 P01 | 2min | 2 tasks | 5 files |
 | Phase 15 P02 | 3min | 2 tasks | 4 files |
+| Phase 16 P01 | 3min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -71,6 +72,8 @@ Recent decisions affecting current work:
 - [Phase 15]: Nav variable markers use same {variable} pattern as existing scaffold variables -- resolved by LLM agent at setup time
 - [Phase 15]: Section index abstracts written in TWO places: inline on index page for readers, metadata on child page for SEO -- neither framework auto-renders child descriptions
 - [Phase 15]: Nav strategy expansion lives in researcher context.md output, not hardcoded in doc-author -- follows existing Q&A data flow pattern
+- [Phase 16]: Use Cases Q&A step numbered 2a.0 to slot before existing 2a without renumbering
+- [Phase 16]: Promotion question fully decoupled from inference path via guard clause
 
 ### Pending Todos
 
@@ -83,6 +86,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T00:15:44.281Z
-Stopped at: Completed 15-02-PLAN.md
+Last session: 2026-03-22T01:23:11.054Z
+Stopped at: Completed 16-01-PLAN.md
 Resume file: None

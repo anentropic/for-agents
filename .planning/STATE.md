@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.4.0
 milestone_name: Content & Navigation
 status: unknown
-stopped_at: Completed 16-01-PLAN.md
-last_updated: "2026-03-22T01:23:11.058Z"
+stopped_at: Completed 16-02-PLAN.md
+last_updated: "2026-03-22T01:27:48.617Z"
 progress:
   total_phases: 4
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -51,6 +51,7 @@ Plan: 2 of 2
 | Phase 15 P01 | 2min | 2 tasks | 5 files |
 | Phase 15 P02 | 3min | 2 tasks | 4 files |
 | Phase 16 P01 | 3min | 2 tasks | 3 files |
+| Phase 16 P02 | 2min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,9 @@ Recent decisions affecting current work:
 - [Phase 15]: Nav strategy expansion lives in researcher context.md output, not hardcoded in doc-author -- follows existing Q&A data flow pattern
 - [Phase 16]: Use Cases Q&A step numbered 2a.0 to slot before existing 2a without renumbering
 - [Phase 16]: Promotion question fully decoupled from inference path via guard clause
+- [Phase 16]: Use-case template follows discovery/showcase format, explicitly NOT instructional
+- [Phase 16]: Editor blur signals for (use-case) inline in prompt, not in separate reference file
+- [Phase 16]: Non-diataxis type guidance added to editor preventing reference file lookup errors
 
 ### Pending Todos
 
@@ -86,6 +90,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T01:23:11.054Z
-Stopped at: Completed 16-01-PLAN.md
+Last session: 2026-03-22T01:27:48.613Z
+Stopped at: Completed 16-02-PLAN.md
 Resume file: None

@@ -40,7 +40,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 14: Foundations** - Concepts pages, mermaid diagram awareness, OCaml scan-exports (completed 2026-03-21)
 - [x] **Phase 15: Navigation Strategies** - Three-strategy nav for sphinx-shibuya and mkdocs-material with section indexes (completed 2026-03-22)
-- [ ] **Phase 16: Use Cases** - Use Cases Q&A capture in setup and optional docs section
+- [x] **Phase 16: Use Cases** - Use Cases Q&A capture in setup and optional docs section (completed 2026-03-22)
 - [ ] **Phase 17: OCaml .mld/.mli Output** - Doc-author writes odoc-native .mld files, editor handles .mld discovery
 
 ## Phase Details
@@ -91,7 +91,7 @@ Plans:
 
 Plans:
 - [x] 16-01-PLAN.md — Setup Q&A use cases step, config schema extension, and researcher use case expansion
-- [ ] 16-02-PLAN.md — Doc-author use-case page template and inventory awareness, editor Pass 2 recognition
+- [x] 16-02-PLAN.md — Doc-author use-case page template and inventory awareness, editor Pass 2 recognition
 
 ### Phase 17: OCaml .mld/.mli Output
 **Goal**: Doc-author produces odoc-native .mld files (not Markdown) for odoc projects, and the full pipeline handles .mld discovery and syntax
@@ -130,5 +130,5 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 13. Scaffold Variable Fix + Doc-Researcher | v1.0 | 3/3 | Complete | 2026-03-19 |
 | 14. Foundations | v1.4.0 | 2/2 | Complete    | 2026-03-21 |
 | 15. Navigation Strategies | v1.4.0 | 2/2 | Complete    | 2026-03-22 |
-| 16. Use Cases | v1.4.0 | 1/2 | In Progress|  |
+| 16. Use Cases | v1.4.0 | 2/2 | Complete   | 2026-03-22 |
 | 17. OCaml .mld/.mli Output | v1.4.0 | 0/? | Not started | - |

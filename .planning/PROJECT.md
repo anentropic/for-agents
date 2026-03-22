@@ -75,7 +75,7 @@ Tech stack: Markdown skill files, bash test scripts (bats), YAML config template
 - `tests/`: bats test suites covering all phases
 
 **Known issues / v2 candidates:**
-- doc-author has no .mld/.mli file handling for odoc projects (writes .md to docs_root instead of .mld to doc/)
+- ~~doc-author has no .mld/.mli file handling for odoc projects~~ — resolved in Phase 17
 - ~~scan-exports.sh has no OCaml language case~~ — resolved in Phase 14
 - 8 phases have `nyquist_compliant: false` in VALIDATION.md (pre-dates Nyquist adoption; tests pass, frontmatter not updated)
 
@@ -101,6 +101,8 @@ Tech stack: Markdown skill files, bash test scripts (bats), YAML config template
 | doc-researcher agent for context enrichment | Separate agent reads source + framework config, writes context.md before pipeline | ✓ Good — downstream agents get enriched context without doing their own scanning |
 | Use Cases as non-diataxis page type | Use cases are discovery/showcase ("did you know?"), not instructional — distinct from tutorials and how-to guides | ✓ Good — clear separation with dedicated blur signals in editor |
 | Use case inference decoupled from docs section | Skipping use cases in setup infers agent context only; docs section requires explicit user-provided cases | ✓ Good — prevents thin auto-generated docs sections |
+| .mli enrichment as proposals, not auto-edits | Author writes enrichment proposals to a review file, never directly to source | ✓ Good — respects "never auto-commit generated content" principle |
+| External author-notes for odoc | .mld files can't contain HTML comments, so internal notes go to .doc-writer/author-notes.md | ✓ Good — clean separation without losing Editor context |
 
 ---
 ## Evolution
@@ -121,4 +123,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-22 after Phase 16 (Use Cases) complete*
+*Last updated: 2026-03-22 after Phase 17 (OCaml .mld/.mli Output) complete — LAST PHASE of v1.4.0*

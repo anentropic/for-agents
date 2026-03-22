@@ -440,6 +440,8 @@ After scaffold check, present framework-specific questions. These are read dynam
 
 4. **Record all answers.** Framework Q&A answers do NOT go into config.yaml. Store them in-memory and pass them to the researcher via the Agent tool invocation message in Step 5.
 
+   **Exception:** If `doc_system` is `odoc`, persist the Question 2 answer (author scope) to `config.yaml` as `odoc_author_scope`. Set to `"mld-and-mli"` if the user chose ".mld pages + .mli doc comment improvements", or `"mld-only"` if they chose ".mld pages only". This value is needed by the doc-author agent at write time (across sessions) to gate the .mli enrichment workflow.
+
 **Passing framework answers to the researcher:**
 
 This is unchanged from the current behavior. Framework Q&A answers are passed to the researcher in the Agent tool invocation message in Step 5.

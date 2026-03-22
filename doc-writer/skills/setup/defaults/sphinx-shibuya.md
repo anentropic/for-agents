@@ -71,19 +71,165 @@ sphinx-design provides grids, cards, dropdowns, badges, and buttons as RST direc
 
 ## Navigation
 
-### Top-level tabs
+### Three Navigation Strategies
 
-- Use explicit `nav_links` in `html_theme_options` for top navbar tabs. Shibuya does NOT automatically derive tabs from the toctree -- the `nav_links` must be configured in conf.py pointing to each Diataxis section index page.
-- Standard tab set: Home (root index.rst), Tutorials, How-To Guides, Explanation, Reference. Home is the landing page; the other four map to Diataxis quadrants.
-- Disable tabs for simple projects where all sections have only 1-2 pages each. At that scale, tabs add overhead without aiding navigation -- a single sidebar works better.
-- Tabs are a separate navigation layer above the left sidebar. With tabs configured, the sidebar shows the contents of the section the reader is currently viewing.
+The setup Q&A offers three strategies. The guidance below documents how each renders in Sphinx/Shibuya so the doc-author writes the correct structure.
 
-### Left nav depth
+#### Strategy 1: Sections as Top Tabs
+
+Each diataxis section (Tutorials, How-To Guides, Explanation, Reference) becomes a dropdown tab in the top navbar via `nav_links` in conf.py. Each dropdown shows children with summaries.
+
+- `nav_links` are configured in `html_theme_options` in conf.py. They are static URL lists -- they do NOT derive from the toctree and have no build-time validation.
+- Each section has its own `index.rst` with a `:hidden:` toctree listing its child pages.
+- The root `index.rst` has a hidden toctree listing all section index files.
+- When a reader clicks a tab, the sidebar shows only that section's toctree (scoped sidebar).
+- nav_links URLs are plain strings (e.g., `"tutorials/index"`), NOT RST cross-references. Do NOT use `:ref:` or `:doc:` syntax in nav_links.
+
+Example conf.py nav_links for sections-as-tabs:
+
+```python
+"nav_links": [
+    {
+        "title": "Tutorials",
+        "url": "tutorials/index",
+        "children": [
+            {
+                "title": "Getting Started",
+                "url": "tutorials/getting-started",
+                "summary": "Install and run your first example"
+            },
+        ],
+    },
+    {
+        "title": "How-To Guides",
+        "url": "how-to/index",
+        "children": [
+            {
+                "title": "Authentication",
+                "url": "how-to/authentication",
+                "summary": "Configure OAuth, API keys, and token refresh"
+            },
+        ],
+    },
+    {
+        "title": "Explanation",
+        "url": "explanation/index",
+        "children": [
+            {
+                "title": "Architecture Overview",
+                "url": "explanation/architecture",
+                "summary": "How the library is structured and why"
+            },
+        ],
+    },
+    {
+        "title": "Reference",
+        "url": "reference/index",
+    },
+],
+```
+
+**Limitation:** nav_links URLs are plain strings, not validated at build time. When pages are renamed or moved, nav_links must be updated manually. Mitigation: URLs are generated at setup time from the page inventory, so they are consistent at generation. If pages are later restructured, update nav_links in conf.py and run `sphinx-build` with `-W` to catch broken references in toctrees (though nav_links themselves are not checked). Consider running a linkcheck build (`make linkcheck`) after restructuring.
+
+#### Strategy 2: Single "Docs" Tab
+
+One "Docs" dropdown in the top navbar with all documentation sections as children items.
+
+- A single nav_link entry with title "Docs" and children listing each section index.
+- The sidebar shows the full docs tree under the Docs tab.
+- The root `index.rst` acts as the "Docs" landing page.
+
+Example conf.py nav_links for single Docs tab:
+
+```python
+"nav_links": [
+    {
+        "title": "Docs",
+        "url": "index",
+        "children": [
+            {
+                "title": "Tutorials",
+                "url": "tutorials/index",
+                "summary": "Step-by-step learning guides"
+            },
+            {
+                "title": "How-To Guides",
+                "url": "how-to/index",
+                "summary": "Goal-oriented task instructions"
+            },
+            {
+                "title": "Explanation",
+                "url": "explanation/index",
+                "summary": "Background concepts and design rationale"
+            },
+            {
+                "title": "Reference",
+                "url": "reference/index",
+                "summary": "API documentation and specifications"
+            },
+        ],
+    },
+],
+```
+
+#### Strategy 3: Sidebar Only
+
+All navigation in the left sidebar, no top tabs. No nav_links configured.
+
+- No `nav_links` key in `html_theme_options` (or the key is absent entirely).
+- The sidebar shows the full toctree from root index.rst.
+- Sections are rendered as expandable groups in the sidebar.
+- Best for projects with fewer than 6 pages where tabs add overhead.
+
+### Left Nav Depth
 
 - Keep left nav to 3 levels maximum (section heading -> page -> sub-page). Deeper nesting creates narrow, scrolling nav panels that frustrate readers.
 - Level 1: section heading (e.g., "Authentication"). Level 2: page (e.g., "OAuth Setup"). Level 3: sub-page as a child entry. Avoid Level 4.
 - Use `index.rst` files for section landing pages. Each section landing page should have a toctree listing the section's pages with `:maxdepth: 2`.
 - Root `index.rst` should use a hidden toctree (`:hidden:`) listing all Diataxis section indexes so the sidebar populates without rendering a visible list on the landing page.
+
+### Section Index Pages with Abstracts
+
+Section index pages (e.g., `tutorials/index.rst`) serve as landing pages for each documentation section. They list child pages with a 1-sentence abstract beneath each link.
+
+- Each child page should have `.. meta:: :description: One-sentence abstract` at the top. This provides machine-readable metadata for HTML meta tags and social sharing.
+- The section index page writes abstracts INLINE beneath each link -- readers see the abstracts directly on the index page, not pulled from metadata automatically.
+- Neither Sphinx nor Shibuya auto-renders child page descriptions on the parent index page. The abstracts must be written explicitly.
+- Use sphinx-design grids or a simple link list with descriptions for visual presentation.
+- Group links by sub-section if the section has 6+ children.
+
+Example section index page (RST):
+
+```rst
+.. meta::
+   :description: Step-by-step learning guides for new users
+
+Tutorials
+=========
+
+Learn to use the library from scratch with these step-by-step guides.
+
+- :ref:`getting-started` -- Install the library and run your first example in under 5 minutes.
+- :ref:`first-app` -- Walk through building a complete application from an empty directory to a working deployment.
+
+.. toctree::
+   :hidden:
+
+   getting-started
+   first-app
+```
+
+Example child page metadata:
+
+```rst
+.. meta::
+   :description: Install the library and run your first example in under 5 minutes
+
+Getting Started
+===============
+
+...page content...
+```
 
 ## Page Metadata
 

@@ -102,11 +102,11 @@ Plans:
   2. Doc-author registers each .mld page in doc/dune during the write pass
   3. Doc-author proposes doc comment enrichment for undocumented public values found in .mli files
   4. Editor discovers .mld files and applies quality passes using odoc syntax rules (not Markdown rules)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 17-01: TBD
-- [ ] 17-02: TBD
+- [ ] 17-01-PLAN.md — Odoc output mode: doc-author .mld write workflow, editor/tester .mld discovery, write SKILL mode detection
+- [ ] 17-02-PLAN.md — .mli doc comment enrichment proposals in doc-author, pipeline summary enrichment mention
 
 ## Progress
 
@@ -131,4 +131,4 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 14. Foundations | v1.4.0 | 2/2 | Complete    | 2026-03-21 |
 | 15. Navigation Strategies | v1.4.0 | 2/2 | Complete    | 2026-03-22 |
 | 16. Use Cases | v1.4.0 | 2/2 | Complete    | 2026-03-22 |
-| 17. OCaml .mld/.mli Output | v1.4.0 | 0/? | Not started | - |
+| 17. OCaml .mld/.mli Output | v1.4.0 | 0/2 | Not started | - |

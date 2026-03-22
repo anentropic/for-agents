@@ -32,6 +32,8 @@ Read these files using the Read tool:
    - `paths.docs_root`: where documentation output goes
    - `paths.source_root`: where source code lives
    - `detected`: auto-detected project info (language, doc_system, existing_docs)
+   - `use_cases`: array of use case objects (each has `title`, `problem`, `capability`, `outcome`). May be empty `[]` if user skipped.
+   - `use_cases_section`: boolean indicating if use cases should become a docs section
 
 2. If `tone` is an empty string, default to `"warm-businesslike"`.
 
@@ -83,6 +85,31 @@ For each persona in config.yaml:
 - **Expand `discovery_story`** into how and why they found this library. What were they searching for? What alternatives did they consider?
 
 - **Expand `user_tasks`** into brief descriptions of what each task involves in this library's context. Example: for a rate-limiting library, `"set up rate limiting"` becomes "Configure the middleware, choose a storage backend, and set default rate limits."
+
+### Use Case Expansion
+
+If `use_cases` from config.yaml is non-empty (user provided use cases):
+
+For each use case in the array:
+- Expand `problem` into a concrete 2-3 sentence description of the pain point with real-world context
+- Expand `capability` into what the library specifically enables, with enough detail for the doc-author to write illustrative code snippets
+- Expand `outcome` into the measurable or observable result -- specific behaviors, metrics, or states
+- Cross-reference with persona context: identify which persona(s) would encounter this use case based on their `user_tasks` and `domain_context`
+- Tag each case with `**Source:** user-provided`
+
+If `use_cases` is empty (user skipped the step):
+
+Infer 2-3 basic use cases from:
+- Persona `user_tasks` fields -- each task suggests a use case scenario
+- README features and quick start content -- the library's headline capabilities
+- Public API surface patterns -- what the exported functions/classes enable
+
+For each inferred use case:
+- Generate `title`, `problem`, `capability`, `outcome` fields matching the structure of user-provided cases
+- Tag each case with `**Source:** inferred`
+- Add a note at the end of the Use Cases section: "These use cases were inferred from persona context and codebase analysis. To promote use cases to a documentation section, run `/doc-writer:setup` and provide explicit use cases."
+
+Inferred use cases are for agent-facing context only. They are NOT eligible for docs section promotion regardless of the `use_cases_section` config value.
 
 ### Tone Expansion
 
@@ -185,6 +212,21 @@ Write the output to `.doc-writer/context.md` using this structure:
 - Examples should show {real-world scenario relevant to this persona}
 
 {Repeat ## User Persona section for each configured persona}
+
+## Use Cases
+
+{For each use case (user-provided or inferred):}
+
+### {title}
+
+**Problem:** {expanded problem description with real-world context}
+**What's possible:** {expanded capability description}
+**Outcome:** {expanded outcome with specific observable results}
+**Relevant persona(s):** {which persona(s) this applies to}
+**Source:** {user-provided | inferred}
+
+{If all use cases are inferred, add:}
+> These use cases were inferred from persona context and codebase analysis. To promote use cases to a documentation section, run `/doc-writer:setup` and provide explicit use cases.
 
 ## Tone: {tone label}
 

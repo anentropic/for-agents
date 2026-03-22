@@ -52,11 +52,23 @@ Before any editing pass, load the project context and verify accuracy claims.
 
 ### Step 2: Discover Documentation Files
 
-Use Glob to find all `.md` files in `paths.docs_root`. Also check for `README.md` and `MAINTAINER.md` in the project root.
+When `doc_system` is `odoc`:
+- Use Glob to find all `.mld` files in `doc/` (pattern: `doc/**/*.mld`)
+- Also check for `README.md` and `MAINTAINER.md` in the project root
+- Do NOT glob for `.md` files in `paths.docs_root` -- odoc docs live in `doc/`
+
+When `doc_system` is NOT `odoc`:
+- Use Glob to find all `.md` files in `paths.docs_root`. Also check for `README.md` and `MAINTAINER.md` in the project root.
 
 ### Step 3: Extract Author's Internal Notes
 
-For each doc file, extract the content between `<!-- INTERNAL NOTES FOR EDITOR` and `-->` markers. Parse these sections:
+When `doc_system` is `odoc`:
+- Read `.doc-writer/author-notes.md` instead of parsing HTML comments from doc files
+- Parse sections organized by page name (each page has its own `## doc/page_name.mld` heading with Page Classification, Source References, Accuracy Notes, Known Limitations, and API Reference Links Used subsections)
+- If the file does not exist, proceed without internal notes (same as when no HTML comments are found)
+
+When `doc_system` is NOT `odoc`:
+- For each doc file, extract the content between `<!-- INTERNAL NOTES FOR EDITOR` and `-->` markers. Parse these sections:
 
 - **Source References** -- file paths the Author consulted when writing the page
 - **Accuracy Notes** -- implementation claims to verify against source code
@@ -381,6 +393,24 @@ For already-linked code mentions:
 
 Write all edited files to disk after this pass completes.
 
+### Odoc Syntax Adjustments for Pass 2 and Pass 4
+
+When `doc_system` is `odoc`, adjust syntax recognition in Pass 2 and Pass 4:
+
+**Pass 2 (Diataxis Type Integrity) -- heading and structure recognition:**
+- Headings: `{1 Section}`, `{2 Subsection}` (not `## Section`, `### Subsection`)
+- Code blocks: `{[ ... ]}` and `{v ... v}` (not fenced backtick blocks)
+- Bold: `{b text}` (not `**text**`)
+- The structural analysis is the same (detect type blur based on content, not syntax) -- only the syntax parser changes
+
+**Pass 4 (Cross-Reference Linking) -- reference syntax:**
+- Cross-refs: `{!Module.value}` (not `[text](url)`)
+- Page refs: `{!page-page_name}` (not markdown links)
+- External URLs: `{{:https://example.com} text}` (not `[text](url)`)
+- NEVER modify content inside `{[ ... ]}`, `{v ... v}`, or `[inline_code]` blocks
+
+**Pass 1 (Terminology) and Pass 3 (Humanizer):** No changes needed -- these operate on prose text regardless of markup format.
+
 ---
 
 ## Post-Processing
@@ -389,7 +419,11 @@ After all three passes are complete, perform final cleanup.
 
 ### Strip Internal HTML Comments
 
-Remove ONLY HTML comment blocks that start with `<!-- INTERNAL NOTES FOR EDITOR`. Leave all other HTML comments in place -- they may be part of the doc system's conditional rendering, template comments, or other legitimate content.
+When `doc_system` is `odoc`:
+- Skip this step entirely -- .mld files do not contain HTML comments. The author-notes.md file is a separate file that persists (not embedded in doc pages).
+
+When `doc_system` is NOT `odoc`:
+- Remove ONLY HTML comment blocks that start with `<!-- INTERNAL NOTES FOR EDITOR`. Leave all other HTML comments in place -- they may be part of the doc system's conditional rendering, template comments, or other legitimate content.
 
 For each file:
 1. Find comment blocks starting with `<!-- INTERNAL NOTES FOR EDITOR`

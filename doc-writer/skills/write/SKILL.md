@@ -48,9 +48,13 @@ Never respond to these selections with another AskUserQuestion.
 
 Determine whether this is a create or update run.
 
-1. Use Glob to find `.md` files in `{paths.docs_root}` (pattern: `{paths.docs_root}/**/*.md`).
+1. Use Glob to find documentation files:
+   - When `doc_system` is `odoc`: glob `doc/**/*.mld` (not `{paths.docs_root}/**/*.md`)
+   - When `doc_system` is NOT `odoc`: glob `{paths.docs_root}/**/*.md`
 
-2. Filter out bare scaffold pages — an `index.md` that contains only a title and a "Welcome to..." line is not a substantive doc page.
+2. Filter out bare scaffold pages:
+   - For .md files: an `index.md` that contains only a title and a "Welcome to..." line
+   - For .mld files: an `index.mld` that contains only `{0 ...}` and TODO placeholders
 
 3. Count remaining substantive doc pages.
 

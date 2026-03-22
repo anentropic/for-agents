@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.4.0
 milestone_name: Content & Navigation
 status: unknown
-stopped_at: Completed 16-02-PLAN.md
-last_updated: "2026-03-22T01:31:38.569Z"
+stopped_at: Completed 17-01-PLAN.md
+last_updated: "2026-03-22T02:11:10.278Z"
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
+  total_plans: 8
+  completed_plans: 7
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** Produce library documentation that the project author can publish with minimal tweaks — docs written from the end user's perspective, not the builder's.
-**Current focus:** Phase 16 — use-cases
+**Current focus:** Phase 17 — ocaml-mld-mli-output
 
 ## Current Position
 
-Phase: 17
-Plan: Not started
+Phase: 17 (ocaml-mld-mli-output) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -52,6 +52,7 @@ Plan: Not started
 | Phase 15 P02 | 3min | 2 tasks | 4 files |
 | Phase 16 P01 | 3min | 2 tasks | 3 files |
 | Phase 16 P02 | 2min | 2 tasks | 2 files |
+| Phase 17 P01 | 3min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -78,6 +79,8 @@ Recent decisions affecting current work:
 - [Phase 16]: Use-case template follows discovery/showcase format, explicitly NOT instructional
 - [Phase 16]: Editor blur signals for (use-case) inline in prompt, not in separate reference file
 - [Phase 16]: Non-diataxis type guidance added to editor preventing reference file lookup errors
+- [Phase 17]: External author-notes.md file for odoc instead of HTML comments -- .mld files have no invisible comment mechanism
+- [Phase 17]: Odoc Output Mode section parallels Section 6 Python/MkDocs conditional formatting pattern
 
 ### Pending Todos
 
@@ -90,6 +93,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T01:27:48.613Z
-Stopped at: Completed 16-02-PLAN.md
+Last session: 2026-03-22T02:11:10.275Z
+Stopped at: Completed 17-01-PLAN.md
 Resume file: None

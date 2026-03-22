@@ -36,10 +36,10 @@ Requirements for this milestone. Each maps to roadmap phases.
 ### OCaml/Odoc
 
 - [x] **OCML-01**: scan-exports.sh has OCaml language case scanning .mli files for public symbols (val, type, module)
-- [ ] **OCML-02**: Doc-author writes .mld files with odoc syntax when doc_system is odoc
-- [ ] **OCML-03**: Doc-author registers .mld pages in doc/dune during write pass
+- [x] **OCML-02**: Doc-author writes .mld files with odoc syntax when doc_system is odoc
+- [x] **OCML-03**: Doc-author registers .mld pages in doc/dune during write pass
 - [ ] **OCML-04**: Doc-author proposes doc comment enrichment for undocumented public values in .mli files
-- [ ] **OCML-05**: Editor handles .mld file discovery and odoc syntax in quality passes
+- [x] **OCML-05**: Editor handles .mld file discovery and odoc syntax in quality passes
 
 ## Future Requirements
 
@@ -90,10 +90,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MERM-03 | Phase 14 | Complete |
 | MERM-04 | Phase 14 | Complete |
 | OCML-01 | Phase 14 | Complete |
-| OCML-02 | Phase 17 | Pending |
-| OCML-03 | Phase 17 | Pending |
+| OCML-02 | Phase 17 | Complete |
+| OCML-03 | Phase 17 | Complete |
 | OCML-04 | Phase 17 | Pending |
-| OCML-05 | Phase 17 | Pending |
+| OCML-05 | Phase 17 | Complete |
 
 **Coverage:**
 - v1.4.0 requirements: 22 total

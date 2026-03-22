@@ -14,17 +14,18 @@ Features to detect:
 - sphinx.ext.intersphinx in extensions (conf.py)
 - nav_links in html_theme_options (conf.py)
 
-## Question 1: Navigation style
+## Question 1: Navigation strategy
 
 - header: "Navigation"
-- question: "How should documentation be organized?"
+- question: "How should top-level documentation navigation work?"
 - detect_context: "Detected: {detected features from conf.py}"
+- preamble: "For projects with 12+ pages, sections-as-tabs gives readers quick access to each documentation area. Smaller projects work well with sidebar-only navigation."
 - options:
-  - { label: "Top tabs + sidebar", description: "Diataxis tabs in top navbar with section sidebar (nav_links)", recommend_if: "nav_links detected" }
-  - { label: "Sidebar only", description: "All navigation in left sidebar, no top tabs", recommend_if: "no nav_links detected" }
-  - { label: "Flat", description: "All pages at one level, no grouping" }
+  - { label: "Sections as top tabs", description: "Each diataxis section (Tutorials, How-To, Explanation, Reference) becomes a dropdown tab in the top navbar with children links and summaries (nav_links with children)", recommend_if: "12+ pages detected OR nav_links detected" }
+  - { label: "Single 'Docs' tab", description: "One 'Docs' dropdown in the top navbar with section links as children items", recommend_if: "6-11 pages detected" }
+  - { label: "Sidebar only", description: "All navigation in the left sidebar, no top tabs", recommend_if: "fewer than 6 pages detected OR no nav_links detected" }
   - { label: "Type something else", description: "Describe a different nav structure" }
-  - { label: "Chat about this", description: "Discuss navigation options" }
+  - { label: "Chat about this", description: "Discuss navigation strategy options" }
 
 ## Question 2: API reference approach
 

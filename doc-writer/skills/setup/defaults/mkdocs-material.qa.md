@@ -14,20 +14,22 @@ Features to detect:
 - admonition (markdown_extensions)
 - pymdownx.details (markdown_extensions)
 - content.code.annotate (theme.features)
+- navigation.indexes (theme.features)
 - mkdocstrings (plugins)
 - literate-nav (plugins)
 
-## Question 1: Navigation style
+## Question 1: Navigation strategy
 
 - header: "Navigation"
-- question: "How should documentation be organized?"
+- question: "How should top-level documentation navigation work?"
 - detect_context: "Detected: {detected features from mkdocs.yml}"
+- preamble: "For projects with 12+ pages, sections-as-tabs gives readers quick access to each documentation area. Smaller projects work well with sidebar-only navigation."
 - options:
-  - { label: "Sections", description: "2-level nav: sections group related pages (navigation.sections)", recommend_if: "navigation.sections detected" }
-  - { label: "Tabs + sections", description: "Top-level tabs with sections underneath (navigation.tabs)", recommend_if: "navigation.tabs detected" }
-  - { label: "Flat", description: "All pages at one level, no grouping" }
+  - { label: "Sections as top tabs", description: "Each diataxis section becomes a top tab; left sidebar shows only the active section's pages (navigation.tabs + navigation.tabs.sticky)", recommend_if: "12+ pages detected OR navigation.tabs detected" }
+  - { label: "Single 'Docs' tab", description: "One 'Docs' tab containing all documentation sections; other tabs reserved for non-docs content", recommend_if: "6-11 pages detected" }
+  - { label: "Sidebar only", description: "All navigation in the left sidebar, no top tabs (navigation.sections only)", recommend_if: "fewer than 6 pages detected OR no navigation.tabs detected" }
   - { label: "Type something else", description: "Describe a different nav structure" }
-  - { label: "Chat about this", description: "Discuss navigation options" }
+  - { label: "Chat about this", description: "Discuss navigation strategy options" }
 
 ## Question 2: API reference approach
 

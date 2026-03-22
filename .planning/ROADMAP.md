@@ -41,7 +41,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 14: Foundations** - Concepts pages, mermaid diagram awareness, OCaml scan-exports (completed 2026-03-21)
 - [x] **Phase 15: Navigation Strategies** - Three-strategy nav for sphinx-shibuya and mkdocs-material with section indexes (completed 2026-03-22)
 - [x] **Phase 16: Use Cases** - Use Cases Q&A capture in setup and optional docs section (completed 2026-03-22)
-- [ ] **Phase 17: OCaml .mld/.mli Output** - Doc-author writes odoc-native .mld files, editor handles .mld discovery
+- [x] **Phase 17: OCaml .mld/.mli Output** - Doc-author writes odoc-native .mld files, editor handles .mld discovery (completed 2026-03-22)
 
 ## Phase Details
 
@@ -106,7 +106,7 @@ Plans:
 
 Plans:
 - [x] 17-01-PLAN.md — Odoc output mode: doc-author .mld write workflow, editor/tester .mld discovery, write SKILL mode detection
-- [ ] 17-02-PLAN.md — .mli doc comment enrichment proposals in doc-author, pipeline summary enrichment mention
+- [x] 17-02-PLAN.md — .mli doc comment enrichment proposals in doc-author, pipeline summary enrichment mention
 
 ## Progress
 
@@ -131,4 +131,4 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 14. Foundations | v1.4.0 | 2/2 | Complete    | 2026-03-21 |
 | 15. Navigation Strategies | v1.4.0 | 2/2 | Complete    | 2026-03-22 |
 | 16. Use Cases | v1.4.0 | 2/2 | Complete    | 2026-03-22 |
-| 17. OCaml .mld/.mli Output | v1.4.0 | 1/2 | In Progress|  |
+| 17. OCaml .mld/.mli Output | v1.4.0 | 2/2 | Complete   | 2026-03-22 |

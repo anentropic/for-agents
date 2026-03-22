@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.4.0
 milestone_name: Content & Navigation
 status: unknown
-stopped_at: Completed 17-01-PLAN.md
-last_updated: "2026-03-22T02:11:10.278Z"
+stopped_at: Completed 17-02-PLAN.md
+last_updated: "2026-03-22T02:15:21.829Z"
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 8
-  completed_plans: 7
+  completed_plans: 8
 ---
 
 # Project State
@@ -53,6 +53,7 @@ Plan: 2 of 2
 | Phase 16 P01 | 3min | 2 tasks | 3 files |
 | Phase 16 P02 | 2min | 2 tasks | 2 files |
 | Phase 17 P01 | 3min | 2 tasks | 4 files |
+| Phase 17 P02 | 2min | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -81,6 +82,8 @@ Recent decisions affecting current work:
 - [Phase 16]: Non-diataxis type guidance added to editor preventing reference file lookup errors
 - [Phase 17]: External author-notes.md file for odoc instead of HTML comments -- .mld files have no invisible comment mechanism
 - [Phase 17]: Odoc Output Mode section parallels Section 6 Python/MkDocs conditional formatting pattern
+- [Phase 17]: .mli enrichment proposals written to review file, never directly to .mli source files
+- [Phase 17]: Enrichment workflow scoped by odoc Q&A Question 2 -- skip when scope is .mld only
 
 ### Pending Todos
 
@@ -93,6 +96,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T02:11:10.275Z
-Stopped at: Completed 17-01-PLAN.md
+Last session: 2026-03-22T02:15:21.825Z
+Stopped at: Completed 17-02-PLAN.md
 Resume file: None

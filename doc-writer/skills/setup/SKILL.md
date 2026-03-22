@@ -290,6 +290,10 @@ After doc system selection, check whether the project already has a framework co
         | `{package_name}` | dune-project `(name ...)` sexp or inferred from project structure | Same as `{site_name}` | Ask user: "Package name:" |
         | `{library_name}` | dune-project `(public_name ...)` sexp or library name from Q1 answer | Same as `{package_name}` | Ask user: "Library name:" |
         | `{synopsis}` | Same as `{site_description}` | opam file synopsis field | Ask user: "One-line synopsis:" |
+        | `{nav_links_config}` | Q&A answer for "Navigation strategy" question (sphinx-shibuya only). "Sections as top tabs": full `"nav_links": [...]` Python dict with per-section entries including title, url, children with title/url/summary. "Single 'Docs' tab": single `"nav_links": [{"title": "Docs", "url": "index", "children": [...]}]` entry. "Sidebar only": empty string (no nav_links key). | If no Q&A answer: empty string | -- |
+        | `{nav_feature_flags}` | Q&A answer for "Navigation strategy" question (mkdocs-material only). "Sections as top tabs" or "Single 'Docs' tab": `    - navigation.tabs\n    - navigation.tabs.sticky\n    - navigation.indexes`. "Sidebar only": empty string. | If no Q&A answer: empty string | -- |
+
+        **Nav strategy variable resolution:** The `{nav_links_config}` and `{nav_feature_flags}` variables are multi-line replacements. The agent generating the scaffold reads the navigation strategy Q&A answer and produces the appropriate block. For `{nav_links_config}`, the replacement includes proper Python indentation (4 spaces for the key, 8 spaces for list items). For `{nav_feature_flags}`, the replacement includes proper YAML indentation (4 spaces with `- ` prefix). When the strategy is "Sidebar only", both variables resolve to empty string (the line is removed).
 
         Variables not in this table: ask the user in plain text for a value.
         Variables with an automatic source (e.g., `{copyright_year}`): never ask -- always use the computed value.

@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.4.0
 milestone_name: Content & Navigation
 status: unknown
-stopped_at: Completed 14-02-PLAN.md
-last_updated: "2026-03-21T23:38:07.283Z"
+stopped_at: Completed 15-01-PLAN.md
+last_updated: "2026-03-22T00:14:46.850Z"
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 4
+  completed_plans: 3
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** Produce library documentation that the project author can publish with minimal tweaks — docs written from the end user's perspective, not the builder's.
-**Current focus:** Phase 14 — Foundations
+**Current focus:** Phase 15 — Navigation Strategies
 
 ## Current Position
 
-Phase: 15
-Plan: Not started
+Phase: 15 (Navigation Strategies) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -48,6 +48,7 @@ Plan: Not started
 *Updated after each plan completion*
 | Phase 14 P01 | 2min | 2 tasks | 6 files |
 | Phase 14 P02 | 1min | 2 tasks | 2 files |
+| Phase 15 P01 | 2min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -66,6 +67,7 @@ Recent decisions affecting current work:
 - [Phase 14]: odoc mermaid uses verbatim block + external SVG workaround, not experimental extensions
 - [Phase 14]: Concepts pages use explanation type, not a new concepts type -- aligns with diataxis 4-quadrant model
 - [Phase 14]: OCaml scan-exports scans only .mli files (public interface), not .ml files (implementation)
+- [Phase 15]: Nav variable markers use same {variable} pattern as existing scaffold variables -- resolved by LLM agent at setup time
 
 ### Pending Todos
 
@@ -78,6 +80,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-21T23:34:50.517Z
-Stopped at: Completed 14-02-PLAN.md
+Last session: 2026-03-22T00:14:46.848Z
+Stopped at: Completed 15-01-PLAN.md
 Resume file: None

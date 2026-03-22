@@ -17,12 +17,12 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Navigation
 
-- [ ] **NAV-01**: Setup Q&A offers three nav strategies: no top tabs, single "Docs" top tab, sections promoted to top tabs
-- [ ] **NAV-02**: Sections-as-tabs recommended when 12+ pages, but all three choices always available
-- [ ] **NAV-03**: Sphinx-shibuya sections-as-tabs uses dropdown menus with children and summary text via nav_links
-- [ ] **NAV-04**: Sphinx-shibuya "Docs" top tab renders as dropdown with docs sections as items
+- [x] **NAV-01**: Setup Q&A offers three nav strategies: no top tabs, single "Docs" top tab, sections promoted to top tabs
+- [x] **NAV-02**: Sections-as-tabs recommended when 12+ pages, but all three choices always available
+- [x] **NAV-03**: Sphinx-shibuya sections-as-tabs uses dropdown menus with children and summary text via nav_links
+- [x] **NAV-04**: Sphinx-shibuya "Docs" top tab renders as dropdown with docs sections as items
 - [ ] **NAV-05**: When sections promoted to top tabs, left nav starts from selected section (not full docs index)
-- [ ] **NAV-06**: MkDocs-material three nav strategies use navigation.tabs, navigation.tabs.sticky, navigation.indexes features
+- [x] **NAV-06**: MkDocs-material three nav strategies use navigation.tabs, navigation.tabs.sticky, navigation.indexes features
 - [ ] **NAV-07**: Section index pages include a short abstract beneath each sub-page link
 - [ ] **NAV-08**: Abstracts use framework-native metadata where supported (sphinx :description:), inline on index page elsewhere
 
@@ -77,12 +77,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONT-03 | Phase 16 | Pending |
 | CONT-04 | Phase 14 | Complete |
 | CONT-05 | Phase 14 | Complete |
-| NAV-01 | Phase 15 | Pending |
-| NAV-02 | Phase 15 | Pending |
-| NAV-03 | Phase 15 | Pending |
-| NAV-04 | Phase 15 | Pending |
+| NAV-01 | Phase 15 | Complete |
+| NAV-02 | Phase 15 | Complete |
+| NAV-03 | Phase 15 | Complete |
+| NAV-04 | Phase 15 | Complete |
 | NAV-05 | Phase 15 | Pending |
-| NAV-06 | Phase 15 | Pending |
+| NAV-06 | Phase 15 | Complete |
 | NAV-07 | Phase 15 | Pending |
 | NAV-08 | Phase 15 | Pending |
 | MERM-01 | Phase 14 | Complete |

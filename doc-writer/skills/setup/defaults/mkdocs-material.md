@@ -35,6 +35,9 @@ Opinionated preferences for writing documentation with MkDocs Material. These ar
 
 The setup Q&A offers three strategies. The guidance below documents how each renders in MkDocs Material so the doc-author writes the correct structure.
 
+- The front page (index.md) must appear as "Overview" in the nav — at the same level as the diataxis section tabs or sidebar sections. Use "Overview" rather than "Home" — it signals that the page orients the reader to the project and its documentation structure.
+- For sidebar-only nav (no tabs), "Overview" is the first entry in the left sidebar at the same level as the section headings.
+
 #### Strategy 1: Sections as Top Tabs
 
 Each diataxis section (Tutorials, How-To Guides, Explanation, Reference) becomes a top tab. The left sidebar shows only the active section's pages.

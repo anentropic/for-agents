@@ -239,6 +239,7 @@ Write the output to `.doc-writer/context.md` using this structure:
 - Strategy: {selected strategy name or "not configured"}
 - {expanded guidance from Navigation Strategy Expansion above}
 - Section index pages: {whether section indexes should include abstracts}
+- Front page (index.md / index.rst) is linked as "Overview" at the same level as the main docs sections (tabs or sidebar headings depending on nav strategy). Use "Overview" not "Home".
 
 ### Features to Use
 - {feature 1}: {when and how to use it}

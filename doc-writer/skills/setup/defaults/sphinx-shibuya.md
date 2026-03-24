@@ -75,6 +75,9 @@ sphinx-design provides grids, cards, dropdowns, badges, and buttons as RST direc
 
 The setup Q&A offers three strategies. The guidance below documents how each renders in Sphinx/Shibuya so the doc-author writes the correct structure.
 
+- The front page must appear as "Overview" in the nav at the same level as the section tabs — use "Overview" rather than "Home", as it signals that the page orients the reader to the project structure.
+- For sidebar-only nav (no nav_links), ensure the root index.rst is labelled "Overview" as the first sidebar entry, at the same level as the section headings.
+
 #### Strategy 1: Sections as Top Tabs
 
 Each diataxis section (Tutorials, How-To Guides, Explanation, Reference) becomes a dropdown tab in the top navbar via `nav_links` in conf.py. Each dropdown shows children with summaries.

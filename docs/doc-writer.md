@@ -32,9 +32,11 @@ doc-writer will auto-detect your project's language and doc system, then ask fou
 3. **Assumed knowledge** — what they already know, comma-separated
 4. **Never assume** — what must always be explained, comma-separated
 
-Answer each question and press Enter. When asked about a secondary audience, enter "no" for a single-audience project.
+Setup also asks about common tasks the persona performs with the library. These are stored as `user_tasks` per persona in `config.yaml` and used by the Persona agent to generate realistic test scenarios.
 
-When asked about the doc system, press Enter to accept the auto-detected default, or type `2` to select `plain-markdown`.
+Answer each question and press Enter. When asked about a secondary audience, select "No, continue" for a single-audience project.
+
+When asked about the doc system, select the auto-detected default or choose `plain-markdown` from the list.
 
 When asked about paths, press Enter to accept `docs/` and `src/`.
 
@@ -159,6 +161,16 @@ If `config.yaml` already exists, setup shows the current configuration and asks 
 
 Prompts for confirmation before overwriting existing config, guidance, and rules files.
 
+**Re-run context enrichment only:**
+
+```
+/doc-writer:setup --refresh-context
+```
+
+Requires an existing `.doc-writer/config.yaml`. Skips all Q&A and jumps directly to the researcher agent to regenerate `.doc-writer/context.md` from the current config. Use this after manually editing `config.yaml` (e.g., adding a persona or changing the tone) without wanting to step through the full interactive setup again.
+
+If no config exists, setup will tell you to run `/doc-writer:setup` first.
+
 **After setup,** edit `.doc-writer/rules.md` to add any project-specific documentation rules (e.g. "always show error handling in code examples"). Edit `.doc-writer/{doc_system}.md` to customise formatting preferences.
 
 ---
@@ -208,7 +220,7 @@ Runs gap detection, Editor quality checks, and Persona validation against existi
 The command runs three steps:
 
 1. **Gap detection** — compares exported symbols against documentation coverage, writes `.doc-writer/gap-report.md`
-2. **Editor audit** — runs all four passes (terminology, Diataxis type integrity, humanizer, cross-reference linking) and applies fixes directly to doc files, writes `.doc-writer/editor-report.md`
+2. **Editor audit** — runs all four passes (terminology, Diataxis type integrity, humanizer, cross-reference linking) and reports issues in `.doc-writer/editor-report.md` (no files edited by default)
 3. **Persona evaluation** — simulates your configured audience(s) attempting goals, writes `.doc-writer/persona-report.md`
 
 The command presents a combined summary on completion:
@@ -237,7 +249,7 @@ Next steps:
 - Run /doc-writer:write for full regeneration
 ```
 
-> **Note:** The Editor applies fixes directly to docs during the review (this is by design; the review command's value is the Persona verdicts on top of already-edited pages). Use `git diff` to see what changed.
+> **Note:** By default, `doc-writer:review` is read-only — the Editor audits docs and writes findings to `.doc-writer/editor-report.md` without editing any files. Pass `--edit` to apply Editor fixes (a confirmation gate lists affected files before any changes are made).
 
 ---
 
@@ -249,12 +261,13 @@ Next steps:
 
 Configures doc-writer for a project. Creates `.doc-writer/` with config, guidance, and rules files.
 
-**Argument:** `[--reset]`
+**Argument:** `[--reset | --refresh-context]`
 
 | Argument | Description |
 |----------|-------------|
 | *(none)* | First-time setup if no config exists; update flow if config exists |
 | `--reset` | Overwrite existing config after confirmation prompt |
+| `--refresh-context` | Re-run the researcher agent to regenerate `context.md`; skips all Q&A; requires existing config |
 
 **Output files created:**
 
@@ -315,9 +328,14 @@ Makes targeted fixes to specific documentation pages. Does not regenerate unaffe
 
 Audits existing documentation without generating new content.
 
-**Argument:** none
+**Argument:** `[--edit]`
 
-**Stages:** Gap Detection → Editor (applies fixes) → Persona (evaluation only).
+| Argument | Description |
+|----------|-------------|
+| *(none)* | Report-only mode (default): Editor audits docs but does not edit any files |
+| `--edit` | Apply Editor fixes; shows a confirmation gate listing files before any changes are made |
+
+**Stages:** Gap Detection → Editor (reports issues; applies fixes only with `--edit`) → Persona (evaluation only).
 
 **Output files:**
 
@@ -340,21 +358,34 @@ Created by `doc-writer:setup`. Read by all pipeline commands at startup.
 ```yaml
 version: 1
 
-audiences:
+user_personas:
   - name: "Python developers building REST APIs"
-    skill_level: "intermediate"        # beginner | intermediate | advanced
+    skill_level: "intermediate"        # beginner | intermediate | advanced | expert
     assumed_knowledge:
       - "Python basics"
       - "HTTP fundamentals"
     never_assume:
       - "async/await patterns"
       - "virtual environment setup"
+    user_tasks:                         # common tasks this persona performs with the library
+      - "Make API requests"
+      - "Handle authentication"
     domain_context: "building REST APIs for web applications"   # optional
     discovery_story: "searching for a Python HTTP client"       # optional
 
-doc_system: "plain-markdown"           # plain-markdown | mkdocs-material | custom
+tone: "warm-businesslike"              # just-the-facts | warm-businesslike | personality
+
+doc_system: "plain-markdown"           # plain-markdown | mkdocs-material | sphinx-shibuya | odoc
 
 api_reference: ""                      # path to auto-generated API reference, if any
+
+use_cases:                             # structured use cases (empty array if skipped during setup)
+  - title: "Rate-limit API endpoints"
+    problem: "API is hammered by bots, response times spike"
+    capability: "Per-route request limits with automatic 429 responses"
+    outcome: "Legitimate users stay under 200ms; abusive clients are blocked"
+
+use_cases_section: true                # true = Use Cases becomes a docs section; false = context only
 
 paths:
   docs_root: "docs/"
@@ -368,10 +399,14 @@ detected:
 
 **Field notes:**
 
-- `audiences` is always an array, even for a single audience.
+- `user_personas` is always an array, even for a single persona.
 - `domain_context` and `discovery_story` are optional. They are used by the Persona agent to generate more realistic test scenarios.
 - `api_reference` is optional. When set, the Editor agent links inline code mentions to the reference location.
-- `doc_system` must match an existing guidance file in `.doc-writer/`. Built-in options: `plain-markdown`, `mkdocs-material`. Custom names are allowed but require you to create the guidance file manually.
+- `doc_system` must match an existing guidance file in `.doc-writer/`. Built-in options: `plain-markdown`, `mkdocs-material`, `sphinx-shibuya`, `odoc`. Custom names are allowed but require you to create the guidance file manually.
+- `tone` controls the writing voice across all generated pages. The label (`just-the-facts`, `warm-businesslike`, `personality`) is stored here; expanded per-tone writing rules are generated into `.doc-writer/context.md` by the researcher. Update via `/doc-writer:setup` (select "Tone").
+- `user_tasks` on each persona entry lists common tasks that persona performs with the library. The Persona agent uses these tasks to generate realistic test scenarios. Update via `/doc-writer:setup` (select "User Personas" → "Edit persona").
+- `use_cases` is an array of structured use case objects (`title`, `problem`, `capability`, `outcome`). It is empty if the user skipped use case capture during setup. Use cases inform documentation writing context and, when `use_cases_section` is `true`, generate a Use Cases documentation section.
+- `use_cases_section` is a boolean. When `true`, the Author agent proposes a Use Cases section alongside the four Diataxis quadrants (Tutorials, How-To Guides, Explanation, Reference). When `false`, use cases inform writing context only and do not appear as a visible docs section. Toggle via `/doc-writer:setup` (select "Use Cases" → "Toggle section").
 
 ---
 

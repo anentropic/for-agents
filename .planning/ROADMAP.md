@@ -121,6 +121,6 @@ Plans:
 | 16. Use Cases | v1.4.0 | 2/2 | Complete | 2026-03-22 |
 | 17. OCaml .mld/.mli Output | v1.4.0 | 2/2 | Complete | 2026-03-22 |
 | 18. Setup Foundation | v1.5.0 | 2/2 | Complete    | 2026-03-26 |
-| 19. Upgrade Skill | v1.5.0 | 1/1 | Complete | 2026-03-26 |
+| 19. Upgrade Skill | v1.5.0 | 1/1 | Complete    | 2026-03-26 |
 | 20. 3-Way Merge | v1.5.0 | 0/0 | Not started | - |
 | 21. Q&A Gap Detection and Finalization | v1.5.0 | 0/0 | Not started | - |

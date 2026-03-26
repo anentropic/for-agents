@@ -58,21 +58,19 @@
 
 ## Traceability
 
-*(Filled by roadmapper)*
-
-| REQ-ID | Phase | Plans |
-|--------|-------|-------|
-| SETUP-01 | — | — |
-| SETUP-02 | — | — |
-| SETUP-03 | — | — |
-| SETUP-04 | — | — |
-| UPGRADE-01 | — | — |
-| UPGRADE-02 | — | — |
-| UPGRADE-03 | — | — |
-| UPGRADE-04 | — | — |
-| MERGE-01 | — | — |
-| MERGE-02 | — | — |
-| MERGE-03 | — | — |
-| MERGE-04 | — | — |
-| QA-01 | — | — |
-| QA-02 | — | — |
+| REQ-ID | Phase | Plans | Status |
+|--------|-------|-------|--------|
+| SETUP-01 | Phase 18 | — | Pending |
+| SETUP-02 | Phase 18 | — | Pending |
+| SETUP-03 | Phase 18 | — | Pending |
+| SETUP-04 | Phase 18 | — | Pending |
+| UPGRADE-01 | Phase 19 | — | Pending |
+| UPGRADE-02 | Phase 19 | — | Pending |
+| UPGRADE-03 | Phase 19 | — | Pending |
+| UPGRADE-04 | Phase 19 | — | Pending |
+| MERGE-01 | Phase 20 | — | Pending |
+| MERGE-02 | Phase 20 | — | Pending |
+| MERGE-03 | Phase 20 | — | Pending |
+| MERGE-04 | Phase 20 | — | Pending |
+| QA-01 | Phase 21 | — | Pending |
+| QA-02 | Phase 21 | — | Pending |

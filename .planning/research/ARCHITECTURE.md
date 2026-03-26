@@ -1,14 +1,19 @@
-# Architecture Research: v1.4.0 Feature Integration
+# Architecture Research: v1.5.0 Plugin Upgrade Helpers
 
-**Domain:** Doc-writer plugin -- content & navigation milestone
-**Researched:** 2026-03-21
-**Confidence:** HIGH (all findings derived from reading the existing codebase; no external dependencies)
+**Domain:** Doc-writer plugin -- upgrade flow integration
+**Researched:** 2026-03-26
+**Confidence:** HIGH (all findings derived from reading the existing codebase; no external research needed)
 
 ## Overview
 
-This document answers one question: **how do the five v1.4.0 features integrate with the existing doc-writer architecture?** Each feature is analyzed for: what files change, what data flows change, what new components are needed, and what depends on what.
+This document answers: **where should upgrade-related state be stored, and how should the upgrade skill integrate with the existing setup flow?** Four specific questions are addressed:
 
-The existing architecture has clean extension points. Most v1.4.0 features slot into existing patterns (new Q&A sections, new guidance file sections, new config fields, new scan-exports cases). Two features require genuinely new patterns: Use Cases as a non-diataxis doc section, and doc-author format switching for .mld/.mli output.
+1. Plugin version tracking in config.yaml -- field name, format, backward compat
+2. Originals storage for 3-way merge -- where and how
+3. Upgrade skill structure -- new SKILL.md vs extending setup
+4. Q&A answer records for gap detection -- where they live and how they integrate
+
+The key architectural insight: the upgrade system introduces a **new data lifecycle** to doc-writer. Currently, files in `.doc-writer/` are either mutable-by-user (config.yaml, rules.md, guidance files) or regenerated-from-scratch (context.md). The upgrade system needs a third category: **immutable reference copies** (originals) that track what the plugin shipped at setup time, enabling 3-way merge when the plugin updates those same files.
 
 ---
 
@@ -16,8 +21,9 @@ The existing architecture has clean extension points. Most v1.4.0 features slot 
 
 ```
 Setup Flow:
-  User Personas Q&A (2a) --> Tone (2a.5) --> Doc System (2b) --> Scaffold (2b.3)
-  --> Framework Q&A (2b.5) --> Paths (2c) --> File Creation (3) --> Researcher (5)
+  Use Cases Q&A (2a.0) --> Personas (2a) --> Tone (2a.5) --> Doc System (2b)
+  --> Scaffold (2b.3) --> Framework Q&A (2b.5) --> Paths (2c)
+  --> File Creation (3) --> Researcher (5)
 
 Config Data Flow:
   setup SKILL.md  --(Q&A answers)-->  .doc-writer/config.yaml
@@ -28,607 +34,625 @@ Config Data Flow:
   doc-editor      --(reads both)-->    edits docs/ pages
   doc-user-tester --(reads both)-->    persona reports
 
-Write Pipeline:
-  Gap Detection --> Author Plan --> Inventory Approval --> Author Write
-  --> Editor (4 passes) --> Persona Eval --> Verdict/Revision Loop
+Files Copied at Setup (potential merge targets):
+  defaults/rules.md              -->  .doc-writer/rules.md
+  defaults/{framework}.md        -->  .doc-writer/{framework}.md
 
-Key Files:
-  config-template.yaml          # schema for .doc-writer/config.yaml
-  {framework}.md                # guidance files (mkdocs-material, sphinx-shibuya, odoc, plain-markdown)
-  {framework}.qa.md             # framework Q&A question sets
-  scaffolds/{framework}.*       # config file templates
-  doc-author.md                 # agent: plans and writes docs
-  doc-researcher.md             # agent: enriches config into context.md
-  doc-editor.md                 # agent: 4-pass editing
-  doc-user-tester.md            # agent: persona-based validation
-  skills/diataxis/references/*  # structural templates per doc type
-  skills/write/scripts/scan-exports.sh  # export symbol scanner
+Files Generated at Setup (not merge targets):
+  config-template.yaml + Q&A     -->  .doc-writer/config.yaml
+  researcher agent               -->  .doc-writer/context.md
+
+Flags:
+  --reset            : wipe and redo full Q&A
+  --refresh-context  : re-run researcher only, skip Q&A
+```
+
+### Files in `.doc-writer/` and Their Edit Patterns
+
+| File | Created By | Edited By User? | Regenerated? | Merge Target? |
+|------|-----------|----------------|-------------|---------------|
+| `config.yaml` | setup Q&A | Yes (via setup re-run menu) | No -- incremental updates | No -- format migration instead |
+| `rules.md` | copied from defaults | Yes -- intended to be customized | Only on --reset | YES |
+| `{framework}.md` | copied from defaults | Yes -- intended to be customized | Only on --reset | YES |
+| `context.md` | doc-researcher | Technically yes, but replaced on any re-run | Yes -- always regenerated | No -- fully regenerated |
+
+---
+
+## Question 1: Plugin Version Tracking in config.yaml
+
+### Recommendation
+
+**Field name:** `plugin_version`
+**Format:** Semver string matching `plugin.json` version (e.g., `"1.5.0"`)
+**Location:** Top-level field in `config.yaml`, immediately after the existing `version: 1` schema version field
+
+```yaml
+# .doc-writer/config.yaml -- generated by /doc-writer:setup
+version: 1
+plugin_version: "1.5.0"
+
+user_personas:
+  ...
+```
+
+### Why This Design
+
+**Separate from `version`:** The existing `version: 1` field is a schema version for the config format itself (think: "what fields does this YAML expect?"). The new `plugin_version` tracks which release of the doc-writer plugin created this config. These are independent: the config schema might stay at version 1 across several plugin releases, or a plugin release might bump the schema version without bumping plugin version. Conflating them creates ambiguity.
+
+**Semver string, not integer:** Plugin releases use semver (currently `1.4.0` in plugin.json). Storing the same format in config.yaml avoids version format translation. String comparison with semver ordering is well-understood.
+
+**Top-level, not nested:** The version is metadata about the config itself, not a configuration choice. Placing it at the top alongside `version: 1` makes it immediately visible and avoids inventing a `meta:` nesting level.
+
+### Backward Compatibility
+
+**Existing configs will lack `plugin_version`.** The upgrade skill MUST handle this gracefully:
+
+1. **Detection rule:** If `config.yaml` exists but `plugin_version` is absent, treat the config as "pre-1.5.0" (version unknown, assume oldest supported).
+2. **No auto-patching on read:** Reading config.yaml for normal operations (write, review, edit skills) should NOT fail or inject the field. The plugin_version field is written only by setup and upgrade flows.
+3. **Upgrade flow behavior:** When upgrade detects missing `plugin_version`, it runs the full upgrade path from "unknown" to current version, then writes `plugin_version` at the end.
+4. **Setup flow change:** The setup flow (both new and --reset) must write `plugin_version` alongside other fields in Step 3 (File Creation). This is a modification to setup SKILL.md.
+
+### config-template.yaml Change
+
+Add `plugin_version` to the template:
+
+```yaml
+# .doc-writer/config.yaml -- generated by /doc-writer:setup
+version: 1
+plugin_version: ""
+
+user_personas:
+  ...
+```
+
+The empty string signals "fill this in from plugin.json at setup time." The setup skill reads `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json` to get the current version.
+
+---
+
+## Question 2: Originals Storage for 3-Way Merge
+
+### Recommendation
+
+**Location:** `.doc-writer/.originals/`
+**Contents:** Exact copies of files as they were when copied from `defaults/` during setup
+
+```
+.doc-writer/
+  config.yaml
+  rules.md                  <-- user's (possibly customized) copy
+  mkdocs-material.md        <-- user's (possibly customized) copy
+  context.md
+  .originals/
+    rules.md                <-- exact copy from defaults/ at setup time
+    mkdocs-material.md      <-- exact copy from defaults/ at setup time
+    plugin_version: 1.4.0   <-- (tracked in config.yaml, not here)
+```
+
+### Why `.doc-writer/.originals/` (Not Alternatives)
+
+**Alternative 1: Embedded in config.yaml (rejected)**
+Storing file contents as YAML multiline strings is fragile -- escaping markdown inside YAML, file size bloat, impossible to diff with standard tools. config.yaml would grow from ~30 lines to hundreds.
+
+**Alternative 2: Git-based (rejected)**
+Relying on git history (`git show HEAD~N:.doc-writer/rules.md`) is clever but brittle:
+- User may have committed multiple times since setup, making "which commit was setup?" ambiguous
+- User may not have committed the setup files at all
+- User may have amended, rebased, or squashed
+- Requires git to be present and the files to be tracked
+- Cannot work for projects that .gitignore `.doc-writer/`
+
+The `.originals/` approach works everywhere, has no git dependency, and is straightforward to implement.
+
+**Alternative 3: Hash-based change detection without originals (rejected)**
+Storing only hashes of the original files would detect whether the user modified them, but cannot perform 3-way merge. You need the actual content of what was shipped to compute the diff between old-default and new-default, then apply that diff to the user's version.
+
+### What Gets Stored in `.originals/`
+
+Only files that are **copied from defaults/** during setup and **intended for user customization**:
+
+| File | Stored as Original? | Reason |
+|------|---------------------|--------|
+| `rules.md` | YES | Copied from defaults, user customizes |
+| `{framework}.md` | YES | Copied from defaults, user customizes |
+| `config.yaml` | NO | Generated from Q&A, not copied from a default file |
+| `context.md` | NO | Regenerated by researcher, never merged |
+
+### 3-Way Merge Data Flow
+
+```
+At setup time (v1.4.0):
+  defaults/rules.md  --copy-->  .doc-writer/rules.md       (user's copy)
+  defaults/rules.md  --copy-->  .doc-writer/.originals/rules.md  (pristine copy)
+
+User customizes .doc-writer/rules.md over time.
+
+At upgrade time (v1.4.0 -> v1.5.0):
+  .doc-writer/.originals/rules.md    = BASE   (old default)
+  .doc-writer/rules.md               = OURS   (user's version)
+  defaults/rules.md                  = THEIRS (new default)
+
+  3-way merge: apply (THEIRS - BASE) to OURS
+    If no conflicts: auto-apply, update .originals/ to new default
+    If conflicts:    present to user for resolution
+```
+
+### When `.originals/` Is Missing (Pre-1.5.0 Projects)
+
+Projects set up before v1.5.0 will not have `.originals/`. The upgrade skill handles this:
+
+1. **If `.originals/` does not exist AND user's file matches current defaults:** No merge needed. Create `.originals/` with current defaults.
+2. **If `.originals/` does not exist AND user's file differs from current defaults:** Cannot determine what was the original base. Fall back to presenting a side-by-side diff of user's file vs new defaults, asking the user to resolve manually. Then create `.originals/` with the new defaults.
+3. **After first upgrade completes:** `.originals/` exists for all future upgrades.
+
+### Setup Flow Change
+
+Step 3 (File Creation) must be modified to:
+1. Create `.doc-writer/.originals/` directory
+2. When copying `defaults/rules.md` to `.doc-writer/rules.md`, also copy to `.doc-writer/.originals/rules.md`
+3. When copying `defaults/{framework}.md` to `.doc-writer/{framework}.md`, also copy to `.doc-writer/.originals/{framework}.md`
+
+---
+
+## Question 3: Upgrade Skill Structure
+
+### Recommendation
+
+**New file: `doc-writer/skills/upgrade/SKILL.md`** -- a separate skill invoked via `/doc-writer:upgrade`
+
+Do NOT extend setup SKILL.md. The upgrade flow is a distinct workflow with different triggers, different state management, and different user interaction patterns.
+
+### Why a Separate Skill
+
+**Separation of concerns:**
+- Setup = "configure doc-writer for this project from scratch (or reconfigure individual settings)"
+- Upgrade = "bring an existing doc-writer configuration up to date with a new plugin version"
+
+These are fundamentally different operations. Setup asks creative questions ("Who are your users?"). Upgrade performs mechanical operations (diff files, detect new fields, merge changes) with targeted Q&A only for genuinely new questions.
+
+**setup SKILL.md is already 580 lines.** Adding upgrade logic (version detection, 3-way merge, config migration, Q&A gap detection) would push it past 800+ lines and make both flows harder to maintain.
+
+**Different entry conditions:**
+- Setup: no config exists, or user explicitly wants to reconfigure
+- Upgrade: config exists, plugin version has changed
+
+**Different flags:** Setup has `--reset` and `--refresh-context`. Upgrade has none (it is always invoked intentionally) or potentially `--dry-run`.
+
+### Skill Metadata
+
+```yaml
+---
+name: doc-writer:upgrade
+description: Upgrade doc-writer configuration after a plugin update. Detects version changes, merges guidance file updates, migrates config format, and runs new framework Q&A questions.
+disable-model-invocation: true
+allowed-tools: Read, Write, Bash, Glob, Grep, Agent
+argument-hint: "[--dry-run]"
+---
+```
+
+### Upgrade Skill Flow
+
+```
+Step 1: Version Detection
+  Read .doc-writer/config.yaml -> extract plugin_version
+  Read ${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json -> extract version
+  Compare: if equal, "Already up to date." Stop.
+  If config lacks plugin_version, treat as pre-1.5.0.
+
+Step 2: Config Format Migration
+  Compare config.yaml schema against config-template.yaml.
+  Detect new fields (present in template, absent in config) -> add with defaults.
+  Detect deprecated fields -> warn user, do not auto-remove.
+  Detect changed field structures -> migrate (e.g., if a field changed type).
+
+Step 3: Guidance / Rules 3-Way Merge
+  For each file in .originals/:
+    BASE = .originals/{file}
+    OURS = .doc-writer/{file}
+    THEIRS = defaults/{file}
+    If BASE == THEIRS: no upstream changes, skip.
+    If OURS == BASE: user did not customize, overwrite with THEIRS.
+    If OURS != BASE and BASE != THEIRS: 3-way merge.
+      Auto-apply non-conflicting changes.
+      Surface conflicts for user resolution.
+  Update .originals/ with new defaults after merge.
+
+Step 4: Q&A Gap Detection
+  Read all .qa.md files for the configured doc_system.
+  Compare question set against stored Q&A answers.
+  New questions (present in .qa.md, no stored answer) -> present to user.
+  Removed questions (stored answer, no matching .qa.md question) -> warn, keep answer.
+  Changed questions (same question ID, different options) -> re-present.
+
+Step 5: Re-run Researcher
+  Spawn doc-researcher with enriched context (new Q&A answers merged with old).
+  Regenerates context.md from updated config + codebase.
+
+Step 6: Update Version
+  Write new plugin_version to config.yaml.
+  Display summary of all changes made.
+```
+
+### Integration with Existing Skills
+
+The upgrade skill does NOT modify setup SKILL.md's runtime behavior. It is an independent entry point. However, it shares resources:
+
+| Resource | Used by Setup | Used by Upgrade |
+|----------|--------------|----------------|
+| `config-template.yaml` | Source for new config generation | Schema reference for migration |
+| `defaults/rules.md` | Source for initial copy | THEIRS in 3-way merge |
+| `defaults/{framework}.md` | Source for initial copy | THEIRS in 3-way merge |
+| `{framework}.qa.md` | Question source for full Q&A | Question source for gap detection |
+| `doc-researcher` agent | Enrichment after setup | Enrichment after upgrade |
+| `plugin.json` | Not used | Version source |
+
+### File Tree After v1.5.0
+
+```
+doc-writer/
+  .claude-plugin/
+    plugin.json                    # version: "1.5.0"
+  agents/
+    doc-author.md
+    doc-editor.md
+    doc-researcher.md
+    doc-user-tester.md
+  skills/
+    setup/
+      SKILL.md                     # MODIFIED: writes plugin_version + .originals/
+      scripts/
+        detect-project.sh
+      defaults/
+        config-template.yaml       # MODIFIED: adds plugin_version field
+        rules.md
+        mkdocs-material.md
+        mkdocs-material.qa.md
+        sphinx-shibuya.md
+        sphinx-shibuya.qa.md
+        odoc.md
+        odoc.qa.md
+        plain-markdown.md
+        plain-markdown.qa.md
+        scaffolds/
+          ...
+    upgrade/
+      SKILL.md                     # NEW: upgrade workflow
+    write/
+      SKILL.md
+      scripts/
+        scan-exports.sh
+    review/
+      SKILL.md
+    edit/
+      SKILL.md
+    diataxis/
+      SKILL.md
+      references/
+        ...
+    quality-rules/
+      SKILL.md
 ```
 
 ---
 
-## Feature 1: Use Cases Q&A in Setup
+## Question 4: Q&A Answer Records for Gap Detection
 
-### What It Is
+### The Problem
 
-A new Q&A step in the setup flow, positioned **before** User Personas (new Step 2a, pushing current 2a to 2b). Captures the project's real-world use cases -- what problems users solve with this library.
+Framework Q&A answers (from Step 2b.5 in setup) are currently passed in-memory to the researcher agent and NOT persisted anywhere. The researcher bakes them into context.md as expanded prose, but the original structured answers are lost after the setup session ends.
 
-### Integration Points
+This means the upgrade skill cannot:
+- Know which questions were already asked
+- Detect new questions that need asking
+- Re-present questions with changed option sets
+- Avoid re-asking questions the user already answered
 
-**Modified files:**
+### Recommendation
 
-| File | Change | Scope |
-|------|--------|-------|
-| `skills/setup/SKILL.md` | New Step 2a (Use Cases Q&A) before current Step 2a (User Personas). Renumber subsequent steps. | Medium -- new section, structural renumber |
-| `skills/setup/defaults/config-template.yaml` | New top-level `use_cases:` array field | Small -- add field |
-| `agents/doc-researcher.md` | Read `use_cases` from config, expand into context.md | Medium -- new section in Step 1 + Step 3 + Step 4 output |
-| `agents/doc-author.md` | Consume use cases from context.md for richer page planning | Small -- already reads context.md; just uses new section |
-| `agents/doc-user-tester.md` | Use cases inform scenario generation | Small -- use cases map to realistic test goals |
-
-**No new files needed.** This is a data-flow extension through existing pipes.
-
-### Data Flow
-
-```
-Setup Q&A (new Step 2a)
-    |
-    v
-config.yaml { use_cases: ["Rate limiting for API endpoints", "Multi-tenant isolation", ...] }
-    |
-    v
-doc-researcher reads use_cases, expands each into:
-    - Problem statement (what the user is trying to solve)
-    - Library capabilities that address it
-    - Typical workflow
-    |
-    v
-context.md ## Use Cases
-    |
-    v
-doc-author uses for:          doc-user-tester uses for:
-- Page inventory planning      - Scenario generation
-- Example selection             - Goal-oriented test paths
-- Tutorial topic choices        - Validation coverage
-```
-
-### Config Schema Addition
+**Store Q&A answers in `.doc-writer/config.yaml`** under a new `qa_answers` section.
 
 ```yaml
 # .doc-writer/config.yaml
-use_cases:
-  - "Rate limiting for API endpoints"
-  - "Per-tenant request quotas"
-  - "Graceful degradation under load"
+version: 1
+plugin_version: "1.5.0"
+
+user_personas:
+  ...
+
+qa_answers:
+  framework: "mkdocs-material"
+  questions:
+    - id: "q1-navigation-strategy"
+      question_hash: "abc123"    # hash of question text for change detection
+      answer: "Sections as top tabs"
+    - id: "q2-api-reference"
+      question_hash: "def456"
+      answer: "mkdocstrings"
+    - id: "q3-rich-features"
+      question_hash: "789abc"
+      answer:
+        - "Content tabs"
+        - "Mermaid diagrams"
+        - "Admonitions"
 ```
 
-Use cases are freeform strings. The researcher expands them. Config stays lean.
+### Field Design
 
-### Setup Flow Position
+**`id`:** Derived from question header and number in the .qa.md file. Format: `q{N}-{header-slugified}`. This is the stable identifier for gap detection. Example: Question 1 with header "Navigation" becomes `q1-navigation`.
 
-Use Cases goes **first** because it provides context that improves persona definition. When you know the use cases, you can better infer assumed knowledge, user tasks, and discovery stories during persona Q&A.
+**`question_hash`:** Short hash of the question text. If the hash changes between plugin versions, the question has been reworded and should be re-presented even if the ID matches. This catches cases where question options change meaningfully.
+
+**`answer`:** String for single-select, array of strings for multi-select. Stores the label(s) the user selected. For "Type something else" responses, stores the user's freeform text.
+
+**`framework`:** The doc_system these answers apply to. If the user changes doc_system, old answers are irrelevant and should be preserved (in case they switch back) but not used for gap detection against the new framework's .qa.md.
+
+### Why config.yaml (Not a Separate File)
+
+**Alternative: `.doc-writer/qa-answers.yaml` (rejected)**
+Splitting into another file adds maintenance burden. config.yaml already holds all setup decisions. Q&A answers are setup decisions. The `qa_answers` section is clearly scoped and does not pollute the main config namespace.
+
+**Alternative: Inline in context.md (rejected)**
+context.md is regenerated on every researcher run. Storing structured data in a prose file that gets overwritten is fragile.
+
+### Gap Detection Algorithm
 
 ```
-NEW ORDER:
-  Use Cases (2a) --> User Personas (2b) --> Tone (2b.5) --> Doc System (2c)
-  --> Scaffold (2c.3) --> Framework Q&A (2c.5) --> Paths (2d) --> File Creation (3) --> Researcher (5)
+At upgrade time:
+  1. Read .qa.md for the configured doc_system
+  2. Read qa_answers from config.yaml
+  3. For each question in .qa.md:
+     a. Compute question ID from position + header
+     b. Look up ID in qa_answers
+     c. If ID not found: NEW question -> present to user
+     d. If ID found but hash differs: CHANGED question -> re-present to user
+        (pre-fill with previous answer if the old answer is still a valid option)
+     e. If ID found and hash matches: UNCHANGED -> skip
+  4. For each answer in qa_answers not matching any .qa.md question:
+     REMOVED question -> log warning, keep answer in config (harmless)
+  5. Write updated qa_answers to config.yaml
+  6. Pass all answers (old + new) to researcher
 ```
 
-### Re-Run Menu Update
+### Integration with Setup Flow
 
-The existing re-run menu (Step 1, option 4: config exists) needs a new option:
+**Setup SKILL.md changes:**
+- After Step 2b.5 (Framework Configuration), persist answers to `qa_answers` in config.yaml
+- The in-memory framework_answers variable that gets passed to the researcher in Step 5 remains unchanged -- the researcher still receives answers the same way
+- The persistence is an additional write, not a replacement of the in-memory flow
 
+**--reset behavior:** Full reset wipes `qa_answers` along with everything else. Full Q&A re-run populates fresh answers.
+
+**--refresh-context behavior:** Does NOT touch `qa_answers`. The researcher re-reads config.yaml (which now includes qa_answers from the previous setup) and regenerates context.md. This is unchanged from current behavior -- the researcher reads config and produces context.
+
+**Re-run menu (update mode):** When the user selects "Doc system" and switches frameworks, the old qa_answers are preserved but a new framework's Q&A is run. Both framework answer sets could coexist:
+
+```yaml
+qa_answers:
+  framework: "sphinx-shibuya"   # current framework
+  questions:
+    - id: "q1-navigation"
+      ...
+  previous_frameworks:
+    mkdocs-material:
+      - id: "q1-navigation-strategy"
+        ...
 ```
-{ label: "Use Cases", description: "Edit, add, or remove use cases" }
-```
 
-This option jumps to the use cases editing flow (similar pattern to persona editing in Step 4).
+However, this adds complexity for marginal benefit (framework switching is rare). Simpler approach: when doc_system changes, clear `qa_answers.questions` and re-run full framework Q&A. The user explicitly chose to switch -- they expect re-configuration.
 
-### Build Implications
+### Backward Compatibility
 
-- **Depends on:** Nothing -- pure additive
-- **Blocks:** Feature 2 (Use Cases as docs section) benefits from this data being available
-- **Risk:** Low. Follows the exact same Q&A -> config -> researcher -> context.md -> agents pattern as User Personas.
+Existing configs lack `qa_answers`. This is handled identically to missing `plugin_version`:
+
+1. If `qa_answers` is absent, the upgrade skill treats ALL framework questions as new
+2. On first upgrade, the user answers all framework Q&A (same experience as initial setup)
+3. After that, qa_answers exists and subsequent upgrades only ask genuinely new questions
 
 ---
 
-## Feature 2: Use Cases as Optional Docs Section
+## Component Summary: New vs Modified
 
-### What It Is
+### Net-New Components
 
-An optional documentation section that showcases real-world use cases. This is **not a diataxis category** -- it is a supplementary section like README or MAINTAINER that exists alongside the diataxis quadrants.
+| Component | Purpose | Dependencies |
+|-----------|---------|-------------|
+| `skills/upgrade/SKILL.md` | Upgrade workflow orchestration | Reads: config.yaml, plugin.json, .qa.md files, .originals/. Writes: config.yaml, merged files, .originals/. Spawns: doc-researcher |
+| `.doc-writer/.originals/` directory | Pristine copies of defaults for 3-way merge | Created by setup, read/updated by upgrade |
 
-### The Core Design Decision
+### Modified Components
 
-Use Cases pages are **not** diataxis-typed. They do not fit neatly into tutorial/how-to/explanation/reference. A use case page is a hybrid: it explains a problem (explanation), shows how to solve it (how-to), and walks through a realistic scenario (tutorial-adjacent). Forcing it into diataxis creates type blur.
+| Component | Change | Scope |
+|-----------|--------|-------|
+| `skills/setup/SKILL.md` | Step 3: write `plugin_version` to config, create `.originals/`, persist `qa_answers` | ~15 lines added to Step 3, ~10 lines to Step 2b.5 |
+| `skills/setup/defaults/config-template.yaml` | Add `plugin_version: ""` and `qa_answers:` section | ~10 lines added |
+| `plugin.json` | Bump version to `1.5.0` | 1 line |
 
-**Recommendation:** Handle Use Cases the same way doc-author handles README and MAINTAINER -- as a dedicated section with its own template, **not** via the diataxis reference files.
+### Unchanged Components
 
-### Integration Points
-
-**Modified files:**
-
-| File | Change | Scope |
-|------|--------|-------|
-| `agents/doc-author.md` | New "Section 7: Use Case Template" (parallel to Section 4: README Template, Section 5: MAINTAINER Template). New page type `(use-case)` in inventory classification. | Medium -- new template section |
-| `skills/setup/SKILL.md` | After Use Cases Q&A (Feature 1), ask whether to generate Use Case doc pages | Small -- one additional AskUserQuestion |
-| `skills/setup/defaults/config-template.yaml` | New field `use_cases_section: true/false` | Small |
-| `agents/doc-researcher.md` | Context.md includes use case expansion (already from Feature 1) | Already covered by Feature 1 |
-| `agents/doc-editor.md` | Recognize `(use-case)` page type; skip diataxis type integrity check for these pages | Small -- add to Pass 2 exemption list |
-| `agents/doc-user-tester.md` | Test use case pages like any other page | No change needed -- already tests all pages in docs_root |
-
-**New file needed: No.** The use case template lives inside doc-author.md as a new section (same pattern as README/MAINTAINER templates).
-
-**Does NOT need a new diataxis reference file.** The diataxis references (`skills/diataxis/references/`) are specifically for the four diataxis types. Use Cases is outside diataxis. The template in doc-author.md is sufficient.
-
-### Use Case Page Template (for doc-author.md Section 7)
-
-```markdown
-# Use Case: {Title}
-
-## The Problem
-
-{What challenge the user faces. 2-3 paragraphs establishing context.}
-
-## Solution with {Library}
-
-{How this library addresses the problem. Overview before code.}
-
-### Setup
-
-{Minimal setup required for this use case.}
-
-### Implementation
-
-{Step-by-step implementation with code examples. Self-contained.}
-
-### Result
-
-{What the user achieves. Show output or observable behavior.}
-
-## Variations
-
-{Common variations on this use case. Brief, with links to how-to guides for details.}
-
-## Related
-
-- {Link to tutorial if relevant}
-- {Link to how-to guides for specific tasks within this use case}
-- {Link to explanation for underlying concepts}
-```
-
-### Page Inventory Integration
-
-The author currently classifies pages as: `tutorial`, `how-to`, `explanation`, `(readme)`, `(maintainer)`. Add `(use-case)` to this list. Parenthesized types indicate non-diataxis pages.
-
-The page inventory table gains a new type:
-
-```
-| # | Type | Title | Key Sections | File Path |
-| 5 | (use-case) | Rate Limiting for APIs | Problem, Solution, Setup, Implementation | docs/use-cases/rate-limiting.md |
-```
-
-### Guidance File Integration
-
-Each framework's guidance file (mkdocs-material.md, sphinx-shibuya.md, etc.) needs a small section on how to handle the use-cases directory in navigation:
-
-- **mkdocs-material:** Add `use-cases/` directory to `nav:` in mkdocs.yml, typically as a peer to the diataxis sections
-- **sphinx-shibuya:** Add use-cases toctree to root index.rst or as a separate tab
-- **odoc:** Use case pages would be .mld files in `doc/` with `use_case_` prefix
-
-This is an addition to the existing guidance files, not a new file.
-
-### Build Implications
-
-- **Depends on:** Feature 1 (Use Cases Q&A provides the data)
-- **Blocks:** Nothing
-- **Risk:** Low-Medium. The main risk is doc-editor's diataxis type integrity pass (Pass 2) flagging use case pages as "type blur." The editor must be told to exempt `(use-case)` pages from diataxis classification checks, just as it exempts `(readme)` and `(maintainer)` pages.
+| Component | Why Unchanged |
+|-----------|--------------|
+| `doc-researcher.md` | Already reads config.yaml and receives framework answers via invocation message. No changes needed. |
+| `doc-author.md` | Does not interact with version or upgrade state |
+| `doc-editor.md` | Does not interact with version or upgrade state |
+| `doc-user-tester.md` | Does not interact with version or upgrade state |
+| `skills/write/SKILL.md` | Does not interact with version or upgrade state |
+| `skills/review/SKILL.md` | Does not interact with version or upgrade state |
+| `skills/edit/SKILL.md` | Does not interact with version or upgrade state |
+| All `.qa.md` files | Format unchanged; upgrade skill reads them as-is |
+| All guidance `.md` files | Content may change between versions (that is the point of merge) but format unchanged |
+| `detect-project.sh` | Detects project features, not plugin state |
 
 ---
 
-## Feature 3: Nav Structure Choices in Setup Q&A
+## Data Flow: Upgrade vs Setup
 
-### What It Is
-
-The existing framework Q&A files (mkdocs-material.qa.md, sphinx-shibuya.qa.md) already have a "Navigation style" question (Question 1 in both). The v1.4.0 feature expands this to offer three specific top-tab strategies with richer descriptions, plus section index abstract handling.
-
-### The Three Strategies
-
-1. **No tabs** -- flat sidebar only. Best for small projects (under 10 pages).
-2. **"Docs" tab** -- single top-level tab labeling the entire documentation section, sidebar handles internal structure.
-3. **Sections-as-tabs** -- each diataxis section is a top tab (Tutorials, How-To, Explanation, Reference). For sphinx-shibuya, each tab can have dropdown sub-items.
-
-### Integration Points
-
-**Modified files:**
-
-| File | Change | Scope |
-|------|--------|-------|
-| `skills/setup/defaults/mkdocs-material.qa.md` | Replace Question 1 options with three explicit strategies + section index abstract question | Medium |
-| `skills/setup/defaults/sphinx-shibuya.qa.md` | Replace Question 1 options with three explicit strategies (with dropdown variant) + section index abstract question | Medium |
-| `skills/setup/defaults/mkdocs-material.md` | Expand Navigation section with guidance for each strategy; add section index abstract guidance | Medium |
-| `skills/setup/defaults/sphinx-shibuya.md` | Expand Navigation section with guidance for each strategy; add dropdown guidance; add section index abstract guidance | Medium |
-| `skills/setup/defaults/scaffolds/mkdocs-material.yml` | Update nav stanza to reflect chosen strategy (template variables or conditional sections) | Small |
-| `skills/setup/defaults/scaffolds/sphinx-shibuya.py` | Update nav_links and toctree to reflect chosen strategy | Small |
-| `agents/doc-researcher.md` | Context.md Framework Preferences section already covers nav -- researcher uses Q&A answers to populate it | No structural change -- just richer data |
-| `agents/doc-author.md` | Already reads guidance file for nav conventions -- richer guidance means better nav output | No structural change |
-
-**No new files needed.** All changes are expansions of existing Q&A and guidance files.
-
-### Where Nav Config Lives
-
-Nav strategy answers follow the existing pattern: they do **not** go into config.yaml. They are passed to the researcher via the Agent tool invocation message (Step 5 of setup), just like all other framework Q&A answers. The researcher writes them into context.md under `## Framework Preferences: {doc_system} > ### Navigation`.
-
-This is explicitly stated in the current setup SKILL.md (Step 2b.5, point 4): "Framework Q&A answers do NOT go into config.yaml. Store them in-memory and pass them to the researcher."
-
-No config.yaml schema change needed for nav. The existing data flow handles it.
-
-### Section Index Abstracts
-
-A new Q&A sub-question after nav strategy selection:
+### Setup (existing, with v1.5.0 additions shown in bold)
 
 ```
-## Question 1b: Section index pages
-
-- header: "Section Indexes"
-- question: "Should section landing pages include abstracts for each sub-page?"
-- options:
-  - { label: "Yes -- brief abstract under each link", description: "Each section index shows page title + 1-2 sentence summary" }
-  - { label: "No -- titles only", description: "Section indexes list page titles without descriptions" }
-  - { label: "Chat about this", description: "See examples of each style" }
+User runs /doc-writer:setup
+  |
+  v
+Q&A flow (Steps 2a-2c)
+  |
+  v
+File Creation (Step 3):
+  - Write config.yaml (with user answers + plugin_version + qa_answers)
+  - Copy defaults/rules.md -> .doc-writer/rules.md
+  - Copy defaults/rules.md -> .doc-writer/.originals/rules.md        [NEW]
+  - Copy defaults/{fw}.md -> .doc-writer/{fw}.md
+  - Copy defaults/{fw}.md -> .doc-writer/.originals/{fw}.md          [NEW]
+  |
+  v
+Researcher (Step 5):
+  - Reads config.yaml + framework answers
+  - Writes context.md
 ```
 
-This answer flows to the researcher, which includes it in context.md navigation guidance, which the author reads when writing section index pages.
+### Upgrade (new)
 
-### Scaffold Changes
-
-The scaffold templates need conditional handling based on nav strategy. Since scaffolds currently use simple variable substitution (not conditionals), the approach should be:
-
-- **Option A (recommended):** Generate the scaffold post-substitution in the setup skill, with the nav strategy baked in. The setup skill already reads the scaffold template and processes variables -- add nav strategy as part of that processing.
-- **Option B:** Multiple scaffold variants (one per strategy). Avoid this -- it multiplies files.
-
-### Build Implications
-
-- **Depends on:** Nothing -- pure modification of existing files
-- **Blocks:** Nothing
-- **Risk:** Low. The Q&A and guidance file patterns are well-established. The main care point is scaffold generation needing to account for nav strategy, but the setup SKILL.md already has template variable processing logic that can be extended.
+```
+User runs /doc-writer:upgrade
+  |
+  v
+Version Detection:
+  - Read config.yaml -> plugin_version (or "unknown")
+  - Read plugin.json -> current version
+  - If same: "Already up to date." Stop.
+  |
+  v
+Config Migration:
+  - Diff config.yaml against config-template.yaml
+  - Add new fields with defaults
+  - Warn on deprecated fields
+  |
+  v
+3-Way Merge (for each file in .originals/):
+  - BASE = .originals/{file}
+  - OURS = .doc-writer/{file}
+  - THEIRS = defaults/{file}
+  - Merge -> write OURS, update .originals/
+  |
+  v
+Q&A Gap Detection:
+  - Read .qa.md for configured framework
+  - Compare against qa_answers in config.yaml
+  - Present new/changed questions to user
+  - Merge answers into qa_answers
+  |
+  v
+Re-run Researcher:
+  - Spawn doc-researcher with all answers (old + new)
+  - Regenerates context.md
+  |
+  v
+Finalize:
+  - Write updated plugin_version to config.yaml
+  - Display summary
+```
 
 ---
 
-## Feature 4: Mermaid Diagram Support
+## Build Order (Dependency-Driven)
 
-### What It Is
-
-Make the doc-author aware that mermaid diagrams are available and when to use them. This is not about configuring mermaid (that is a framework-level concern already handled by Q&A) -- it is about the author knowing when and how to insert diagrams.
-
-### Which Files Need Awareness
-
-| File | Needs Mermaid Awareness? | Why |
-|------|--------------------------|-----|
-| `agents/doc-author.md` | **YES** | Primary consumer. Needs to know when to generate mermaid blocks and the syntax per framework. |
-| `skills/setup/defaults/mkdocs-material.md` | **Already has it** (partially). Q&A Question 3 includes "Mermaid diagrams" as a feature. Guidance file needs a dedicated `## Mermaid Diagrams` section with syntax and usage rules. | Expand existing content |
-| `skills/setup/defaults/sphinx-shibuya.md` | **Needs addition.** Currently has no mermaid section. Sphinx uses `sphinxcontrib-mermaid` extension. | New section in guidance file |
-| `skills/setup/defaults/odoc.md` | **Not applicable.** odoc has no mermaid support. Use `{v ... v}` for ASCII diagrams instead. Note this in guidance. | Small note addition |
-| `skills/setup/defaults/plain-markdown.md` | **Needs addition.** Plain markdown renders via GitHub/GitLab which support mermaid natively in fenced blocks. | New section in guidance file |
-| `skills/diataxis/references/explanation.md` | **Yes -- gentle addition.** Already mentions "Include Diagrams and Visuals" as a best practice. Add a note that mermaid is available for architecture/flow diagrams when the framework supports it. | Small addition |
-| `agents/doc-editor.md` | **No.** Editor does not generate content. It might validate mermaid syntax minimally (e.g., fenced block has `mermaid` language tag), but this falls under existing code block validation. | No change |
-| `agents/doc-researcher.md` | **No.** Researcher scans for mermaid availability in framework config (already does for mkdocs via pymdownx.superfences detection). No new logic needed. | No change |
-| `agents/doc-user-tester.md` | **No.** Persona tester evaluates content usefulness, not diagram syntax. | No change |
-
-### Doc-Author Changes
-
-Add a new subsection to doc-author.md (after Section 6: Python/MkDocs Conditional Formatting):
-
-**Section 7: Mermaid Diagrams** (or renumber if Use Case template takes Section 7)
+The components have clear dependencies that dictate build order:
 
 ```
-## When to Use Mermaid
+Phase 1: Foundation (no dependencies)
+  1. Add plugin_version to config-template.yaml
+  2. Modify setup SKILL.md Step 3 to write plugin_version
+  3. Modify setup SKILL.md Step 3 to create .originals/
+  4. Modify setup SKILL.md Step 2b.5 to persist qa_answers
+  Test: fresh setup produces config.yaml with plugin_version + qa_answers,
+        and .originals/ directory with copies of rules.md and guidance file.
+        --reset and --refresh-context still work correctly.
 
-Insert mermaid diagrams when:
-- Showing data flow through a system (flowchart or sequence diagram)
-- Illustrating component relationships (class or entity-relationship diagram)
-- Depicting state machines or lifecycle transitions (state diagram)
-- Showing a sequence of interactions between actors (sequence diagram)
+Phase 2: Upgrade Skill - Version Detection + Config Migration
+  (depends on: Phase 1 -- plugin_version must exist to detect)
+  1. Create skills/upgrade/SKILL.md skeleton
+  2. Implement version detection (Step 1)
+  3. Implement config format migration (Step 2)
+  Test: upgrade detects version mismatch, adds missing fields to config.
 
-Do NOT use mermaid for:
-- Simple lists or comparisons (use tables)
-- Step-by-step instructions (use numbered lists)
-- Code structure (use code blocks)
-- Anything that would be clearer as prose
+Phase 3: 3-Way Merge
+  (depends on: Phase 1 -- .originals/ must exist)
+  1. Implement merge logic in upgrade SKILL.md (Step 3)
+  2. Handle missing .originals/ (pre-1.5.0 fallback)
+  Test: merge correctly applies upstream changes to user-customized files,
+        presents conflicts for resolution, updates .originals/.
 
-## Syntax Per Framework
+Phase 4: Q&A Gap Detection
+  (depends on: Phase 1 -- qa_answers must exist)
+  1. Implement gap detection algorithm in upgrade SKILL.md (Step 4)
+  2. Implement question presentation for new/changed questions
+  3. Implement answer merging
+  Test: detects new questions, skips unchanged, re-presents changed.
 
-Mermaid syntax depends on the doc system. Read it from the guidance file
-(.doc-writer/{doc_system}.md). Common patterns:
-
-- mkdocs-material: fenced code block with `mermaid` language tag
-- sphinx-shibuya: `.. mermaid::` directive (requires sphinxcontrib-mermaid)
-- plain-markdown: fenced code block with `mermaid` language tag (GitHub/GitLab native)
-- odoc: not supported -- use {v ... v} ASCII diagrams instead
+Phase 5: Researcher Re-run + Finalize
+  (depends on: Phases 2-4 -- needs all prior state to pass to researcher)
+  1. Implement researcher spawn with merged answers (Step 5)
+  2. Implement version update + summary (Step 6)
+  3. Bump plugin.json to 1.5.0
+  Test: full upgrade flow end-to-end.
 ```
-
-### Guidance File Additions
-
-**mkdocs-material.md** -- new section:
-
-```markdown
-## Mermaid Diagrams
-
-- Use fenced code blocks with `mermaid` language identifier. Requires `pymdownx.superfences`
-  with the mermaid custom fence in mkdocs.yml.
-- Prefer flowcharts for data flow, sequence diagrams for API interactions, state diagrams
-  for lifecycle.
-- Keep diagrams focused -- under 15 nodes. Larger diagrams lose readability on mobile.
-- Always include a text description before or after the diagram for accessibility and for
-  readers whose rendering does not support mermaid.
-- Do not use mermaid for simple relationships that a sentence or table can express.
-```
-
-**sphinx-shibuya.md** -- new section:
-
-```markdown
-## Mermaid Diagrams
-
-- Use `.. mermaid::` directive from `sphinxcontrib-mermaid`. The extension must be in
-  conf.py extensions list.
-- Same usage guidance as mkdocs: prefer focused diagrams, include text description for
-  accessibility.
-- Example:
-  .. mermaid::
-
-     flowchart LR
-         A[Client] --> B[API Gateway]
-         B --> C[Service]
-```
-
-### Build Implications
-
-- **Depends on:** Nothing
-- **Blocks:** Nothing
-- **Risk:** Very low. This is adding awareness/guidance to existing files. The author already defers to the guidance file for doc-system-specific syntax -- mermaid follows the same pattern.
 
 ---
 
-## Feature 5: OCaml .mld/.mli Output Format Switching
+## Edge Cases and Invariants
 
-### What It Is
+### Invariant: Setup Must Never Break
 
-Currently, doc-author writes `.md` files to `paths.docs_root` for all frameworks. For odoc projects, the author should write `.mld` files to `doc/` and optionally enrich `.mli` files with doc comments. This requires the author to detect the output format and switch writing patterns.
+The upgrade system adds state to setup's output but must not change setup's behavior for users who never run upgrade. A project that runs setup and never upgrades should work identically to today.
 
-### Integration Points
+### Edge Case: Framework Switch During Upgrade
 
-**Modified files:**
+If a user runs upgrade and the new plugin version adds support for a framework they want to switch to, that is a SETUP operation, not an upgrade operation. The upgrade skill should not offer framework switching. Users switch frameworks via `/doc-writer:setup` (the re-run menu already supports this).
 
-| File | Change | Scope |
-|------|--------|-------|
-| `agents/doc-author.md` | Format detection + conditional writing logic for odoc. Phase 2 writing workflow branches on `doc_system`. | **Large** -- significant new section |
-| `skills/write/scripts/scan-exports.sh` | New `ocaml` case for scanning `.mli` files | Medium -- new language case |
-| `skills/setup/defaults/odoc.qa.md` | Already has "Author scope" question (Q2) for `.mld + .mli` vs `.mld only`. No change needed. | No change |
-| `skills/setup/defaults/odoc.md` | Already has detailed `.mld` and `.mli` guidance. No structural change needed. | No change |
-| `agents/doc-editor.md` | Needs to handle `.mld` files in addition to `.md`. Read/Glob patterns for doc discovery need to include `*.mld` and `*.mli`. | Medium |
-| `agents/doc-user-tester.md` | Needs to discover `.mld` files. Already reads docs in `paths.docs_root` -- for odoc, also scan `doc/` for `.mld` files. | Small |
+### Edge Case: Researcher-Generated Frameworks
 
-### scan-exports.sh: New OCaml Case
+For frameworks where the researcher generated `.doc-writer/{framework}.md` locally (the FALLBACK path), `.originals/` should still store the generated file. The 3-way merge uses it as the base even though it was not from `defaults/`. On upgrade, if the researcher generates a newer version, that becomes THEIRS.
 
-```bash
-ocaml)
-  echo "## OCaml Module Signatures"
-  grep -rn '^val ' "$SOURCE_ROOT" --include="*.mli" $EXCLUDE 2>/dev/null || true
-  echo ""
-  echo "## OCaml Type Definitions"
-  grep -rn '^type ' "$SOURCE_ROOT" --include="*.mli" $EXCLUDE 2>/dev/null || true
-  echo ""
-  echo "## OCaml Module Declarations"
-  grep -rn '^module ' "$SOURCE_ROOT" --include="*.mli" $EXCLUDE 2>/dev/null || true
-  echo ""
-  echo "## OCaml Exception Declarations"
-  grep -rn '^exception ' "$SOURCE_ROOT" --include="*.mli" $EXCLUDE 2>/dev/null || true
-  ;;
-```
+### Edge Case: Multiple Upgrades
 
-This scans `.mli` files (interface files) since those define the public API surface in OCaml. The `.ml` implementation files are internal.
+If a user skips v1.5.0 and upgrades from v1.4.0 to v1.6.0, the upgrade should still work. Version detection compares "what you have" vs "what the plugin is now" -- not step-by-step through intermediate versions. The 3-way merge compares originals (from whenever) against current defaults (whatever version). Q&A gap detection compares stored answers against current questions. No version-chain logic needed.
 
-### Doc-Author Format Switching
+### Edge Case: Upgrade With No Changes
 
-The author needs a conditional branch in Phase 2 (Write):
-
-```
-IF doc_system == "odoc":
-  - Write .mld files to doc/ (not docs/)
-  - Use odoc markup ({0 Title}, {1 Section}, {[ code ]}, {v verbatim v})
-  - Use odoc cross-references ({!Module.value}, {!page-name})
-  - Register each new .mld in doc/dune (mld_files stanza)
-  - If scope includes .mli: enrich public .mli files with doc comments
-  - File naming: underscores only, no hyphens
-ELSE:
-  - Write .md files to paths.docs_root (existing behavior)
-  - Use markdown syntax
-```
-
-**Key doc-author.md additions:**
-
-1. **Format detection in Step 1** (Read Configuration): After reading `doc_system`, set `output_format` to either `"markdown"` or `"odoc"`. This drives the rest of Phase 2.
-
-2. **New section: "Section 8: Odoc Output Format"** covering:
-   - `.mld` file structure (heading levels, code blocks, cross-references)
-   - Dune registration requirement (every .mld must be in `(mld_files ...)`)
-   - `.mli` enrichment rules (when author scope includes .mli)
-   - File naming rules (underscores only)
-   - The guidance file (`odoc.md`) already documents all syntax -- the author section points to it rather than duplicating
-
-3. **Phase 2 write workflow fork:** After loading the diataxis reference for each page type, apply the format translation. The diataxis reference provides structure (e.g., "tutorials should have Prerequisites, Steps, Verification"), and the format determines how that structure is expressed (markdown headings vs. odoc `{1 ...}` headings).
-
-### Dune Registration Automation
-
-When writing a new `.mld` file, the author must also update `doc/dune`:
-
-```scheme
-;; doc/dune
-(documentation
- (package my_library)
- (mld_files index getting_started new_page))  ; <-- add new_page
-```
-
-The author should:
-1. Read `doc/dune`
-2. Parse the `(mld_files ...)` list
-3. Append the new page name (without `.mld` extension)
-4. Write the updated `doc/dune`
-
-This is critical -- unregistered `.mld` files silently do not appear in generated docs. The odoc guidance file already calls this out as "the single most common reason pages go missing."
-
-### Editor and Persona Changes for .mld
-
-**doc-editor.md:**
-- Step 2 (Discover Documentation Files): Glob pattern must include `*.mld` when `doc_system == "odoc"`. Currently hardcoded to `*.md`.
-- Pass 1 (Terminology): Works on any text format -- no change needed.
-- Pass 2 (Diataxis Type Integrity): Works on content structure -- needs to understand odoc heading syntax (`{1 ...}`) instead of markdown headings.
-- Pass 3 (Humanizer): Works on prose -- no change needed.
-- Pass 4 (Cross-Reference): Needs to understand odoc cross-reference syntax (`{!Module.value}`) instead of markdown links.
-- Strip internal notes: Must handle odoc comment syntax -- see Internal Notes Problem below.
-
-**doc-user-tester.md:**
-- Step 3 (Discover Documentation Files): Glob pattern must include `*.mld` when `doc_system == "odoc"`.
-- Reading .mld content: The persona agent reads docs as a user would. For odoc, the "rendered" form is HTML generated by `dune build @doc`. The agent should read the .mld source directly (it can interpret odoc markup) since it cannot run the build.
-
-### Internal Notes Problem for .mld
-
-The current internal notes mechanism uses HTML comments (`<!-- INTERNAL NOTES FOR EDITOR -->`). This works in markdown because HTML comments are invisible in rendered output.
-
-In `.mld` files, HTML comments are not valid odoc syntax. Options:
-
-1. **Skip internal notes for odoc output.** The editor already has source file access via `paths.source_root` -- it does not strictly need author notes embedded in the doc files.
-2. **Use odoc's own comment syntax** with a marker. But content in .mld is all rendered -- there is no invisible comment mechanism.
-3. **Write a separate notes file per .mld page** (e.g., `.doc-writer/author-notes.md`). The editor reads this companion file.
-
-**Recommendation:** Option 3. The author writes all internal notes for odoc pages to a single `.doc-writer/author-notes.md` file, organized by page name. The editor reads this file during pre-processing (Step 3). This avoids odoc syntax issues entirely and keeps the mechanism consistent -- just the storage location changes.
-
-### Build Implications
-
-- **Depends on:** Nothing technically, but benefits from Feature 1 (use cases in context.md) for richer odoc content
-- **Blocks:** Nothing
-- **Risk:** **Medium-High.** This is the most complex feature. The author needs to handle two fundamentally different output formats. The main risks:
-  1. Dune registration being forgotten (mitigated by making it explicit in the workflow)
-  2. Editor not recognizing odoc syntax (mitigated by conditional logic on doc_system)
-  3. Internal notes mechanism needs rethinking for .mld files (mitigated by external notes file)
+If plugin.json version > config plugin_version, but the defaults files, config template, and Q&A files are all identical: the upgrade detects this, updates plugin_version, and reports "Upgraded from X to Y. No configuration changes needed."
 
 ---
 
-## Feature 6: Default Concepts Page Proposal Under Explanation
-
-### What It Is
-
-When the author proposes the page inventory in plan mode, automatically suggest a "Concepts" or "Key Concepts" page under the Explanation category. This is not a code change to the architecture -- it is a behavioral guidance addition.
-
-### Integration Points
-
-| File | Change | Scope |
-|------|--------|-------|
-| `agents/doc-author.md` | Add guidance in Phase 1 (Step 3: Propose Page Inventory) to always include a Concepts explanation page when the library has 3+ distinct concepts/abstractions. | Small |
-| `skills/diataxis/references/explanation.md` | Add "Pattern 5: Key Concepts Overview" template showing a concepts page structure. | Small |
-
-This is the simplest feature. No config changes, no new data flows, no new files. Just behavioral guidance for the author agent.
-
----
-
-## Cross-Feature Dependencies
+## .doc-writer/ Directory Structure After v1.5.0
 
 ```
-Feature 1: Use Cases Q&A
-    |
-    v (provides data for)
-Feature 2: Use Cases Docs Section
-    |
-    (independent of all others)
-
-Feature 3: Nav Structure         Feature 4: Mermaid
-    (independent)                    (independent)
-
-Feature 5: OCaml .mld/.mli      Feature 6: Concepts Page
-    (independent)                    (independent)
+.doc-writer/
+  config.yaml              # version: 1, plugin_version: "1.5.0", qa_answers: {...}
+  rules.md                 # user's copy (possibly customized)
+  mkdocs-material.md       # user's copy (possibly customized) [if framework is mkdocs-material]
+  context.md               # regenerated by researcher
+  .originals/
+    rules.md               # pristine copy from defaults/ at setup/upgrade time
+    mkdocs-material.md     # pristine copy from defaults/ at setup/upgrade time
 ```
 
-Only Feature 2 depends on Feature 1. All other features are independent and can be built in any order.
-
 ---
 
-## Suggested Build Order
+## Confidence Assessment
 
-Based on dependency analysis, complexity, and blast radius:
-
-| Order | Feature | Rationale |
-|-------|---------|-----------|
-| 1 | Feature 6: Concepts Page | Smallest change, warms up the codebase. Pure guidance addition. |
-| 2 | Feature 4: Mermaid | Small, well-contained. Guidance file additions + doc-author awareness. |
-| 3 | Feature 3: Nav Structure | Medium. Modifies existing Q&A and guidance files. No new patterns. |
-| 4 | Feature 1: Use Cases Q&A | Medium. New setup step + config field + researcher expansion. Follows established patterns. |
-| 5 | Feature 2: Use Cases Docs Section | Medium. Depends on Feature 1. New page type in author + editor exemption. |
-| 6 | Feature 5: OCaml .mld/.mli | Large. Format switching, scan-exports, editor/persona .mld awareness, internal notes rethink. Highest risk. Do last to avoid blocking other work. |
-
----
-
-## Component Change Matrix
-
-Files grouped by how many features touch them:
-
-| File | F1 | F2 | F3 | F4 | F5 | F6 | Total |
-|------|----|----|----|----|----|----|-------|
-| `agents/doc-author.md` | read | template | read | section | **large** | guidance | 6 |
-| `skills/setup/SKILL.md` | **new step** | question | - | - | - | - | 2 |
-| `skills/setup/defaults/config-template.yaml` | field | field | - | - | - | - | 2 |
-| `agents/doc-researcher.md` | section | - | - | - | - | - | 1 |
-| `agents/doc-editor.md` | - | exempt | - | - | .mld | - | 2 |
-| `agents/doc-user-tester.md` | read | - | - | - | .mld | - | 2 |
-| `skills/setup/defaults/mkdocs-material.qa.md` | - | - | **expand** | - | - | - | 1 |
-| `skills/setup/defaults/sphinx-shibuya.qa.md` | - | - | **expand** | - | - | - | 1 |
-| `skills/setup/defaults/mkdocs-material.md` | - | nav note | **expand** | **section** | - | - | 3 |
-| `skills/setup/defaults/sphinx-shibuya.md` | - | nav note | **expand** | **section** | - | - | 3 |
-| `skills/setup/defaults/odoc.md` | - | note | - | note | - | - | 2 |
-| `skills/setup/defaults/plain-markdown.md` | - | - | - | **section** | - | - | 1 |
-| `skills/write/scripts/scan-exports.sh` | - | - | - | - | **case** | - | 1 |
-| `skills/diataxis/references/explanation.md` | - | - | - | note | - | pattern | 2 |
-
-**Hotspot:** `agents/doc-author.md` is touched by all six features. Plan changes carefully to avoid merge conflicts. Consider building features that touch the author in sequence, not parallel.
-
----
-
-## Anti-Patterns to Avoid
-
-### Anti-Pattern 1: Putting Nav Strategy in config.yaml
-
-**What people do:** Store navigation strategy choice in config.yaml alongside doc_system.
-**Why it is wrong:** Framework Q&A answers intentionally do not go into config.yaml. Config stores identity (who, what system, what paths). Framework preferences flow through the researcher into context.md. Putting nav strategy in config breaks this separation and couples config schema to framework-specific concepts.
-**Do this instead:** Follow the existing pattern. Nav strategy answer goes to researcher via Agent tool message, researcher writes it to context.md, downstream agents read context.md.
-
-### Anti-Pattern 2: Creating a Diataxis Reference File for Use Cases
-
-**What people do:** Create `skills/diataxis/references/use-cases.md` parallel to tutorials.md, how-to-guides.md, etc.
-**Why it is wrong:** Use Cases is explicitly not a diataxis type. Adding it to the diataxis references directory implies it is one, which confuses the classification system and the agents that rely on it.
-**Do this instead:** Put the Use Case template in doc-author.md as a dedicated section (like README and MAINTAINER templates). It lives with the agent, not with the framework.
-
-### Anti-Pattern 3: Hardcoding .mld Syntax in doc-author.md
-
-**What people do:** Put odoc syntax rules (heading levels, code blocks, cross-references) directly in the doc-author agent.
-**Why it is wrong:** The existing architecture deliberately separates syntax knowledge (guidance files) from writing workflow (agent). The author reads `.doc-writer/{doc_system}.md` at runtime. Hardcoding odoc syntax in the agent duplicates information and drifts out of sync.
-**Do this instead:** The author should read the odoc guidance file for syntax details. The agent file should contain only the workflow branch (when to write .mld vs .md, how to register in dune) -- not the odoc syntax itself.
-
-### Anti-Pattern 4: Rebuilding Scaffold Templates Per Nav Strategy
-
-**What people do:** Create `scaffolds/mkdocs-material-tabs.yml`, `scaffolds/mkdocs-material-flat.yml`, etc.
-**Why it is wrong:** File multiplication. The setup SKILL.md already has template processing logic that can handle conditional sections.
-**Do this instead:** Keep one scaffold template per framework. Extend the setup SKILL.md's variable substitution step to handle nav strategy as a processing parameter, generating the appropriate nav section.
-
----
+| Area | Confidence | Notes |
+|------|-----------|-------|
+| Plugin version field | HIGH | Straightforward addition; no external dependencies |
+| .originals/ approach | HIGH | Standard 3-way merge pattern; well-understood |
+| Separate upgrade skill | HIGH | Clear separation of concerns; setup is already large |
+| qa_answers in config.yaml | HIGH | Natural extension of existing config pattern |
+| Backward compat handling | HIGH | All edge cases have deterministic fallbacks |
+| Build order | HIGH | Dependencies are clear from the data flow |
 
 ## Sources
 
-- All findings derived from reading the existing codebase files listed in the Component Change Matrix
-- odoc guidance: `skills/setup/defaults/odoc.md` (v1.0 content)
-- Setup flow: `skills/setup/SKILL.md` (v1.0 content)
-- Author agent: `agents/doc-author.md` (v1.0 content)
-- Researcher agent: `agents/doc-researcher.md` (v1.0 content)
-- Editor agent: `agents/doc-editor.md` (v1.0 content)
-- Config schema: `skills/setup/defaults/config-template.yaml` (v1.0 content)
-
----
-*Architecture research for: doc-writer v1.4.0 feature integration*
-*Researched: 2026-03-21*
+All findings derived from reading the existing codebase:
+- `doc-writer/skills/setup/SKILL.md` -- setup flow (583 lines)
+- `doc-writer/skills/setup/defaults/config-template.yaml` -- config schema
+- `doc-writer/.claude-plugin/plugin.json` -- plugin version source
+- `doc-writer/agents/doc-researcher.md` -- researcher integration points
+- `doc-writer/skills/setup/defaults/*.qa.md` -- Q&A file format (4 files)
+- `doc-writer/skills/setup/defaults/*.md` -- guidance file format (4 files)
+- `doc-writer/skills/write/SKILL.md` -- write pipeline (verifying no upgrade impact)

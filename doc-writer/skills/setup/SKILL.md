@@ -40,7 +40,7 @@ First, check whether this project already has a doc-writer configuration:
 3. **If `$ARGUMENTS` contains `--reset`:**
    - Use AskUserQuestion to confirm:
      - header: "Reset"
-     - question: "This will overwrite your existing doc-writer configuration. Guidance files and rules will be replaced with defaults."
+     - question: "This will overwrite your existing doc-writer configuration. Guidance files, rules, and .originals/ will be replaced with current plugin defaults."
      - options:
        - { label: "Reset config", description: "Overwrite existing configuration with fresh defaults" }
        - { label: "Keep current", description: "Cancel and keep existing configuration" }
@@ -466,7 +466,7 @@ After Q&A completes, create the project configuration:
 
 1. **Create `.doc-writer/` directory** if it does not exist.
 
-2. **Write `.doc-writer/config.yaml`** -- Read the config template from `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/config-template.yaml` and populate it with the Q&A answers. The config MUST use `user_personas:` as an array, even for a single persona. Include the `detected:` section with auto-detection results from the Project Detection Results above. The config MUST include `tone: "{selected_tone}"` as a top-level field. Each persona entry MUST include `user_tasks: [{selected_tasks}]`. The config MUST include `use_cases:` as an array (empty `[]` if user skipped, or populated with structured objects). The config MUST include `use_cases_section: true|false`.
+2. **Write `.doc-writer/config.yaml`** -- First, read `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json` and extract the `version` field. Then read the config template from `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/config-template.yaml` and populate it with the Q&A answers. Write the extracted version as `plugin_version: "{version}"` in config.yaml, placed immediately after `version: 1`. The config MUST use `user_personas:` as an array, even for a single persona. Include the `detected:` section with auto-detection results from the Project Detection Results above. The config MUST include `tone: "{selected_tone}"` as a top-level field. Each persona entry MUST include `user_tasks: [{selected_tasks}]`. The config MUST include `use_cases:` as an array (empty `[]` if user skipped, or populated with structured objects). The config MUST include `use_cases_section: true|false`.
 
 3. **Copy the selected guidance file:**
    - Read `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/{doc_system}.md`
@@ -478,14 +478,22 @@ After Q&A completes, create the project configuration:
    - Read `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/rules.md`
    - Write its contents to `.doc-writer/rules.md`
 
-5. **Display confirmation:**
+5. **Create `.doc-writer/.originals/` directory** if it does not exist.
+
+6. **Copy pristine originals:**
+   - If `framework_root` is `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults` (built-in frameworks): Copy `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/{doc_system}.md` to `.doc-writer/.originals/{doc_system}.md`
+   - If `framework_root` is `.doc-writer` (FALLBACK frameworks): Copy `.doc-writer/{doc_system}.md` to `.doc-writer/.originals/{doc_system}.md` (the researcher-generated file IS the baseline)
+   - Copy `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/rules.md` to `.doc-writer/.originals/rules.md`
+
+7. **Display confirmation:**
    ```
    ## Setup Complete
 
    Created `.doc-writer/` with:
-   - config.yaml -- [N] user persona(s), tone: {tone}, doc system: [system], paths configured
+   - config.yaml -- [N] user persona(s), tone: {tone}, doc system: [system], plugin version: {version}, paths configured
    - [doc_system].md -- Documentation system guidance (editable)
    - rules.md -- Project-specific rules template (editable)
+   - .originals/ -- Pristine copies of guidance and rules for future upgrades
 
    Running researcher to generate context.md...
    ```

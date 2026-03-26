@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.5.0
 milestone_name: Plugin Upgrade Helpers
-status: Ready to plan
-stopped_at: Phase 19 context gathered
-last_updated: "2026-03-26T23:15:46.256Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 19-01-PLAN.md
+last_updated: "2026-03-26T23:42:45.359Z"
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 2
+  total_plans: 3
   completed_plans: 2
 ---
 
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-26)
 
 **Core value:** Produce library documentation that the project author can publish with minimal tweaks -- docs written from the end user's perspective, not the builder's.
-**Current focus:** Phase 18 — setup-foundation
+**Current focus:** Phase 19 — upgrade-skill
 
 ## Current Position
 
-Phase: 19
-Plan: Not started
+Phase: 19 (upgrade-skill) — EXECUTING
+Plan: 1 of 1
 
 ## Performance Metrics
 
@@ -51,6 +51,7 @@ Plan: Not started
 *Updated after each plan completion*
 | Phase 18 P01 | 2min | 2 tasks | 2 files |
 | Phase 18 P02 | 2min | 2 tasks | 2 files |
+| Phase 19 P01 | 3min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -66,6 +67,9 @@ Recent decisions affecting current work:
 - [Research]: Pre-v1.5.0 projects need 2-way diff bootstrap path since no .originals/ exist
 - [Phase 18]: qa_answers stores literal label text, not internal codes -- simpler, no translation layer
 - [Phase 18]: Backward compat reads legacy odoc_author_scope as fallback when qa_answers.scope absent
+- [Phase 19]: No Agent tool in upgrade skill -- Phase 19 does not spawn sub-agents
+- [Phase 19]: Meta-fields (version, plugin_version, detected, qa_answers) excluded from config migration comparison
+- [Phase 19]: plugin_version written LAST in Step 4 to prevent false 'already up to date' on incomplete migrations
 
 ### Roadmap Evolution
 
@@ -83,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-26T23:15:46.253Z
-Stopped at: Phase 19 context gathered
-Resume file: .planning/phases/19-upgrade-skill/19-CONTEXT.md
+Last session: 2026-03-26T23:42:38.176Z
+Stopped at: Completed 19-01-PLAN.md
+Resume file: None

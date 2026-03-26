@@ -16,10 +16,10 @@
 
 ### Upgrade Command
 
-- [ ] **UPGRADE-01**: User can run `/doc-writer:upgrade` and receive an "already up to date" message when `config.yaml plugin_version` matches the installed `plugin.json` version
-- [ ] **UPGRADE-02**: User can run `/doc-writer:upgrade` and have new fields from `config-template.yaml` added to their `config.yaml` with semantically inferred defaults — not blank — (e.g., `user_tasks` inferred from `domain_context`, not defaulted to `[]`)
-- [ ] **UPGRADE-03**: User can run `/doc-writer:upgrade` and have files where the user copy is identical to `.originals/` silently updated to the new plugin version without any prompts
-- [ ] **UPGRADE-04**: User can run `/doc-writer:upgrade` and receive deprecation warnings when config fields or guidance sections present in `.originals/` are absent from the new plugin version
+- [x] **UPGRADE-01**: User can run `/doc-writer:upgrade` and receive an "already up to date" message when `config.yaml plugin_version` matches the installed `plugin.json` version
+- [x] **UPGRADE-02**: User can run `/doc-writer:upgrade` and have new fields from `config-template.yaml` added to their `config.yaml` with semantically inferred defaults — not blank — (e.g., `user_tasks` inferred from `domain_context`, not defaulted to `[]`)
+- [x] **UPGRADE-03**: User can run `/doc-writer:upgrade` and have files where the user copy is identical to `.originals/` silently updated to the new plugin version without any prompts
+- [x] **UPGRADE-04**: User can run `/doc-writer:upgrade` and receive deprecation warnings when config fields or guidance sections present in `.originals/` are absent from the new plugin version
 
 ### File Merge
 

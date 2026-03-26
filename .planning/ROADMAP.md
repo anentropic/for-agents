@@ -46,7 +46,7 @@ Full details: `.planning/milestones/v1.4.0-ROADMAP.md`
 **Milestone Goal:** Give doc-writer projects a smooth upgrade path when the plugin is updated, preserving project customizations via section-level 3-way merge.
 
 - [x] **Phase 18: Setup Foundation** - Augment setup skill to produce version tracking, originals storage, and Q&A answer persistence (completed 2026-03-26)
-- [ ] **Phase 19: Upgrade Skill** - Version detection, config migration, and deprecation warnings via new `/doc-writer:upgrade` command
+- [x] **Phase 19: Upgrade Skill** - Version detection, config migration, and deprecation warnings via new `/doc-writer:upgrade` command (completed 2026-03-26)
 - [ ] **Phase 20: 3-Way Merge** - Section-level merge of guidance and rules files with conflict resolution and pre-v1.5.0 fallback
 - [ ] **Phase 21: Q&A Gap Detection and Finalization** - Ask only new framework questions and re-run researcher to refresh context
 
@@ -75,9 +75,9 @@ Plans:
   2. User runs `/doc-writer:upgrade` after a plugin update and new config fields appear in `config.yaml` with semantically inferred values (not blank defaults)
   3. User runs `/doc-writer:upgrade` and files identical to their `.originals/` counterparts are silently updated to the new plugin version without prompts
   4. User runs `/doc-writer:upgrade` and receives deprecation warnings for config fields or guidance sections removed in the new plugin version
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 Plans:
-- [ ] 19-01-PLAN.md -- Plugin version bump and upgrade SKILL.md with 4-step flow (version detection, config migration, unchanged file update, finalize)
+- [x] 19-01-PLAN.md -- Plugin version bump and upgrade SKILL.md with 4-step flow (version detection, config migration, unchanged file update, finalize)
 
 ### Phase 20: 3-Way Merge
 **Goal**: Users can upgrade guidance and rules files while keeping their customizations intact, with clear conflict resolution when changes overlap
@@ -121,6 +121,6 @@ Plans:
 | 16. Use Cases | v1.4.0 | 2/2 | Complete | 2026-03-22 |
 | 17. OCaml .mld/.mli Output | v1.4.0 | 2/2 | Complete | 2026-03-22 |
 | 18. Setup Foundation | v1.5.0 | 2/2 | Complete    | 2026-03-26 |
-| 19. Upgrade Skill | v1.5.0 | 0/1 | Planning | - |
+| 19. Upgrade Skill | v1.5.0 | 1/1 | Complete | 2026-03-26 |
 | 20. 3-Way Merge | v1.5.0 | 0/0 | Not started | - |
 | 21. Q&A Gap Detection and Finalization | v1.5.0 | 0/0 | Not started | - |

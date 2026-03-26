@@ -64,10 +64,10 @@
 | SETUP-02 | Phase 18 | 18-01 | Complete |
 | SETUP-03 | Phase 18 | 18-02 | Complete |
 | SETUP-04 | Phase 18 | 18-01 | Complete |
-| UPGRADE-01 | Phase 19 | — | Pending |
-| UPGRADE-02 | Phase 19 | — | Pending |
-| UPGRADE-03 | Phase 19 | — | Pending |
-| UPGRADE-04 | Phase 19 | — | Pending |
+| UPGRADE-01 | Phase 19 | 19-01 | Complete |
+| UPGRADE-02 | Phase 19 | 19-01 | Complete |
+| UPGRADE-03 | Phase 19 | 19-01 | Complete |
+| UPGRADE-04 | Phase 19 | 19-01 | Complete |
 | MERGE-01 | Phase 20 | — | Pending |
 | MERGE-02 | Phase 20 | — | Pending |
 | MERGE-03 | Phase 20 | — | Pending |

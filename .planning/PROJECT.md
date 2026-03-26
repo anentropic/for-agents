@@ -59,6 +59,8 @@ Produce library documentation that the project author can publish with minimal t
 
 ### Active
 
+- Setup produces `plugin_version`, `.originals/`, and `qa_answers` for upgrade system — Phase 18
+
 ### Out of Scope
 
 - Auto-generating API reference from code (tools like typedoc/pydoc handle this) — focus is on narrative docs
@@ -130,4 +132,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-26 — v1.5.0 Plugin Upgrade Helpers milestone started*
+*Last updated: 2026-03-26 — Phase 18 (Setup Foundation) complete*

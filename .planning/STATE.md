@@ -1,15 +1,15 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.4.0
-milestone_name: Content & Navigation
-status: unknown
-stopped_at: Completed 17-02-PLAN.md
-last_updated: "2026-03-22T11:09:58.932Z"
+milestone: v1.5.0
+milestone_name: Plugin Upgrade Helpers
+status: defining requirements
+stopped_at: ~
+last_updated: "2026-03-26T00:00:00.000Z"
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 8
-  completed_plans: 8
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
@@ -23,8 +23,10 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 
 ## Current Position
 
-Phase: 17
-Plan: Not started
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-26 — Milestone v1.5.0 started
 
 ## Performance Metrics
 
@@ -84,6 +86,10 @@ Recent decisions affecting current work:
 - [Phase 17]: Odoc Output Mode section parallels Section 6 Python/MkDocs conditional formatting pattern
 - [Phase 17]: .mli enrichment proposals written to review file, never directly to .mli source files
 - [Phase 17]: Enrichment workflow scoped by odoc Q&A Question 2 -- skip when scope is .mld only
+
+### Roadmap Evolution
+
+- Phase 1 added: helpers for updating doc-writer projects after plugin upgrade
 
 ### Pending Todos
 

@@ -46,9 +46,18 @@ Produce library documentation that the project author can publish with minimal t
 - ✓ Odoc-native .mld output with dune registration — v1.4.0
 - ✓ .mli doc comment enrichment proposals — v1.4.0
 
-### Active
+## Current Milestone: v1.5.0 Plugin Upgrade Helpers
 
-(None — next milestone not yet defined)
+**Goal:** Give doc-writer projects a smooth upgrade path when the plugin is updated, preserving project customizations via 3-way merge.
+
+**Target features:**
+- Plugin version tracking in config.yaml + originals storage at setup time
+- `/doc-writer:upgrade` command with version detection and upgrade flow
+- Guidance/rules 3-way merge: auto-apply non-conflicting changes, surface conflicts for user resolution
+- Config format migration: detect new fields, add with defaults; warn on deprecated fields
+- Q&A gap detection: ask only new framework questions since last setup, re-run researcher
+
+### Active
 
 ### Out of Scope
 
@@ -121,4 +130,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-22 after v1.4.0 Content & Navigation milestone complete*
+*Last updated: 2026-03-26 — v1.5.0 Plugin Upgrade Helpers milestone started*

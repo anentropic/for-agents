@@ -59,7 +59,8 @@ Produce library documentation that the project author can publish with minimal t
 
 ### Active
 
-- Setup produces `plugin_version`, `.originals/`, and `qa_answers` for upgrade system — Phase 18
+- `/doc-writer:upgrade` command with version detection, config migration, and deprecation warnings — Phase 19 validated
+- Setup produces `plugin_version`, `.originals/`, and `qa_answers` for upgrade system — Phase 18 validated
 
 ### Out of Scope
 
@@ -132,4 +133,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-26 — Phase 18 (Setup Foundation) complete*
+*Last updated: 2026-03-26 — Phase 19 (Upgrade Skill) complete*

@@ -11,7 +11,7 @@
 
 - [x] **SETUP-01**: User can run `/doc-writer:setup` and have `plugin_version` (matching version from `plugin.json`) written to `config.yaml` as a top-level field
 - [x] **SETUP-02**: User can run `/doc-writer:setup` and have `.doc-writer/.originals/` created with pristine copies of `{doc_system}.md` and `rules.md` as shipped by the plugin
-- [ ] **SETUP-03**: User can run `/doc-writer:setup` and have framework Q&A answers persisted to `config.yaml` under a `qa_answers` section, keyed by question ID derived from question headers in `.qa.md` files
+- [x] **SETUP-03**: User can run `/doc-writer:setup` and have framework Q&A answers persisted to `config.yaml` under a `qa_answers` section, keyed by question ID derived from question headers in `.qa.md` files
 - [x] **SETUP-04**: User can run `/doc-writer:setup --reset` and have `.originals/` refreshed with current plugin files alongside the config reset
 
 ### Upgrade Command
@@ -62,7 +62,7 @@
 |--------|-------|-------|--------|
 | SETUP-01 | Phase 18 | 18-01 | Complete |
 | SETUP-02 | Phase 18 | 18-01 | Complete |
-| SETUP-03 | Phase 18 | — | Pending |
+| SETUP-03 | Phase 18 | 18-02 | Complete |
 | SETUP-04 | Phase 18 | 18-01 | Complete |
 | UPGRADE-01 | Phase 19 | — | Pending |
 | UPGRADE-02 | Phase 19 | — | Pending |

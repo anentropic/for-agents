@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.5.0
 milestone_name: Plugin Upgrade Helpers
 status: Ready to execute
-stopped_at: Completed 18-01-PLAN.md
+stopped_at: Completed 18-02-PLAN.md
 last_updated: "2026-03-26T22:30:15.061Z"
 progress:
   total_phases: 4
@@ -50,6 +50,7 @@ Plan: 2 of 2
 
 *Updated after each plan completion*
 | Phase 18 P01 | 2min | 2 tasks | 2 files |
+| Phase 18 P02 | 2min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,8 @@ Recent decisions affecting current work:
 - [Research]: Section-level merge (by ## headings) prevents silent prose corruption vs line-level diff3
 - [Research]: Claude-as-reader for YAML config migration -- more reliable than bash regex for structured data
 - [Research]: Pre-v1.5.0 projects need 2-way diff bootstrap path since no .originals/ exist
+- [Phase 18]: qa_answers stores literal label text, not internal codes -- simpler, no translation layer
+- [Phase 18]: Backward compat reads legacy odoc_author_scope as fallback when qa_answers.scope absent
 
 ### Roadmap Evolution
 
@@ -80,6 +83,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-26T22:30:15.058Z
-Stopped at: Completed 18-01-PLAN.md
+Last session: 2026-03-26T22:37:20Z
+Stopped at: Completed 18-02-PLAN.md
 Resume file: None

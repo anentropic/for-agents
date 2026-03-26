@@ -75,7 +75,9 @@ Plans:
   2. User runs `/doc-writer:upgrade` after a plugin update and new config fields appear in `config.yaml` with semantically inferred values (not blank defaults)
   3. User runs `/doc-writer:upgrade` and files identical to their `.originals/` counterparts are silently updated to the new plugin version without prompts
   4. User runs `/doc-writer:upgrade` and receives deprecation warnings for config fields or guidance sections removed in the new plugin version
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 19-01-PLAN.md -- Plugin version bump and upgrade SKILL.md with 4-step flow (version detection, config migration, unchanged file update, finalize)
 
 ### Phase 20: 3-Way Merge
 **Goal**: Users can upgrade guidance and rules files while keeping their customizations intact, with clear conflict resolution when changes overlap
@@ -118,7 +120,7 @@ Plans:
 | 15. Navigation Strategies | v1.4.0 | 2/2 | Complete | 2026-03-22 |
 | 16. Use Cases | v1.4.0 | 2/2 | Complete | 2026-03-22 |
 | 17. OCaml .mld/.mli Output | v1.4.0 | 2/2 | Complete | 2026-03-22 |
-| 18. Setup Foundation | v1.5.0 | 1/2 | Complete    | 2026-03-26 |
-| 19. Upgrade Skill | v1.5.0 | 0/0 | Not started | - |
+| 18. Setup Foundation | v1.5.0 | 2/2 | Complete    | 2026-03-26 |
+| 19. Upgrade Skill | v1.5.0 | 0/1 | Planning | - |
 | 20. 3-Way Merge | v1.5.0 | 0/0 | Not started | - |
 | 21. Q&A Gap Detection and Finalization | v1.5.0 | 0/0 | Not started | - |

@@ -61,9 +61,9 @@ Full details: `.planning/milestones/v1.4.0-ROADMAP.md`
   2. User runs `/doc-writer:setup` and `.doc-writer/.originals/` exists with pristine copies of the framework guidance file and `rules.md` as shipped by the plugin
   3. User runs `/doc-writer:setup` and `config.yaml` contains a `qa_answers` section with keys derived from Q&A question headers
   4. User runs `/doc-writer:setup --reset` and `.originals/` is refreshed with current plugin files (not stale from a previous version)
-**Plans:** 2 plans
+**Plans:** 0/2 plans executed
 Plans:
-- [x] 18-01-PLAN.md -- Plugin version tracking and .originals/ storage in setup Step 3
+- [ ] 18-01-PLAN.md -- Plugin version tracking and .originals/ storage in setup Step 3
 - [ ] 18-02-PLAN.md -- Q&A answer persistence to qa_answers and odoc_author_scope migration
 
 ### Phase 19: Upgrade Skill
@@ -118,7 +118,7 @@ Plans:
 | 15. Navigation Strategies | v1.4.0 | 2/2 | Complete | 2026-03-22 |
 | 16. Use Cases | v1.4.0 | 2/2 | Complete | 2026-03-22 |
 | 17. OCaml .mld/.mli Output | v1.4.0 | 2/2 | Complete | 2026-03-22 |
-| 18. Setup Foundation | v1.5.0 | 1/2 | In progress | - |
+| 18. Setup Foundation | v1.5.0 | 0/2 | Planned    |  |
 | 19. Upgrade Skill | v1.5.0 | 0/0 | Not started | - |
 | 20. 3-Way Merge | v1.5.0 | 0/0 | Not started | - |
 | 21. Q&A Gap Detection and Finalization | v1.5.0 | 0/0 | Not started | - |

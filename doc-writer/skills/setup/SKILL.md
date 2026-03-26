@@ -438,9 +438,9 @@ After scaffold check, present framework-specific questions. These are read dynam
    - If the question has `detect_context` and features were detected, include the detected values in the question text.
    - Every question MUST have "Type something else" and "Chat about this" as trailing options (the .qa.md files already include them).
 
-4. **Record all answers.** Framework Q&A answers do NOT go into config.yaml. Store them in-memory and pass them to the researcher via the Agent tool invocation message in Step 5.
+4. **Record all answers.** After all framework questions are answered, persist the answers to `config.yaml` under a `qa_answers` section. For each question answered, derive the key by lowercasing the question's `header` field and replacing spaces with underscores (e.g., "Navigation" becomes `navigation`, "API docs" becomes `api_docs`). Store the selected label as the value (string for single-select, array of strings for multi-select). For "Type something else" responses, store the user's freeform text. For dynamic follow-on questions (e.g., odoc sub-topic questions), derive keys from their headers using the same rule.
 
-   **Exception:** If `doc_system` is `odoc`, persist the Question 2 answer (author scope) to `config.yaml` as `odoc_author_scope`. Set to `"mld-and-mli"` if the user chose ".mld pages + .mli doc comment improvements", or `"mld-only"` if they chose ".mld pages only". This value is needed by the doc-author agent at write time (across sessions) to gate the .mli enrichment workflow.
+   Also pass all answers in-memory to the researcher via the Agent tool invocation message in Step 5 (unchanged from current behavior).
 
 **Passing framework answers to the researcher:**
 

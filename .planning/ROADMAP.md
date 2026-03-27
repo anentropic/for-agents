@@ -88,9 +88,9 @@ Plans:
   2. User with customized `rules.md` runs `/doc-writer:upgrade` and project-specific rules are preserved while new default rules are added
   3. User encounters a merge conflict and is presented each conflict one at a time via AskUserQuestion with options to keep their version, take the plugin version, or provide a custom resolution
   4. User with a pre-v1.5.0 project (no `.originals/`) runs `/doc-writer:upgrade` and is guided through a 2-way diff with per-change accept/reject, after which `.originals/` is bootstrapped
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 Plans:
-- [ ] 20-01-PLAN.md -- Section-level 3-way merge algorithm in Step 3 with conflict resolution and 2-way diff bootstrap
+- [x] 20-01-PLAN.md -- Section-level 3-way merge algorithm in Step 3 with conflict resolution and 2-way diff bootstrap
 
 ### Phase 21: Q&A Gap Detection and Finalization
 **Goal**: Upgrade flow asks only new framework questions and refreshes project context so downstream agents use the latest configuration
@@ -124,5 +124,5 @@ Plans:
 | 17. OCaml .mld/.mli Output | v1.4.0 | 2/2 | Complete | 2026-03-22 |
 | 18. Setup Foundation | v1.5.0 | 2/2 | Complete    | 2026-03-26 |
 | 19. Upgrade Skill | v1.5.0 | 1/1 | Complete    | 2026-03-26 |
-| 20. 3-Way Merge | v1.5.0 | 0/1 | Not started | - |
+| 20. 3-Way Merge | v1.5.0 | 1/1 | Complete    | 2026-03-27 |
 | 21. Q&A Gap Detection and Finalization | v1.5.0 | 0/0 | Not started | - |

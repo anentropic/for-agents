@@ -23,10 +23,10 @@
 
 ### File Merge
 
-- [ ] **MERGE-01**: User can run `/doc-writer:upgrade` and have `{doc_system}.md` updated via section-level 3-way merge (parsed by `##` headings) — non-conflicting upstream changes applied automatically, user-customized sections preserved
-- [ ] **MERGE-02**: User can run `/doc-writer:upgrade` and have `rules.md` updated via the same section-level 3-way merge — project-specific rules preserved while new default rules are added
-- [ ] **MERGE-03**: User can resolve each merge conflict individually, presented one at a time via AskUserQuestion with options: keep user version, take plugin version, or provide custom resolution
-- [ ] **MERGE-04**: User with a pre-v1.5.0 project (no `.originals/` directory) can run `/doc-writer:upgrade` and be guided through a 2-way diff of plugin changes — shown what would change, confirming which changes to accept; `.originals/` bootstrapped after completion
+- [x] **MERGE-01**: User can run `/doc-writer:upgrade` and have `{doc_system}.md` updated via section-level 3-way merge (parsed by `##` headings) — non-conflicting upstream changes applied automatically, user-customized sections preserved
+- [x] **MERGE-02**: User can run `/doc-writer:upgrade` and have `rules.md` updated via the same section-level 3-way merge — project-specific rules preserved while new default rules are added
+- [x] **MERGE-03**: User can resolve each merge conflict individually, presented one at a time via AskUserQuestion with options: keep user version, take plugin version, or provide custom resolution
+- [x] **MERGE-04**: User with a pre-v1.5.0 project (no `.originals/` directory) can run `/doc-writer:upgrade` and be guided through a 2-way diff of plugin changes — shown what would change, confirming which changes to accept; `.originals/` bootstrapped after completion
 
 ### Q&A Updates
 
@@ -68,9 +68,9 @@
 | UPGRADE-02 | Phase 19 | 19-01 | Complete |
 | UPGRADE-03 | Phase 19 | 19-01 | Complete |
 | UPGRADE-04 | Phase 19 | 19-01 | Complete |
-| MERGE-01 | Phase 20 | — | Pending |
-| MERGE-02 | Phase 20 | — | Pending |
-| MERGE-03 | Phase 20 | — | Pending |
-| MERGE-04 | Phase 20 | — | Pending |
+| MERGE-01 | Phase 20 | 20-01 | Complete |
+| MERGE-02 | Phase 20 | 20-01 | Complete |
+| MERGE-03 | Phase 20 | 20-01 | Complete |
+| MERGE-04 | Phase 20 | 20-01 | Complete |
 | QA-01 | Phase 21 | — | Pending |
 | QA-02 | Phase 21 | — | Pending |

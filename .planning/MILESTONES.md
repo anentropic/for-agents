@@ -1,5 +1,19 @@
 # Milestones
 
+## v1.5.0 Plugin Upgrade Helpers (Shipped: 2026-03-27)
+
+**Phases completed:** 4 phases, 5 plans, 10 tasks
+
+**Key accomplishments:**
+
+- Setup skill now writes plugin_version from plugin.json and creates .originals/ with pristine guidance/rules copies for future upgrade 3-way merge
+- Generic qa_answers persistence replaces odoc_author_scope exception; doc-author reads qa_answers.scope with backward compatibility fallback
+- Created /doc-writer:upgrade command with version detection, config migration with semantic inference, unchanged file update via .originals/ comparison, and consolidated upgrade summary
+- Section-level 3-way merge algorithm with 13-case classification table, conflict resolution via AskUserQuestion, and 2-way diff bootstrap for pre-v1.5.0 projects
+- Q&A gap detection (Step 3.5) and conditional researcher re-run (Step 4) added to upgrade SKILL.md, completing the 6-step upgrade flow
+
+---
+
 ## v1.4.0 Content & Navigation (Shipped: 2026-03-22)
 
 **Phases completed:** 4 phases, 8 plans, 15 tasks

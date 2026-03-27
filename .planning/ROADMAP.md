@@ -99,7 +99,9 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. User runs `/doc-writer:upgrade` after plugin adds new Q&A questions and is asked only those new questions -- previously answered questions are not re-asked
   2. User runs `/doc-writer:upgrade` after config field additions or new Q&A answers and `context.md` is refreshed via a researcher re-run reflecting the updated configuration
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 21-01-PLAN.md -- Q&A gap detection step, conditional researcher re-run, and upgrade summary finalization
 
 ## Progress
 
@@ -125,4 +127,4 @@ Plans:
 | 18. Setup Foundation | v1.5.0 | 2/2 | Complete    | 2026-03-26 |
 | 19. Upgrade Skill | v1.5.0 | 1/1 | Complete    | 2026-03-26 |
 | 20. 3-Way Merge | v1.5.0 | 1/1 | Complete    | 2026-03-27 |
-| 21. Q&A Gap Detection and Finalization | v1.5.0 | 0/0 | Not started | - |
+| 21. Q&A Gap Detection and Finalization | v1.5.0 | 0/1 | Not started | - |

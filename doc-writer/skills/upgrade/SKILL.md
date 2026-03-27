@@ -41,9 +41,9 @@ Determine whether an upgrade is needed by comparing the project's stored plugin 
 
 5. Display: "Upgrading doc-writer from {old_version} to {new_version}..."
 
-6. Store both the OLD and NEW versions for use in the Step 4 summary.
+6. Store both the OLD and NEW versions for use in the Step 5 summary.
 
-**CRITICAL:** Do NOT write the new plugin_version to config.yaml in this step. The plugin_version update must happen LAST, in Step 4, after all migration is complete. Writing it early would cause subsequent upgrade attempts to see "already up to date" even if migration was incomplete.
+**CRITICAL:** Do NOT write the new plugin_version to config.yaml in this step. The plugin_version update must happen LAST, in Step 5, after all migration is complete. Writing it early would cause subsequent upgrade attempts to see "already up to date" even if migration was incomplete.
 
 ### Step 2: Config Format Migration
 
@@ -162,7 +162,7 @@ This project was set up before upgrade support was available. Since there are no
 
    j. Create `.doc-writer/.originals/{file}` with the NEW (current plugin default) content -- NOT the merged content. The `.originals/` directory always tracks what the plugin shipped.
 
-4. Record merge stats for each file in the summary. **Skip to Step 4.**
+4. Record merge stats for each file in the summary. **Skip to Step 3.5.**
 
 #### Step 3.2: Read doc_system
 
@@ -276,11 +276,33 @@ Detect whether the plugin has added new framework Q&A questions since the user l
 
    e. Record for summary: "Asked {N} new Q&A question(s): {list of question headers}"
 
-### Step 4: Finalize
+### Step 4: Context Refresh
+
+Regenerate `context.md` if the upgrade produced changes that downstream agents should reflect.
+
+1. Determine if a context refresh is needed:
+   - Did Step 2 add any new config fields? (If yes, refresh needed.)
+   - Did Step 3.5 collect any new Q&A answers? (If yes, refresh needed.)
+
+2. **If no refresh needed:** Record "Context refresh skipped -- no config or Q&A changes" for summary. Skip to Step 5.
+
+3. **If refresh needed:**
+
+   a. Display: "Refreshing context.md to reflect updated configuration..."
+
+   b. Use the Agent tool to spawn `doc-researcher` with this message:
+
+   > Enrich the project configuration. Read `.doc-writer/config.yaml` for user personas, tone, and doc system. Scan the codebase (README, source files, framework config) and produce `.doc-writer/context.md` with expanded persona guidance, project domain summary, tone-specific writing rules, and framework usage preferences.
+   >
+   > Framework Q&A answers: {all qa_answers from config.yaml, including both existing and newly added answers}
+
+   c. After the researcher completes, record for summary: "context.md regenerated via researcher re-run"
+
+### Step 5: Finalize
 
 Update the stored plugin version and present the upgrade summary.
 
-1. Write the new `plugin_version` value to config.yaml, replacing the old value (or adding it if it was absent). The new value is the `version` from plugin.json (read in Step 1). This is the **LAST** write to config.yaml -- all migration changes from Step 2 must already be written.
+1. Write the new `plugin_version` value to config.yaml, replacing the old value (or adding it if it was absent). The new value is the `version` from plugin.json (read in Step 1). This is the **LAST** write to config.yaml -- all migration changes from Step 2 and Q&A answer persistence from Step 3.5 must already be written.
 
 2. Display a consolidated upgrade summary:
 
@@ -304,6 +326,15 @@ Update the stored plugin version and present the upgrade summary.
 - {list each file merged: "{file}: {N} sections auto-merged, {M} conflicts resolved by user"}
 - {or "No merges needed" / "2-way diff bootstrap completed -- .originals/ created"}
 
+### Q&A Updates
+- {list each new question asked with the answer given}
+- {or "No new Q&A questions"}
+- {or "Q&A gap detection skipped -- {doc_system} is not a built-in framework"}
+
+### Context Refresh
+- {context.md regenerated via researcher re-run}
+- {or "Skipped -- no config or Q&A changes to reflect"}
+
 ### Warnings
 - {any warnings from above steps, e.g., missing plugin_version}
 - {or "None"}
@@ -313,5 +344,5 @@ Update the stored plugin version and present the upgrade summary.
 
 - All plugin-internal file references use `${CLAUDE_PLUGIN_ROOT}` for portability across different installation locations.
 - Config schema uses `user_personas:` as an array -- even for a single persona.
-- The upgrade command delivers a complete minimal slice: version detection, config migration, file merge, and summary. Q&A gap detection is handled by a separate future upgrade to this command.
+- The upgrade command delivers the complete upgrade flow: version detection, config migration, file merge, Q&A gap detection, context refresh, and summary.
 - When inferring config field values, read the user's existing configuration holistically. The goal is to produce values that feel like the user configured them during setup, not mechanical defaults.

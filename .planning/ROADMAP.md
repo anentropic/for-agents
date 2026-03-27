@@ -48,7 +48,7 @@ Full details: `.planning/milestones/v1.4.0-ROADMAP.md`
 - [x] **Phase 18: Setup Foundation** - Augment setup skill to produce version tracking, originals storage, and Q&A answer persistence (completed 2026-03-26)
 - [x] **Phase 19: Upgrade Skill** - Version detection, config migration, and deprecation warnings via new `/doc-writer:upgrade` command (completed 2026-03-26)
 - [x] **Phase 20: 3-Way Merge** - Section-level merge of guidance and rules files with conflict resolution and pre-v1.5.0 fallback (completed 2026-03-27)
-- [ ] **Phase 21: Q&A Gap Detection and Finalization** - Ask only new framework questions and re-run researcher to refresh context
+- [x] **Phase 21: Q&A Gap Detection and Finalization** - Ask only new framework questions and re-run researcher to refresh context (completed 2026-03-27)
 
 ## Phase Details
 
@@ -64,7 +64,7 @@ Full details: `.planning/milestones/v1.4.0-ROADMAP.md`
 **Plans:** 2/2 plans complete
 Plans:
 - [x] 18-01-PLAN.md -- Plugin version tracking and .originals/ storage in setup Step 3
-- [ ] 18-02-PLAN.md -- Q&A answer persistence to qa_answers and odoc_author_scope migration
+- [x] 18-02-PLAN.md -- Q&A answer persistence to qa_answers and odoc_author_scope migration
 
 ### Phase 19: Upgrade Skill
 **Goal**: Users can run `/doc-writer:upgrade` to detect version mismatches and migrate config fields without losing existing settings
@@ -99,9 +99,9 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. User runs `/doc-writer:upgrade` after plugin adds new Q&A questions and is asked only those new questions -- previously answered questions are not re-asked
   2. User runs `/doc-writer:upgrade` after config field additions or new Q&A answers and `context.md` is refreshed via a researcher re-run reflecting the updated configuration
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 Plans:
-- [ ] 21-01-PLAN.md -- Q&A gap detection step, conditional researcher re-run, and upgrade summary finalization
+- [x] 21-01-PLAN.md -- Q&A gap detection step, conditional researcher re-run, and upgrade summary finalization
 
 ## Progress
 
@@ -127,4 +127,4 @@ Plans:
 | 18. Setup Foundation | v1.5.0 | 2/2 | Complete    | 2026-03-26 |
 | 19. Upgrade Skill | v1.5.0 | 1/1 | Complete    | 2026-03-26 |
 | 20. 3-Way Merge | v1.5.0 | 1/1 | Complete    | 2026-03-27 |
-| 21. Q&A Gap Detection and Finalization | v1.5.0 | 0/1 | Not started | - |
+| 21. Q&A Gap Detection and Finalization | v1.5.0 | 1/1 | Complete    | 2026-03-27 |

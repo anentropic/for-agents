@@ -30,8 +30,8 @@
 
 ### Q&A Updates
 
-- [ ] **QA-01**: User can run `/doc-writer:upgrade` and only be asked framework Q&A questions whose IDs are absent from the stored `qa_answers` in `config.yaml` (new questions added to `.qa.md` since last setup)
-- [ ] **QA-02**: User can run `/doc-writer:upgrade` after any config field additions or new Q&A answers and have `context.md` refreshed via a researcher re-run
+- [x] **QA-01**: User can run `/doc-writer:upgrade` and only be asked framework Q&A questions whose IDs are absent from the stored `qa_answers` in `config.yaml` (new questions added to `.qa.md` since last setup)
+- [x] **QA-02**: User can run `/doc-writer:upgrade` after any config field additions or new Q&A answers and have `context.md` refreshed via a researcher re-run
 
 ---
 
@@ -72,5 +72,5 @@
 | MERGE-02 | Phase 20 | 20-01 | Complete |
 | MERGE-03 | Phase 20 | 20-01 | Complete |
 | MERGE-04 | Phase 20 | 20-01 | Complete |
-| QA-01 | Phase 21 | — | Pending |
-| QA-02 | Phase 21 | — | Pending |
+| QA-01 | Phase 21 | 21-01 | Complete |
+| QA-02 | Phase 21 | 21-01 | Complete |

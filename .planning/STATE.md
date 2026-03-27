@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.5.0
 milestone_name: Plugin Upgrade Helpers
-status: Ready to plan
-stopped_at: Completed 20-01-PLAN.md
-last_updated: "2026-03-27T00:27:55.577Z"
+status: ready_for_verification
+stopped_at: Completed 21-01-PLAN.md
+last_updated: "2026-03-27T11:08:14Z"
 progress:
   total_phases: 4
-  completed_phases: 3
-  total_plans: 4
-  completed_plans: 4
+  completed_phases: 4
+  total_plans: 5
+  completed_plans: 5
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-26)
 
 **Core value:** Produce library documentation that the project author can publish with minimal tweaks -- docs written from the end user's perspective, not the builder's.
-**Current focus:** Phase 20 — 3-way-merge
+**Current focus:** Phase 21 — q-a-gap-detection-and-finalization
 
 ## Current Position
 
 Phase: 21
-Plan: Not started
+Plan: 1 (complete)
 
 ## Performance Metrics
 
@@ -53,6 +53,7 @@ Plan: Not started
 | Phase 18 P02 | 2min | 2 tasks | 2 files |
 | Phase 19 P01 | 3min | 2 tasks | 2 files |
 | Phase 20 P01 | 3min | 2 tasks | 1 files |
+| Phase 21 P01 | 2min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,9 @@ Recent decisions affecting current work:
 - [Phase 20]: Section-level merge by ## headings with 13-case classification table; preamble treated as __preamble__ section
 - [Phase 20]: 2-way diff bootstrap writes NEW (not merged) to .originals/ -- establishes correct baseline for future 3-way merges
 - [Phase 20]: Removal conflicts get dedicated AskUserQuestion format distinct from standard content conflicts
+- [Phase 21]: Step 3.5 Q&A gap detection uses same key derivation as setup (lowercase + spaces to underscores) for exact compatibility
+- [Phase 21]: FALLBACK frameworks skip Q&A gap detection entirely -- only plugin-shipped .qa.md files are valid sources
+- [Phase 21]: Researcher re-run conditional on config or Q&A changes only, not file merges
 
 ### Roadmap Evolution
 
@@ -91,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-27T00:19:34Z
-Stopped at: Completed 20-01-PLAN.md
+Last session: 2026-03-27T11:08:14Z
+Stopped at: Completed 21-01-PLAN.md
 Resume file: None

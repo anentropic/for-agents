@@ -2,7 +2,7 @@
 name: doc-writer:upgrade
 description: Upgrade doc-writer configuration after a plugin update. Detects version changes, migrates config fields, updates unchanged files, and reports all changes.
 disable-model-invocation: true
-allowed-tools: Read, Write, Bash, Glob, Grep
+allowed-tools: Read, Write, Bash, Glob, Grep, Agent
 argument-hint: ""
 ---
 
@@ -237,6 +237,44 @@ g. **If USER content differs from BASE content AND BASE content differs from NEW
    1. Write the merged result to `.doc-writer/{file}`
    2. Write the NEW content (not the merged content) to `.doc-writer/.originals/{file}` -- the `.originals/` directory always tracks what the plugin shipped, not the user's merged version
    3. Record merge stats: "{N} sections auto-merged, {M} conflicts resolved by user"
+
+### Step 3.5: Q&A Gap Detection
+
+Detect whether the plugin has added new framework Q&A questions since the user last ran setup. Only ask questions whose answers are not already stored.
+
+1. Read the `doc_system` value from config.yaml (already read in Step 1).
+
+2. Check if `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/{doc_system}.qa.md` exists.
+
+   **If the file does not exist:** This is a FALLBACK framework (researcher-generated, not built-in). Q&A gap detection only applies to built-in frameworks with plugin-shipped Q&A files. Record for summary: "Q&A gap detection skipped -- {doc_system} is not a built-in framework." Skip to Step 4.
+
+3. Read the `.qa.md` file. Parse each `## Question N:` section (ignore `### Follow-on:` sub-sections -- follow-on questions are tied to their parent question's answer and were handled during the original setup session). Extract the `header` field from each question.
+
+4. For each question header, derive the expected `qa_answers` key: lowercase the header and replace spaces with underscores (e.g., "API docs" becomes `api_docs`, "Navigation" becomes `navigation`). This MUST match the setup skill's derivation rule exactly (setup SKILL.md Step 2b.5 item 4).
+
+5. Read the `qa_answers` section from the user's config.yaml.
+
+6. For each derived key: check if the key exists in `qa_answers`.
+   - If the key exists: this question was already answered. Skip it.
+   - If the key is absent: this is a new question. Add to the list of questions to ask.
+
+7. **If no new questions found:** Record "No new Q&A questions" for summary. Skip to Step 4.
+
+8. **If new questions found:**
+
+   a. Display: "The plugin update includes {N} new framework question(s) for {doc_system}."
+
+   b. If a framework config file exists (e.g., `mkdocs.yml`, `conf.py` -- detected in Step 1 or detected now via Glob), use Grep on it to detect which features are currently enabled. Match detected features against the `recommend_if` fields in the Q&A options and mark matching options as "(Recommended)". This mirrors setup Step 2b.5 behavior.
+
+   c. For each new question, present it via AskUserQuestion:
+      - Use the `header`, `question`, and `options` fields from the `.qa.md` question section.
+      - If the question has `multiSelect: true`, set multiSelect on the AskUserQuestion.
+      - If the question has `detect_context` and features were detected, include the detected values in the question text.
+      - Every question MUST have "Type something else" and "Chat about this" as trailing options (the .qa.md files already include them).
+
+   d. After all new questions are answered, persist the new answers to config.yaml under `qa_answers` using the derived key for each answer. Store the selected label as the value (string for single-select, array of strings for multi-select). For "Type something else" responses, store the user's freeform text. **Write config.yaml NOW** -- the researcher re-run in Step 4 reads config.yaml and must see the new answers.
+
+   e. Record for summary: "Asked {N} new Q&A question(s): {list of question headers}"
 
 ### Step 4: Finalize
 

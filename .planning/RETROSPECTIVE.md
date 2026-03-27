@@ -98,6 +98,55 @@
 
 ---
 
+## Milestone: v1.5.0 — Plugin Upgrade Helpers
+
+**Shipped:** 2026-03-27
+**Phases:** 4 | **Plans:** 5 | **Timeline:** 2 days (2026-03-26 → 2026-03-27)
+
+### What Was Built
+
+- `/doc-writer:upgrade` command: 6-step flow (version detection, config migration, file merge, Q&A gap detection, context refresh, finalize) in a standalone SKILL.md (348 lines)
+- Setup foundation: `plugin_version` tracking, `.originals/` pristine file storage, `qa_answers` persistence — all integrated into existing setup SKILL.md
+- Section-level 3-way merge: 13-case classification table for BASE/USER/NEW comparison, AskUserQuestion per-conflict resolution, code-block-aware `##` heading parser
+- 2-way diff bootstrap for pre-v1.5.0 projects: per-section accept/reject with `.originals/` creation after completion
+- Q&A gap detection: set-difference of `.qa.md` question IDs against stored `qa_answers`, FALLBACK framework skip
+- Conditional researcher re-run: only triggers when config fields or Q&A answers actually changed
+
+### What Worked
+
+- **Assumptions discussion for Phase 20 caught a design question early**: The "sections removed in NEW" handling was ambiguous until the user clarified: auto-remove if USER==BASE, conflict if USER!=BASE. This insight shaped the entire 13-case classification table.
+- **Single-file phases are fast**: Phases 19-21 each modified only `doc-writer/skills/upgrade/SKILL.md`. The executor agents completed in 2-3 minutes each with zero file conflicts.
+- **Auto-advance from plan-phase through execute**: With `--auto` flag, phases 19-21 went from research → plan → verify → execute → verify in one uninterrupted chain.
+- **Worktree isolation eliminated merge conflicts**: Each executor ran in its own worktree, preventing concurrent file contention (though ROADMAP.md/STATE.md conflicts still needed manual resolution post-merge).
+
+### What Was Inefficient
+
+- **Worktree merge conflict resolution for STATE.md/ROADMAP.md**: Every worktree merge produced the same ROADMAP.md/STATE.md conflict pattern. The orchestrator resolves these manually each time — a predictable, automatable step.
+- **VALIDATION.md created pre-execution, never updated post-execution**: All 4 phases have `nyquist_compliant: false` because the VALIDATION.md files were written before plans existed and never revisited after execution. The plans themselves had `<automated>` grep verify commands.
+- **21-01-SUMMARY.md missing requirements_completed field**: The executor for Phase 21 didn't populate the `requirements_completed` frontmatter, breaking the 3-source cross-reference during audit (verified via VERIFICATION.md instead).
+
+### Patterns Established
+
+- **Upgrade as separate skill, not setup extension**: The upgrade workflow is complex enough (6 steps, 348 lines) to warrant its own SKILL.md. Setup stays focused on first-time configuration.
+- **Claude-as-reader for structured comparison**: Section-level merge, config field diffing, and Q&A gap detection all rely on Claude reading and comparing text — no external diff tools. This works because all files are small (<400 lines) and section-structured.
+- **Conditional expensive operations**: Researcher re-run only fires when config/Q&A actually changed. This pattern avoids unnecessary token spend on upgrade runs that only merge files.
+- **FALLBACK framework skip pattern**: When a feature depends on upstream plugin files (`.qa.md`), FALLBACK frameworks that use project-local files instead should skip with a clear message rather than error.
+
+### Key Lessons
+
+1. **Worktree merge conflicts are predictable and should be automated.** Every phase execution produces the same ROADMAP.md/STATE.md conflict. The orchestrator's manual resolution is reliable but repetitive.
+2. **VALIDATION.md should be created after planning, not before.** Writing VALIDATION.md before the plan exists means the task verification map can't reference real plan task IDs or `<automated>` commands. Creating it after planning would allow accurate pre-population.
+3. **Single-file phases execute extremely fast.** When the entire phase modifies one file, worktree isolation, plan verification, and execution all complete in minutes. The overhead-to-work ratio is excellent.
+4. **Assumptions discussion substitutes well for discuss-phase context.** Phases 20 and 21 skipped `/gsd:discuss-phase` entirely, using assumptions review feedback instead. The planner and executor had sufficient context from REQUIREMENTS.md + RESEARCH.md + the assumptions corrections.
+
+### Cost Observations
+
+- Model mix: ~70% opus (researcher + planner + executor), ~30% sonnet (plan-checker + verifier + integration-checker)
+- Sessions: 2 sessions — Phase 18-19 in session 1, Phase 20-21 + audit + milestone completion in session 2
+- Notable: Auto-advance with `--auto --no-transition` eliminated all inter-phase context switching
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -106,6 +155,7 @@
 |-----------|--------|-------|------------|
 | v1.0 | 13 | 28 | Established wave-based execution, Nyquist validation, gap-closure pipeline |
 | v1.4.0 | 4 | 8 | Assumptions-first planning, auto-advance pipeline, inline gap fixes |
+| v1.5.0 | 4 | 5 | Worktree isolation, single-file phases, auto-advance with --no-transition |
 
 ### Cumulative Quality
 
@@ -113,10 +163,12 @@
 |-----------|------------|-----------------|-------|
 | v1.0 | 10 (phase-13) + 31 (pkg) + 42 (setup) + 49 (auth) = 132 | 7/13 | Pre-Nyquist phases (1-6) lack bats; all content-verifiable |
 | v1.4.0 | grep-based acceptance criteria per task | 4/4 | All phases have VALIDATION.md; grep-based verify per task |
+| v1.5.0 | grep-based acceptance criteria per task | 4/4 | All phases have VALIDATION.md; nyquist_compliant frontmatter not updated post-execution |
 
 ### Top Lessons (Verified Across Milestones)
 
 1. **Additive changes are safer than modifying existing files** — validated throughout v1.0 framework additions
 2. **Runtime wiring bugs survive static verification** — must explicitly test end-to-end paths, not just file content
 3. **Integration checks catch cross-session bugs** — validated in v1.4.0 (OCML-04 scope persistence)
-4. **Assumptions discussion before planning catches corrections cheaply** — validated in v1.4.0 (3 corrections in Phase 16)
+4. **Assumptions discussion before planning catches corrections cheaply** — validated in v1.4.0 (3 corrections in Phase 16), v1.5.0 (section removal handling in Phase 20)
+5. **Single-file phases with worktree isolation execute extremely fast** — validated in v1.5.0 (3 phases at 2-3 min each)

@@ -4,6 +4,7 @@
 
 - ✅ **v1.0 Doc Writer Plugin** — Phases 1-13 (shipped 2026-03-19)
 - ✅ **v1.4.0 Content & Navigation** — Phases 14-17 (shipped 2026-03-22)
+- ✅ **v1.5.0 Plugin Upgrade Helpers** — Phases 18-21 (shipped 2026-03-27)
 
 ## Phases
 
@@ -40,6 +41,18 @@ Full details: `.planning/milestones/v1.4.0-ROADMAP.md`
 
 </details>
 
+<details>
+<summary>✅ v1.5.0 Plugin Upgrade Helpers (Phases 18-21) — SHIPPED 2026-03-27</summary>
+
+- [x] Phase 18: Setup Foundation (2/2 plans) — completed 2026-03-26
+- [x] Phase 19: Upgrade Skill (1/1 plans) — completed 2026-03-26
+- [x] Phase 20: 3-Way Merge (1/1 plans) — completed 2026-03-27
+- [x] Phase 21: Q&A Gap Detection and Finalization (1/1 plans) — completed 2026-03-27
+
+Full details: `.planning/milestones/v1.5.0-ROADMAP.md`
+
+</details>
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -61,3 +74,7 @@ Full details: `.planning/milestones/v1.4.0-ROADMAP.md`
 | 15. Navigation Strategies | v1.4.0 | 2/2 | Complete | 2026-03-22 |
 | 16. Use Cases | v1.4.0 | 2/2 | Complete | 2026-03-22 |
 | 17. OCaml .mld/.mli Output | v1.4.0 | 2/2 | Complete | 2026-03-22 |
+| 18. Setup Foundation | v1.5.0 | 2/2 | Complete | 2026-03-26 |
+| 19. Upgrade Skill | v1.5.0 | 1/1 | Complete | 2026-03-26 |
+| 20. 3-Way Merge | v1.5.0 | 1/1 | Complete | 2026-03-27 |
+| 21. Q&A Gap Detection and Finalization | v1.5.0 | 1/1 | Complete | 2026-03-27 |

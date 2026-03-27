@@ -45,10 +45,15 @@ Produce library documentation that the project author can publish with minimal t
 - ✓ OCaml scan-exports for public symbol detection from .mli files — v1.4.0
 - ✓ Odoc-native .mld output with dune registration — v1.4.0
 - ✓ .mli doc comment enrichment proposals — v1.4.0
+- ✓ Setup produces plugin_version, .originals/, and qa_answers for upgrade system — v1.5.0
+- ✓ /doc-writer:upgrade command with version detection, config migration, and deprecation auto-removal — v1.5.0
+- ✓ Section-level 3-way merge for guidance and rules files with per-conflict AskUserQuestion resolution — v1.5.0
+- ✓ 2-way diff bootstrap for pre-v1.5.0 projects without .originals/ — v1.5.0
+- ✓ Q&A gap detection asks only new framework questions, conditional researcher re-run — v1.5.0
 
 ### Active
 
-(None — next milestone not yet defined)
+(No active requirements — milestone boundary)
 
 ### Out of Scope
 
@@ -63,18 +68,21 @@ Produce library documentation that the project author can publish with minimal t
 
 **Shipped v1.4.0:** 4 phases, 8 plans, 52 commits. 57 files changed, +9,516 / -1,219 lines. 2026-03-21 → 2026-03-22 (2 days).
 
+**Shipped v1.5.0:** 4 phases, 5 plans, 10 tasks. 34 files changed, +5,240 / -66 lines. 2026-03-26 → 2026-03-27 (2 days).
+
 Tech stack: Markdown skill files, bash test scripts (bats), YAML config templates, Python conf.py scaffold, Sexp dune templates.
 
 **Architecture shipped:**
 - `doc-writer/agents/`: doc-author.md, doc-editor.md, doc-persona.md, doc-researcher.md
-- `doc-writer/skills/`: setup/SKILL.md, write/SKILL.md, review/SKILL.md, edit/SKILL.md
+- `doc-writer/skills/`: setup/SKILL.md, write/SKILL.md, review/SKILL.md, edit/SKILL.md, upgrade/SKILL.md
 - `doc-writer/skills/setup/defaults/`: guidance files (mkdocs-material.md, sphinx-shibuya.md, odoc.md, plain-markdown.md), Q&A files (*.qa.md), scaffold templates
-- `doc-writer/.claude-plugin/plugin.json` + `.claude-plugin/marketplace.json`
-- `tests/`: bats test suites covering all phases
+- `doc-writer/.claude-plugin/plugin.json` (v1.5.0) + `.claude-plugin/marketplace.json`
+- `tests/`: bats test suites covering v1.0 phases
 
 **Known issues / v2 candidates:**
 - 8 phases have `nyquist_compliant: false` in VALIDATION.md (pre-dates Nyquist adoption; tests pass, frontmatter not updated)
 - Prior-phase bats tests reference stale PROJECT_ROOT path
+- FALLBACK framework upgrade path untested (deferred to future milestone)
 
 ## Constraints
 
@@ -101,6 +109,11 @@ Tech stack: Markdown skill files, bash test scripts (bats), YAML config template
 | .mli enrichment as proposals, not auto-edits | Author writes enrichment proposals to a review file, never directly to source | ✓ Good — respects "never auto-commit generated content" principle |
 | External author-notes for odoc | .mld files can't contain HTML comments, so internal notes go to .doc-writer/author-notes.md | ✓ Good — clean separation without losing Editor context |
 | Nav strategy as scaffold variable, not scaffold variant | One scaffold per framework; nav strategy via {nav_links_config} / {nav_feature_flags} substitution | ✓ Good — avoids scaffold proliferation |
+| Separate upgrade SKILL.md, not extension of setup | Upgrade is a distinct workflow (version compare → migrate → merge → finalize); setup should not grow unboundedly | ✓ Good — clean skill separation, each under 350 lines |
+| Section-level merge by ## headings, not line-level diff3 | Claude-as-reader understands section semantics better than line-based diffing; keeps merge units meaningful | ✓ Good — 13-case classification table covers all scenarios |
+| Auto-remove deprecated config fields without prompting | Deprecated fields are vestiges of old plugin versions; auto-removal with summary listing is sufficient | ✓ Good — reduces friction; summary provides audit trail |
+| FALLBACK frameworks skip Q&A gap detection | No upstream .qa.md to compare against; researcher-generated Q&A is project-local, not plugin-managed | ✓ Good — avoids false positives on non-existent baseline |
+| Conditional researcher re-run (config/Q&A changes only) | Researcher is expensive; file-only merges don't affect context.md inputs | ✓ Good — avoids unnecessary token spend |
 
 ---
 ## Evolution
@@ -121,4 +134,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-22 after v1.4.0 Content & Navigation milestone complete*
+*Last updated: 2026-03-27 after v1.5.0 milestone*

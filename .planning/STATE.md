@@ -1,59 +1,59 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.4.0
-milestone_name: Content & Navigation
-status: unknown
-stopped_at: Completed 17-02-PLAN.md
-last_updated: "2026-03-22T11:09:58.932Z"
+milestone: v1.5.0
+milestone_name: Plugin Upgrade Helpers
+status: v1.5.0 milestone complete
+stopped_at: Completed 21-01-PLAN.md
+last_updated: "2026-03-27T13:55:33.041Z"
 progress:
   total_phases: 4
   completed_phases: 4
-  total_plans: 8
-  completed_plans: 8
+  total_plans: 5
+  completed_plans: 5
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-21)
+See: .planning/PROJECT.md (updated 2026-03-26)
 
-**Core value:** Produce library documentation that the project author can publish with minimal tweaks — docs written from the end user's perspective, not the builder's.
-**Current focus:** Phase 17 — ocaml-mld-mli-output
+**Core value:** Produce library documentation that the project author can publish with minimal tweaks -- docs written from the end user's perspective, not the builder's.
+**Current focus:** Phase 21 — q-a-gap-detection-and-finalization
 
 ## Current Position
 
-Phase: 17
+Phase: 21
 Plan: Not started
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 28 (from v1.0)
-- Average duration: 3.2 min
+- Total plans completed: 36 (28 from v1.0, 8 from v1.4.0)
+- Average duration: ~2.5 min
 - Total execution time: ~1.5 hours
 
-**By Phase:** (v1.0 data — v1.4.0 tracking starts fresh)
+**By Phase:** (v1.4.0 data)
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| v1.0 aggregate | 28 | ~90 min | ~3.2 min |
+| Phase 14 | 2 | 3 min | 1.5 min |
+| Phase 15 | 2 | 5 min | 2.5 min |
+| Phase 16 | 2 | 5 min | 2.5 min |
+| Phase 17 | 2 | 5 min | 2.5 min |
 
 **Recent Trend:**
 
-- Last 3 plans (v1.0): 13-01 (2 min), 13-02 (2 min), 13-03 (1 min)
+- Last 4 plans (v1.4.0): 17-01 (3 min), 17-02 (2 min), 16-02 (2 min), 16-01 (3 min)
 - Trend: Stable
 
 *Updated after each plan completion*
-| Phase 14 P01 | 2min | 2 tasks | 6 files |
-| Phase 14 P02 | 1min | 2 tasks | 2 files |
-| Phase 15 P01 | 2min | 2 tasks | 5 files |
-| Phase 15 P02 | 3min | 2 tasks | 4 files |
-| Phase 16 P01 | 3min | 2 tasks | 3 files |
-| Phase 16 P02 | 2min | 2 tasks | 2 files |
-| Phase 17 P01 | 3min | 2 tasks | 4 files |
-| Phase 17 P02 | 2min | 1 tasks | 2 files |
+| Phase 18 P01 | 2min | 2 tasks | 2 files |
+| Phase 18 P02 | 2min | 2 tasks | 2 files |
+| Phase 19 P01 | 3min | 2 tasks | 2 files |
+| Phase 20 P01 | 3min | 2 tasks | 1 files |
+| Phase 21 P01 | 2min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -62,28 +62,26 @@ Plan: Not started
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- [Research]: doc-author.md is the hotspot file — all 4 phases touch it; build sequentially
-- [Research]: Nav strategy answers flow through researcher into context.md, NOT into config.yaml
-- [Research]: Use Cases Q&A goes AFTER user personas (not before) — skippable, infers from persona context
-- [Research]: Use Cases template in doc-author parallels README/MAINTAINER template pattern
-- [Research]: Editor must recognize (use-case) page type in Pass 2 blur detection
-- [Research]: OCaml .mld needs external author-notes.md instead of HTML comments
-- [Phase 14]: Mermaid syntax lives in guidance files, not hardcoded in doc-author prompt -- keeps agent framework-agnostic
-- [Phase 14]: odoc mermaid uses verbatim block + external SVG workaround, not experimental extensions
-- [Phase 14]: Concepts pages use explanation type, not a new concepts type -- aligns with diataxis 4-quadrant model
-- [Phase 14]: OCaml scan-exports scans only .mli files (public interface), not .ml files (implementation)
-- [Phase 15]: Nav variable markers use same {variable} pattern as existing scaffold variables -- resolved by LLM agent at setup time
-- [Phase 15]: Section index abstracts written in TWO places: inline on index page for readers, metadata on child page for SEO -- neither framework auto-renders child descriptions
-- [Phase 15]: Nav strategy expansion lives in researcher context.md output, not hardcoded in doc-author -- follows existing Q&A data flow pattern
-- [Phase 16]: Use Cases Q&A step numbered 2a.0 to slot before existing 2a without renumbering
-- [Phase 16]: Promotion question fully decoupled from inference path via guard clause
-- [Phase 16]: Use-case template follows discovery/showcase format, explicitly NOT instructional
-- [Phase 16]: Editor blur signals for (use-case) inline in prompt, not in separate reference file
-- [Phase 16]: Non-diataxis type guidance added to editor preventing reference file lookup errors
-- [Phase 17]: External author-notes.md file for odoc instead of HTML comments -- .mld files have no invisible comment mechanism
-- [Phase 17]: Odoc Output Mode section parallels Section 6 Python/MkDocs conditional formatting pattern
-- [Phase 17]: .mli enrichment proposals written to review file, never directly to .mli source files
-- [Phase 17]: Enrichment workflow scoped by odoc Q&A Question 2 -- skip when scope is .mld only
+- [Research]: .originals/ directory is the merge base -- must be created by setup before upgrade can function
+- [Research]: qa_answers section in config.yaml is prerequisite for Q&A gap detection
+- [Research]: Section-level merge (by ## headings) prevents silent prose corruption vs line-level diff3
+- [Research]: Claude-as-reader for YAML config migration -- more reliable than bash regex for structured data
+- [Research]: Pre-v1.5.0 projects need 2-way diff bootstrap path since no .originals/ exist
+- [Phase 18]: qa_answers stores literal label text, not internal codes -- simpler, no translation layer
+- [Phase 18]: Backward compat reads legacy odoc_author_scope as fallback when qa_answers.scope absent
+- [Phase 19]: No Agent tool in upgrade skill -- Phase 19 does not spawn sub-agents
+- [Phase 19]: Meta-fields (version, plugin_version, detected, qa_answers) excluded from config migration comparison
+- [Phase 19]: plugin_version written LAST in Step 4 to prevent false 'already up to date' on incomplete migrations
+- [Phase 20]: Section-level merge by ## headings with 13-case classification table; preamble treated as __preamble__ section
+- [Phase 20]: 2-way diff bootstrap writes NEW (not merged) to .originals/ -- establishes correct baseline for future 3-way merges
+- [Phase 20]: Removal conflicts get dedicated AskUserQuestion format distinct from standard content conflicts
+- [Phase 21]: Step 3.5 Q&A gap detection uses same key derivation as setup (lowercase + spaces to underscores) for exact compatibility
+- [Phase 21]: FALLBACK frameworks skip Q&A gap detection entirely -- only plugin-shipped .qa.md files are valid sources
+- [Phase 21]: Researcher re-run conditional on config or Q&A changes only, not file merges
+
+### Roadmap Evolution
+
+- v1.5.0 roadmap created: 4 phases (18-21), 14 requirements
 
 ### Pending Todos
 
@@ -91,11 +89,12 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Phase 17]: .mli enrichment output format unresolved — resolve during Phase 17 planning
-- [Phase 15]: Scaffold nav strategy conditional processing needs confirmation during Phase 15 planning
+- [Research]: Section-level merge algorithm needs precise specification during Phase 20 planning
+- [Research]: .originals/ vs .plugin-base/ naming decision needed before Phase 18
+- [Research]: Canonical plugin version source (plugin.json vs VERSION file) to confirm before Phase 19
 
 ## Session Continuity
 
-Last session: 2026-03-22T02:15:21.825Z
-Stopped at: Completed 17-02-PLAN.md
+Last session: 2026-03-27T11:08:14Z
+Stopped at: Completed 21-01-PLAN.md
 Resume file: None

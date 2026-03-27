@@ -367,9 +367,9 @@ Create the file fresh at the start of the write pass. Append each page's notes s
 
 ### .mli Doc Comment Enrichment Proposals
 
-When `doc_system` is `odoc` AND the project configuration includes .mli doc comment improvements in the author scope (from the odoc setup Q&A Question 2), run this enrichment workflow AFTER writing all .mld pages.
+When `doc_system` is `odoc` AND the project configuration includes .mli doc comment improvements in `qa_answers.scope` (from the odoc setup Q&A Question 2), run this enrichment workflow AFTER writing all .mld pages.
 
-**Scope control:** Read `odoc_author_scope` from `.doc-writer/config.yaml`. If the value is `"mld-only"`, skip this entire section. If the value is `"mld-and-mli"` (or absent/empty, which defaults to running enrichment), proceed with the enrichment workflow below.
+**Scope control:** Read `qa_answers.scope` from `.doc-writer/config.yaml`. If the value is `".mld pages only"`, skip this entire section. If the value contains ".mld pages + .mli" or is absent/empty (which defaults to running enrichment), proceed with the enrichment workflow below. **Backward compatibility:** If `qa_answers` does not exist or has no `scope` key, check the legacy `odoc_author_scope` field. If it is `"mld-only"`, skip. Otherwise proceed.
 
 **Step 1: Identify undocumented public values**
 

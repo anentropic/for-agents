@@ -47,7 +47,7 @@ Full details: `.planning/milestones/v1.4.0-ROADMAP.md`
 
 - [x] **Phase 18: Setup Foundation** - Augment setup skill to produce version tracking, originals storage, and Q&A answer persistence (completed 2026-03-26)
 - [x] **Phase 19: Upgrade Skill** - Version detection, config migration, and deprecation warnings via new `/doc-writer:upgrade` command (completed 2026-03-26)
-- [ ] **Phase 20: 3-Way Merge** - Section-level merge of guidance and rules files with conflict resolution and pre-v1.5.0 fallback
+- [x] **Phase 20: 3-Way Merge** - Section-level merge of guidance and rules files with conflict resolution and pre-v1.5.0 fallback (completed 2026-03-27)
 - [ ] **Phase 21: Q&A Gap Detection and Finalization** - Ask only new framework questions and re-run researcher to refresh context
 
 ## Phase Details

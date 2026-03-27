@@ -59,6 +59,7 @@ Produce library documentation that the project author can publish with minimal t
 
 ### Active
 
+- Q&A gap detection asks only new framework questions, conditional researcher re-run refreshes context — Phase 21 validated
 - Section-level 3-way merge for guidance and rules files with conflict resolution and pre-v1.5.0 bootstrap — Phase 20 validated
 - `/doc-writer:upgrade` command with version detection, config migration, and deprecation warnings — Phase 19 validated
 - Setup produces `plugin_version`, `.originals/`, and `qa_answers` for upgrade system — Phase 18 validated
@@ -134,4 +135,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-27 — Phase 20 (3-Way Merge) complete*
+*Last updated: 2026-03-27 — Phase 21 (Q&A Gap Detection) complete — Milestone v1.5.0 complete*

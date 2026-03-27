@@ -258,12 +258,16 @@ Update the stored plugin version and present the upgrade summary.
 
 ### File Updates
 - {list each file updated (unchanged files overwritten with new plugin defaults)}
-- {list each file skipped (customized by user, deferred to future merge)}
+- {list each customized file that was merged (see File Merges below)}
 - {list each file skipped (FALLBACK framework, not a plugin-shipped file)}
-- {or "No file updates" / ".originals/ not found -- file comparison skipped"}
+- {or "No file updates"}
+
+### File Merges
+- {list each file merged: "{file}: {N} sections auto-merged, {M} conflicts resolved by user"}
+- {or "No merges needed" / "2-way diff bootstrap completed -- .originals/ created"}
 
 ### Warnings
-- {any warnings from above steps, e.g., missing .originals/, missing plugin_version}
+- {any warnings from above steps, e.g., missing plugin_version}
 - {or "None"}
 ```
 

@@ -95,33 +95,148 @@ Compare the user's config fields against the current plugin's config template to
 
 7. **If changes were made** (new fields added or deprecated fields removed): Write the updated config.yaml with new fields added in their natural position and deprecated fields removed. Preserve all existing user values for unchanged fields. Maintain YAML formatting and comments.
 
-### Step 3: Unchanged File Update
+### Step 3: File Merge
 
-Compare project-side guidance and rules files against their `.originals/` baselines to detect which files can be silently updated to the new plugin version.
+Merge upstream plugin changes into the user's guidance and rules files using section-level comparison. Files are parsed into sections at `##` heading boundaries, and each section is classified independently to auto-apply non-conflicting changes and present conflicts to the user one at a time.
 
-1. Check if `.doc-writer/.originals/` directory exists. Use Glob for `.doc-writer/.originals/*`.
+#### Section Parsing Rules
 
-   - **If the directory does not exist or is empty:** Display: "This project was set up before upgrade support was available. File comparison skipped. Run `/doc-writer:setup --reset` to establish baseline files." Record this warning for the summary. **Skip to Step 4.**
+These rules apply to both the 2-way diff bootstrap path (Step 3.1) and the 3-way merge path (Step 3.3g). Parse each file into an ordered list of sections:
 
-2. Read the `doc_system` value from the user's config.yaml (needed to identify the guidance file name).
+1. **Preamble**: Everything from the start of the file up to (but not including) the first line that starts with `## `. If no `## ` line exists, the entire file is the preamble. Identify this section as `__preamble__`.
 
-3. For each file found in `.doc-writer/.originals/` (typically `rules.md` and `{doc_system}.md`):
+2. **Named sections**: Each line starting with `## ` (at the document top level, NOT inside a fenced code block) begins a new section. The section includes the heading line and all content up to the next `## ` heading or end of file.
 
-   a. Read `.doc-writer/.originals/{file}` -- this is **BASE** (the previous plugin default, stored at setup time).
+3. **Sub-headings are NOT section boundaries**: Lines starting with `### ` or `#### ` are part of their parent `## ` section. Do not split on them.
 
-   b. Read `.doc-writer/{file}` -- this is **USER** (the user's current working copy).
+4. **Code block awareness**: When scanning for `## ` headings, track whether you are inside a fenced code block (between ``` delimiters). Skip any `## ` that appears within a fenced code block.
 
-   c. Determine the corresponding new plugin default path: `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/{file}`.
+5. **Comparison**: When comparing two sections for equality, compare after trimming trailing whitespace from each line and normalizing trailing newlines. Semantic comparison, not byte-exact.
 
-      Check if this file exists. **If it does not exist** (this happens for FALLBACK frameworks where the guidance file was researcher-generated, not shipped by the plugin): Skip this file. Record for the summary: "Skipped {file} -- not a plugin-shipped file."
+#### Step 3.1: Check for .originals/ Directory
 
-   d. Read the new plugin default file -- this is **NEW** (the current plugin version's default).
+Check if `.doc-writer/.originals/` directory exists. Use Glob for `.doc-writer/.originals/*`.
 
-   e. **If BASE content is identical to NEW content:** No upstream changes to this file in this plugin version. Skip. Nothing to report.
+**If the directory exists and contains files:** Continue to Step 3.2 (3-way merge path).
 
-   f. **If USER content is identical to BASE content:** The user has NOT customized this file -- it still matches what was installed at setup time. Silently overwrite `.doc-writer/{file}` with the NEW content. **Also update `.doc-writer/.originals/{file}` with the same NEW content** (this is critical -- if you only update the user copy but leave .originals/ stale, future upgrades would see a diff between .originals/ and the user file and incorrectly treat the file as "customized"). Record for the summary: "Updated {file} to new plugin version."
+**If the directory does not exist or is empty (2-way diff bootstrap):**
 
-   g. **If USER content differs from BASE content:** The user has customized this file. Do NOT modify it. Record for the summary: "Skipped {file} -- file has been customized. Merge support coming in a future upgrade."
+This project was set up before upgrade support was available. Since there are no original baseline files, a full 3-way merge is not possible. Instead, compare the user's current files against the current plugin defaults section by section.
+
+1. Display: "This project was set up before upgrade support was available. Comparing your files against current plugin defaults section by section."
+
+2. Read `doc_system` from the user's config.yaml.
+
+3. For each file to compare (the `{doc_system}.md` guidance file and `rules.md`):
+
+   a. Read the USER file from `.doc-writer/{file}`.
+
+   b. Determine the NEW file path: `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/{file}`. Check if it exists. **If it does not exist** (FALLBACK framework -- the guidance file was researcher-generated, not shipped by the plugin): Skip this file.
+
+   c. Read the NEW file from plugin defaults.
+
+   d. Parse both USER and NEW into sections using the section parsing rules above.
+
+   e. For each section that is identical between USER and NEW: no action needed.
+
+   f. For each section in NEW but not in USER (new section added by the plugin): present via AskUserQuestion:
+      - header: "New Section"
+      - question: "The plugin update adds a new section '{heading}' to {filename}:\n\n{first 10 lines of section, or full section if <= 10 lines}\n{if truncated: '... ({N} more lines)'}\n\nAdd this section?"
+      - options:
+        - { label: "Add", description: "Include this new section" }
+        - { label: "Skip", description: "Do not add this section" }
+        - { label: "Chat about this", description: "Discuss what this section covers" }
+
+   g. For each section that exists in both USER and NEW but differs: present via AskUserQuestion:
+      - header: "Section Difference"
+      - question: "Section '{heading}' in {filename} differs from the current plugin version.\n\nYour version:\n---\n{first 10 lines of USER section, or full section if <= 10 lines}\n{if truncated: '... ({N} more lines)'}\n---\n\nPlugin version:\n---\n{first 10 lines of NEW section, or full section if <= 10 lines}\n{if truncated: '... ({N} more lines)'}\n---"
+      - options:
+        - { label: "Keep mine", description: "Preserve your current version of this section" }
+        - { label: "Accept update", description: "Take the plugin version of this section" }
+        - { label: "Type something else", description: "Provide a custom version of this section" }
+        - { label: "Chat about this", description: "See full content and discuss the differences" }
+
+   h. Sections in USER but not in NEW (user additions): keep silently.
+
+   i. After all decisions for this file: write the merged result to `.doc-writer/{file}`. **Ordering:** NEW sections in their order, then user-only sections appended at the end.
+
+   j. Create `.doc-writer/.originals/{file}` with the NEW (current plugin default) content -- NOT the merged content. The `.originals/` directory always tracks what the plugin shipped.
+
+4. Record merge stats for each file in the summary. **Skip to Step 4.**
+
+#### Step 3.2: Read doc_system
+
+Read the `doc_system` value from the user's config.yaml (needed to identify the guidance file name).
+
+#### Step 3.3: Merge Each File
+
+For each file found in `.doc-writer/.originals/` (typically `rules.md` and `{doc_system}.md`):
+
+a. Read `.doc-writer/.originals/{file}` -- this is **BASE** (the previous plugin default, stored at setup time).
+
+b. Read `.doc-writer/{file}` -- this is **USER** (the user's current working copy).
+
+c. Determine the corresponding new plugin default path: `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/{file}`.
+
+   Check if this file exists. **If it does not exist** (this happens for FALLBACK frameworks where the guidance file was researcher-generated, not shipped by the plugin): Skip this file. Record for the summary: "Skipped {file} -- not a plugin-shipped file."
+
+d. Read the new plugin default file -- this is **NEW** (the current plugin version's default).
+
+e. **If BASE content is identical to NEW content:** No upstream changes to this file in this plugin version. Skip. Nothing to report.
+
+f. **If USER content is identical to BASE content:** The user has NOT customized this file -- it still matches what was installed at setup time. Silently overwrite `.doc-writer/{file}` with the NEW content. **Also update `.doc-writer/.originals/{file}` with the same NEW content** (this is critical -- if you only update the user copy but leave .originals/ stale, future upgrades would see a diff between .originals/ and the user file and incorrectly treat the file as "customized"). Record for the summary: "Updated {file} to new plugin version."
+
+g. **If USER content differs from BASE content AND BASE content differs from NEW content:** The user has customized this file AND the plugin has updated it. Run the section-level 3-way merge:
+
+   **Parse** BASE, USER, and NEW into sections using the section parsing rules above.
+
+   **Classify** each section by building a unified section list from the union of all section keys across BASE, USER, and NEW. For each section key, apply the 3-way classification table:
+
+   | In BASE? | In USER? | In NEW? | BASE==USER? | BASE==NEW? | USER==NEW? | Classification | Action |
+   |----------|----------|---------|-------------|------------|------------|----------------|--------|
+   | Y | Y | Y | Y | Y | - | Unchanged | Keep as-is |
+   | Y | Y | Y | Y | N | - | Upstream only | Auto-apply NEW |
+   | Y | Y | Y | N | Y | - | User only | Keep USER |
+   | Y | Y | Y | N | N | Y | Convergent | Keep USER |
+   | Y | Y | Y | N | N | N | **Conflict** | Ask user |
+   | N | N | Y | - | - | - | Added upstream | Auto-add from NEW |
+   | Y | Y | N | Y | - | - | Removed upstream | Auto-remove (user did not customize) |
+   | Y | Y | N | N | - | - | **Conflict** | Ask user (see removal conflict below) |
+   | Y | N | Y | - | - | - | User removed | Keep removed (user intentionally deleted) |
+   | Y | N | N | - | - | - | Both removed | Already gone |
+   | N | Y | N | - | - | - | User added | Keep USER |
+   | N | Y | Y | - | - | Y | Both added same | Keep USER |
+   | N | Y | Y | - | - | N | **Conflict** | Ask user (both added differently) |
+
+   **Resolve conflicts** -- for each conflict, present one at a time via AskUserQuestion:
+
+   *Standard conflict* (both sides changed the same section differently):
+   - header: "Merge Conflict"
+   - question: "Section '{heading}' in {filename} was changed both by you and in the plugin update.\n\nYour version:\n---\n{first 10 lines of USER section, or full section if <= 10 lines}\n{if truncated: '... ({N} more lines)'}\n---\n\nPlugin version:\n---\n{first 10 lines of NEW section, or full section if <= 10 lines}\n{if truncated: '... ({N} more lines)'}\n---"
+   - options:
+     - { label: "Keep mine", description: "Preserve your customized version of this section" }
+     - { label: "Take plugin update", description: "Replace with the new plugin version of this section" }
+     - { label: "Type something else", description: "Provide a custom resolution for this section" }
+     - { label: "Chat about this", description: "See full content and discuss the differences" }
+
+   *Removal conflict* (user customized a section that upstream removed):
+   - header: "Merge Conflict"
+   - question: "Section '{heading}' in {filename} was removed in the plugin update, but you have customized it.\n\nYour version:\n---\n{first 10 lines of USER section, or full section if <= 10 lines}\n{if truncated: '... ({N} more lines)'}\n---"
+   - options:
+     - { label: "Remove it", description: "Remove this section (matches the plugin update)" }
+     - { label: "Keep mine", description: "Preserve your customized version of this section" }
+     - { label: "Chat about this", description: "Discuss why this section was removed" }
+
+   **Assemble the merged output** using this ordering:
+   1. Preamble always first
+   2. Sections present in NEW define the canonical order
+   3. User-added sections (in USER but not in NEW or BASE) appended after the last NEW section, preserving their relative order from USER
+   4. Removed sections omitted
+
+   **After merge for this file:**
+   1. Write the merged result to `.doc-writer/{file}`
+   2. Write the NEW content (not the merged content) to `.doc-writer/.originals/{file}` -- the `.originals/` directory always tracks what the plugin shipped, not the user's merged version
+   3. Record merge stats: "{N} sections auto-merged, {M} conflicts resolved by user"
 
 ### Step 4: Finalize
 
@@ -156,5 +271,5 @@ Update the stored plugin version and present the upgrade summary.
 
 - All plugin-internal file references use `${CLAUDE_PLUGIN_ROOT}` for portability across different installation locations.
 - Config schema uses `user_personas:` as an array -- even for a single persona.
-- The upgrade command delivers a complete minimal slice: version detection, config migration, unchanged-file update, and summary. Three-way merge for customized files and Q&A gap detection are handled by separate future upgrades to this command.
+- The upgrade command delivers a complete minimal slice: version detection, config migration, file merge, and summary. Q&A gap detection is handled by a separate future upgrade to this command.
 - When inferring config field values, read the user's existing configuration holistically. The goal is to produce values that feel like the user configured them during setup, not mechanical defaults.

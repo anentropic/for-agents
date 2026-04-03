@@ -1,6 +1,6 @@
 ---
 name: doc-writer:write
-description: Generate or update documentation. Auto-detects existing docs — creates from scratch for new projects, or adds coverage for undocumented features while leaving existing pages untouched.
+description: Generate or update documentation. Auto-detects existing docs — creates from scratch for new projects, adds coverage for undocumented features, or refreshes existing pages with stale content.
 disable-model-invocation: true
 allowed-tools: Agent, Read, Write, Glob, Grep, Bash
 argument-hint: "[--skip-gap-scan]"
@@ -11,7 +11,7 @@ argument-hint: "[--skip-gap-scan]"
 You are orchestrating the doc-writer documentation pipeline. This pipeline operates in two modes:
 
 - **Create mode:** No existing docs found — generates documentation from scratch using the full Author > Editor > Persona pipeline with revision loops.
-- **Update mode:** Existing docs detected — runs gap detection to find undocumented symbols, then generates documentation for only the new features while leaving existing pages untouched.
+- **Update mode:** Existing docs detected — runs gap detection to find undocumented symbols and pages with potentially stale content, then generates documentation for new features and refreshes existing pages where source code has changed.
 
 The mode is auto-detected based on what's in `paths.docs_root`. Follow these steps exactly in order. Do NOT use `context: fork`. Do NOT commit any generated documentation -- leave all changes uncommitted for the project author to review.
 
@@ -70,7 +70,7 @@ Determine whether this is a create or update run.
 
 5. Display mode to user:
    - Create: `"No existing documentation found in {paths.docs_root}. Running full pipeline."`
-   - Update: `"Existing documentation detected ({N} pages in {paths.docs_root}). Running incremental update — documenting new features only."`
+   - Update: `"Existing documentation detected ({N} pages in {paths.docs_root}). Running incremental update — checking for new features and stale content."`
 
 6. Store `pipeline_mode` and `existing_page_count` for use in subsequent steps.
 
@@ -91,7 +91,23 @@ Determine whether this is a create or update run.
 
 4. Compare the scanner output against documented symbols. For each exported symbol not found in any doc page, add it to the gap list.
 
-5. Write the gap report to `.doc-writer/gap-report.md` with this structure:
+5. **Staleness detection** (update mode only — skip this sub-step if `pipeline_mode` is `"create"`):
+
+   For each existing documentation page found in Step 0, check whether source code has changed more recently than the documentation:
+
+   a. Get the doc page's last substantive modification date:
+      ```
+      git log -1 --format="%ai" -- {doc_page_path}
+      ```
+   b. Get the source root's last modification date:
+      ```
+      git log -1 --format="%ai" -- {paths.source_root}
+      ```
+   c. If the source root was modified more recently than the doc page, add the page to the `stale_pages` list with both timestamps.
+
+   This is a coarse heuristic — false positives are expected (e.g., source changes that don't affect documented content). The Author will verify actual staleness during planning by comparing page content against current source code.
+
+6. Write the gap report to `.doc-writer/gap-report.md` with this structure:
    ```markdown
    # Gap Report
 
@@ -99,6 +115,7 @@ Determine whether this is a create or update run.
    **Source root:** {paths.source_root}
    **Language:** {detected.language}
    **Total undocumented symbols:** {count}
+   **Potentially stale pages:** {count}
 
    ## Undocumented Symbols
 
@@ -108,11 +125,22 @@ Determine whether this is a create or update run.
 
    ### {module/file path}
    - `symbol_name` (function/class/constant/type)
+
+   ## Potentially Stale Pages
+
+   {N} doc pages are older than recent source changes:
+
+   - `{doc_page_path}` (doc: {date}, source: {date})
+   - `{doc_page_path}` (doc: {date}, source: {date})
    ```
 
-6. If a previous `.doc-writer/gap-report.md` exists, note which gaps are newly discovered versus persistent from the last run.
+   If `pipeline_mode` is `"create"`, omit the "Potentially Stale Pages" section entirely.
 
-7. Display a brief summary to the user: "{N} undocumented exported symbols found across {M} modules."
+7. If a previous `.doc-writer/gap-report.md` exists, note which gaps are newly discovered versus persistent from the last run.
+
+8. Display a brief summary to the user:
+   - Create mode: "{N} undocumented exported symbols found across {M} modules."
+   - Update mode: "{N} undocumented exported symbols found across {M} modules. {P} existing pages may have stale content."
 
 ---
 
@@ -126,13 +154,39 @@ Spawn the doc-author agent in **plan-only mode** to scan the codebase and propos
 
 > Run Phase 1 only (plan mode). Scan the codebase and produce a page inventory. Write the inventory to `.doc-writer/page-inventory.md`. Do NOT write any documentation pages. Do NOT use AskUserQuestion. Read `.doc-writer/config.yaml` for persona and paths configuration. If `.doc-writer/gap-report.md` exists, read it for undocumented symbols to prioritize in your coverage.
 
-**Update mode** — first check the gap report from Step 1:
+**Update mode** — check the gap report from Step 1 for both undocumented symbols and stale pages:
 
-- If gap-report shows **0 undocumented symbols**: display "All exported symbols are already documented. No new pages needed." Skip Steps 2a–2c entirely and proceed directly to Step 3 (Editor) for a quality pass on existing docs.
+- If gap-report shows **0 undocumented symbols AND 0 stale pages**: display "All exported symbols are documented and all pages are up to date. No changes needed." Skip Steps 2a–2c entirely and proceed directly to Step 3 (Editor) for a quality pass on existing docs.
 
-- If gap-report shows **undocumented symbols**: use the Agent tool to spawn `doc-author` with this message:
+- If gap-report shows **undocumented symbols only** (0 stale pages): use the Agent tool to spawn `doc-author` with this message:
 
 > Run Phase 1 only (plan mode). Existing documentation is in {paths.docs_root} ({existing_page_count} pages). Scan the codebase and produce a page inventory for ONLY the undocumented symbols listed in `.doc-writer/gap-report.md`. Do NOT propose pages for already-documented features. Write the inventory to `.doc-writer/page-inventory.md`. Do NOT write any documentation pages. Do NOT use AskUserQuestion. Read `.doc-writer/config.yaml` for persona and paths configuration.
+
+- If gap-report shows **stale pages only** (0 undocumented symbols): use the Agent tool to spawn `doc-author` with this message:
+
+> Run Phase 1 only (plan mode). Existing documentation is in {paths.docs_root} ({existing_page_count} pages). The following existing pages have been flagged as potentially stale — their source files were modified more recently than the documentation:
+>
+> {For each page in stale_pages from the gap report:}
+> - {page_path} (doc last modified: {date}, source last modified: {date})
+>
+> For each flagged page: read the current page content, read the corresponding source code, and determine whether the page content is actually outdated. For pages with real discrepancies, propose an inventory entry of type `(refresh)` with specific discrepancies noted in the "Key Sections" column. For pages that are still accurate despite the timestamp difference, note them as "(refresh) — no changes needed" in the inventory.
+>
+> Write the inventory to `.doc-writer/page-inventory.md`. Do NOT write any documentation pages. Do NOT use AskUserQuestion. Read `.doc-writer/config.yaml` for persona and paths configuration.
+
+- If gap-report shows **both undocumented symbols AND stale pages**: use the Agent tool to spawn `doc-author` with this message:
+
+> Run Phase 1 only (plan mode). Existing documentation is in {paths.docs_root} ({existing_page_count} pages). Scan the codebase and produce a page inventory that covers TWO kinds of gaps:
+>
+> **New pages:** Propose pages for the undocumented symbols listed in `.doc-writer/gap-report.md`. Do NOT propose pages for already-documented features.
+>
+> **Content refresh:** The following existing pages have been flagged as potentially stale — their source files were modified more recently than the documentation:
+>
+> {For each page in stale_pages from the gap report:}
+> - {page_path} (doc last modified: {date}, source last modified: {date})
+>
+> For each flagged page: read the current page content, read the corresponding source code, and determine whether the page content is actually outdated. For pages with real discrepancies, propose an inventory entry of type `(refresh)` with specific discrepancies noted in the "Key Sections" column. For pages that are still accurate despite the timestamp difference, note them as "(refresh) — no changes needed" in the inventory.
+>
+> Write both new page entries and refresh entries to `.doc-writer/page-inventory.md`. Separate them with a "## Content Refresh" heading. Do NOT write any documentation pages. Do NOT use AskUserQuestion. Read `.doc-writer/config.yaml` for persona and paths configuration.
 
 Wait for the Author agent to complete before proceeding.
 
@@ -148,9 +202,16 @@ Use AskUserQuestion to present the inventory for approval:
 - header: "Pages"
 - question: "Confirm the page inventory. Deselect pages to exclude, or choose an action."
 - multiSelect: true
-- options: [dynamically generated from the inventory file, all pre-selected:]
-  - { label: "{title} ({type})", description: "{key sections}" }
-  - ... (one per proposed page)
+- options: [dynamically generated from the inventory file:]
+  - **New pages** (all pre-selected):
+    - { label: "{title} ({type})", description: "{key sections}" }
+    - ... (one per proposed new page)
+  - **Content refresh** (if any `(refresh)` entries exist — pre-selected UNLESS Author marked "no changes needed"):
+    - { label: "↻ {title}", description: "{discrepancies found}" }
+    - ... (one per refresh entry)
+    - Entries marked "no changes needed" by the Author are shown as:
+      { label: "↻ {title} ✓ current", description: "No discrepancies found with current source" }
+      These are **pre-deselected** (not checked by default) since the Author confirmed they are current.
   - { label: "Type something else", description: "Add pages or modify the plan" }
   - { label: "Chat about this", description: "Discuss the page inventory" }
 
@@ -174,9 +235,17 @@ Spawn the doc-author agent in **write-only mode** with the approved page list.
 
 > Run Phase 2 only (write mode). The following pages have been approved by the project author. Write ONLY these pages. Do NOT scan or plan. Do NOT use AskUserQuestion. Read `.doc-writer/config.yaml` for persona and paths configuration.
 >
-> Approved pages:
-> {for each page in approved_pages:}
+> {If approved_pages contains new pages (non-refresh types):}
+> New pages:
+> {for each page in approved_pages where type is NOT (refresh):}
 > - [{number}] {type}: "{title}" — {key sections} → {file_path}
+>
+> {If approved_pages contains (refresh) pages:}
+> Content refresh pages — these pages already exist. Read the existing page content first, then update in-place to reflect current source code. Preserve the page's existing structure, tone, and style. Update ONLY the stale content: changed signatures, parameters, schemas, examples, configuration keys, or behavioral descriptions. Do not rewrite sections that are still accurate.
+>
+> Refresh pages:
+> {for each page in approved_pages where type is (refresh):}
+> - [{number}] (refresh): "{title}" — {discrepancies} → {file_path}
 
 **Revision pass** (when returning here from Step 5):
 
@@ -200,11 +269,11 @@ Spawn the doc-editor agent to run quality passes on the authored documentation.
 
 > Edit the documentation in {paths.docs_root}. Run all four passes: terminology consistency, Diataxis type integrity, humanizer, and cross-reference linking.
 
-**Update mode** — scope the Editor to new pages, but run terminology across all:
+**Update mode** — scope the Editor to new and refreshed pages, but run terminology across all:
 
-> Edit the NEW documentation pages: {new_page_list}. Run all four passes on the new pages. Run the terminology pass on ALL documentation pages in {paths.docs_root} since term changes can ripple across files.
+> Edit the NEW and REFRESHED documentation pages: {changed_page_list}. Run all four passes on these pages. Run the terminology pass on ALL documentation pages in {paths.docs_root} since term changes can ripple across files.
 
-Where `{new_page_list}` is the list of pages created by the Author in Step 2. If Author was skipped (0 gaps), run the Editor on all existing pages instead (full quality pass).
+Where `{changed_page_list}` is the combined list of new pages and refreshed pages written by the Author in Step 2. If Author was skipped (0 gaps AND 0 stale pages), run the Editor on all existing pages instead (full quality pass).
 
 **Revision pass delegation** (when returning here from Step 5):
 
@@ -251,10 +320,10 @@ After all Persona evaluations complete, read all persona report files and collec
    - Which pages failed
    - What specific gaps or issues were identified
    - Which persona(s) reported the failure
-2. **Update mode only:** If the FAIL is on a pre-existing page (not a page created in this run), escalate it immediately instead of revising — pre-existing pages were working before and should not be modified by the update pipeline. Add these to the escalation list in Case C.
+2. **Update mode only:** If the FAIL is on a pre-existing page that was NOT created or refreshed in this run, escalate it immediately instead of revising — untouched pre-existing pages should not be modified by the update pipeline. Add these to the escalation list in Case C. Pages that were refreshed in this run (type `(refresh)`) are treated like new pages for revision purposes.
 3. Increment `pass_count` by 1.
-4. Compile the targeted page list from all FAIL verdicts on **new pages** across all personas.
-5. If no new pages have FAILs (all FAILs were on pre-existing pages), skip revision and go to Case C or Step 6.
+4. Compile the targeted page list from all FAIL verdicts on **new and refreshed pages** across all personas.
+5. If no new or refreshed pages have FAILs (all FAILs were on untouched pre-existing pages), skip revision and go to Case C or Step 6.
 6. Return to **Step 2c** (Author — Write) with the revision pass delegation, passing the page list and fail details.
 7. Then proceed through **Step 3** (Editor on changed pages) and **Step 4** (Persona with reused scenarios).
 8. Return here to re-evaluate verdicts.
@@ -335,10 +404,10 @@ Present a completion summary to the project author:
 ## Documentation Pipeline Complete
 
 ### Pipeline Mode
-{Create: "Full documentation generated from scratch." | Update: "Incremental update — {N} new pages added for undocumented symbols."}
+{Create: "Full documentation generated from scratch." | Update (new only): "Incremental update — {N} new pages added for undocumented symbols." | Update (with refresh): "Incremental update — {N} new pages added, {M} existing pages refreshed with current content."}
 
 ### Pages Written/Revised
-{List each doc page that was created or modified, with status: new/revised}
+{List each doc page that was created or modified, with status: new/refreshed/revised}
 
 ### Editor Changes Applied
 - Terminology fixes: {count}
@@ -360,7 +429,8 @@ Present a completion summary to the project author:
 
 ### Pipeline Statistics
 - Total passes: {pass_count}
-- Gap detection: {N} undocumented symbols found
+- Gap detection: {N} undocumented symbols found, {P} pages flagged as potentially stale
+- Content refresh: {M} pages refreshed ({K} confirmed current by Author, not refreshed)
 - PARTIAL fixes approved: {count approved} of {count total}
 {If escalation occurred:}
 - Escalated FAILs: {count} (see above for details)

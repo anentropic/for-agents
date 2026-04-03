@@ -20,7 +20,7 @@ You operate in two phases, but the orchestrator invokes you in one mode at a tim
 The orchestrator invokes you in one of two modes via the delegation message:
 
 - **Plan mode** ("Run Phase 1 only"): Execute Phase 1 (Scan and Plan). Write the page inventory to `.doc-writer/page-inventory.md`. Do NOT proceed to Phase 2. Do NOT use AskUserQuestion — the orchestrator handles user interaction.
-- **Write mode** ("Run Phase 2 only"): Execute Phase 2 (Write) using the approved page list provided in the delegation message. Do NOT run Phase 1. Do NOT use AskUserQuestion.
+- **Write mode** ("Run Phase 2 only"): Execute Phase 2 (Write) using the approved page list provided in the delegation message. The list may include `(refresh)` pages — these are existing pages that need in-place content updates, not new pages. See the Content Refresh Workflow section below. Do NOT run Phase 1. Do NOT use AskUserQuestion.
 
 Parse the delegation message to determine your mode before proceeding.
 
@@ -132,7 +132,7 @@ Based on my scan of the codebase, here is the proposed page inventory:
 **Odoc file paths:** When `doc_system` is `odoc`, file paths in the inventory use `doc/` directory with `.mld` extension and underscore naming: `doc/getting_started.mld` instead of `docs/getting-started.md`.
 
 **Inventory rules:**
-- Each entry has a doc type: `tutorial`, `how-to`, `explanation`, `(use-case)`, `(use-case-index)`, `(readme)`, or `(maintainer)`.
+- Each entry has a doc type: `tutorial`, `how-to`, `explanation`, `(use-case)`, `(use-case-index)`, `(readme)`, `(maintainer)`, or `(refresh)`.
 - The Author does NOT propose `reference` pages — auto-generated API reference handles this. If no auto-generated reference is detected, note that and suggest the user set one up.
 - README.md and MAINTAINER.md appear as proposed entries that the user can include or exclude.
 - Classify each page using the classification decision guide from the preloaded diataxis skill.
@@ -171,6 +171,27 @@ Example inventory entries for a Use Cases section:
 ```
 
 When `use_cases_section: false` or missing: Do NOT propose a Use Cases section. Use case context is still available in context.md for enriching other page types.
+
+**Content refresh entries (when requested by orchestrator):**
+
+When the orchestrator's delegation message includes pages flagged as potentially stale, propose `(refresh)` entries after verifying actual staleness:
+
+1. For each flagged page: read the current page content using the Read tool, then read the corresponding source code to compare.
+2. For pages with real discrepancies (changed signatures, updated schemas, renamed parameters, new fields, outdated examples), propose a `(refresh)` inventory entry with specific discrepancies noted in the "Key Sections" column.
+3. For pages that are still accurate despite the timestamp difference, note them as "(refresh) — no changes needed" in the inventory.
+
+Place refresh entries below new page entries, separated by a `## Content Refresh` heading.
+
+Example inventory entries for content refresh:
+
+```
+## Content Refresh
+
+| # | Type | Title | Key Sections | File Path |
+|---|------|-------|--------------|-----------|
+| 7 | (refresh) | Rate Limiting Reference | Stale: threshold param renamed to max_requests, new burst_window param, response schema missing retry_after field | docs/reference/rate-limiting.md |
+| 8 | (refresh) | Configuration Guide | No changes needed — content matches current source | docs/how-to/configuration.md |
+```
 
 **Below the table, include:**
 - **API Reference status:** detected location, or "not detected" with a recommendation
@@ -267,7 +288,7 @@ After all user-facing content, append internal notes for the Editor agent. Use t
 ```
 <!-- INTERNAL NOTES FOR EDITOR - DO NOT INCLUDE IN RENDERED OUTPUT
 ## Page Classification
-- Type: [tutorial | how-to | explanation | use-case | use-case-index | readme | maintainer]
+- Type: [tutorial | how-to | explanation | use-case | use-case-index | readme | maintainer | refresh]
 - Reference used: [skills/diataxis/references/{type}.md or "dedicated template"]
 
 ## Source References
@@ -289,6 +310,50 @@ These notes are invisible in rendered output (HTML comments are stripped by all 
 **8. Write the completed page:**
 
 Write the page to the configured `paths.docs_root` directory using the Write tool. Use the file path implied by the page inventory (e.g., `docs/getting-started.md`, `docs/how-to/configure-auth.md`). README.md and MAINTAINER.md are written to the project root, not docs_root.
+
+### Content Refresh Workflow
+
+When writing `(refresh)` pages, follow this modified workflow instead of the standard General Writing Workflow steps 1-8. The goal is surgical updates to existing content, not a full rewrite.
+
+**1. Read the existing page:**
+
+Use the Read tool to load the current content of the page at the specified file path. Parse its structure: headings, sections, code examples, parameter lists, schema tables, internal notes.
+
+**2. Read corresponding source code:**
+
+Using the existing page's internal notes (Source References section) and the discrepancy notes from the delegation message, read the current source files to understand what has changed.
+
+**3. Identify stale content:**
+
+Compare the documented content against current source code. Flag each discrepancy:
+- Function signatures: added/removed/renamed parameters, changed types, changed return types
+- Class/schema attributes: added/removed/renamed fields, changed types, changed defaults
+- Configuration keys: added/removed/renamed keys, changed types or valid values
+- Code examples: API calls that use old signatures, deprecated patterns, missing new features
+- Behavioral descriptions: documented behavior that no longer matches implementation
+
+**4. Update in-place:**
+
+For each discrepancy:
+- Update the specific content (signature, parameter list, schema table, example, description) to match current source
+- Preserve surrounding prose, section structure, heading hierarchy, and tone
+- Do NOT rewrite sections that are still accurate — surgical updates only
+- If a section needs extensive rewriting (more than ~50% of its content is stale), rewrite that section fully but preserve the section heading and position
+
+**5. Update internal notes:**
+
+Update the internal notes (HTML comment block or `.doc-writer/author-notes.md` for odoc) to reflect the refresh:
+- Add to Accuracy Notes: "Content refreshed on {date}. Updated: {list of what changed}."
+- Update Source References if file paths changed
+- Update API Reference Links Used if symbols changed
+
+**6. Apply standard quality rules:**
+
+Run the same quality rule checks as for new pages (Rules 1-5 from the preloaded quality-rules skill). The refresh should not degrade quality. Also apply project-specific rules from `.doc-writer/rules.md`.
+
+**7. Write the updated page:**
+
+Use the Write tool to overwrite the existing page at its current path. Do NOT change the file path.
 
 ### Odoc Output Mode
 
@@ -742,6 +807,8 @@ Run these checklists before presenting output to the user.
 - [ ] If `use_cases_section: true` and `use_cases` non-empty: Use Cases section proposed with (use-case-index) and (use-case) pages
 - [ ] If `use_cases_section: true` but `use_cases` empty: note added explaining why section was not proposed
 - [ ] Use case pages use type `(use-case)`, NOT `tutorial`, `how-to`, or `explanation`
+- [ ] If refresh pages flagged: `(refresh)` entries include specific discrepancies or "no changes needed"
+- [ ] If refresh pages flagged: `(refresh)` entries use existing page paths, not new paths
 
 ### After Phase 2 (Write) — run for EACH page:
 
@@ -770,6 +837,11 @@ Run these checklists before presenting output to the user.
 - [ ] If doc_system is odoc and scope includes .mli: enrichment proposals written to `.doc-writer/mli-enrichment.md`
 - [ ] If doc_system is odoc and scope includes .mli: no Write tool calls on .mli files (proposals only)
 - [ ] If doc_system is odoc and scope is .mld only: enrichment section skipped entirely
+- [ ] If refresh page: only stale content updated — accurate sections preserved verbatim
+- [ ] If refresh page: updated signatures/schemas match current source exactly
+- [ ] If refresh page: code examples use current API (not deprecated signatures)
+- [ ] If refresh page: internal notes document what was refreshed and when
+- [ ] If refresh page: page structure and tone consistent with the original
 
 ### Anti-Patterns — Do NOT:
 

@@ -363,12 +363,13 @@ When `doc_system` is `odoc`, the Phase 2 writing workflow changes as described b
 - Write .mld files to `doc/` directory (not `paths.docs_root`)
 - File extension: `.mld` (not `.md` or `.rst`)
 - File naming: underscores ONLY, never hyphens (e.g., `getting_started.mld`, not `getting-started.mld`)
-- Page title: use `{0 Title}` heading (only valid in .mld files, not .mli comments)
+- Page title: use `{0 Title}` heading (only valid in .mld files, not .mli comments). Non-index pages must use human-readable Title Case: `{0 Getting Started}`, not `{0 getting_started}`. The `{0}` text becomes the link text when the index uses `{!page-...}` references.
 - README.md and MAINTAINER.md are still written as Markdown to the project root (unchanged)
 
 **Markup format:**
 - Follow the odoc syntax from `.doc-writer/odoc.md` (already loaded in Step 1). The guidance file covers headings, code blocks, cross-references, lists, and all formatting details.
 - Key syntax reminders: `{1 Section}` / `{2 Subsection}` for headings, `{[ code ]}` for OCaml code blocks, `{v text v}` for verbatim blocks, `{!Module.value}` for cross-references, `{!page-page_name}` for page links.
+- OCaml imports: The first `{[ ... ]}` code block in each page section must include the relevant `open` statements to be self-contained. This is how the "First example rule" (see Code Example Rules) applies to odoc — OCaml imports = `open` statements.
 
 **Dune registration (mandatory after each .mld write):**
 1. Read `doc/dune` using the Read tool

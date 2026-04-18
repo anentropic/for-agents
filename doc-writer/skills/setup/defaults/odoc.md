@@ -35,11 +35,30 @@ Opinionated preferences for writing documentation with odoc for OCaml libraries.
   ```
 
 - Show different aspects across multiple `{[ ... ]}` blocks: basic usage, realistic scenario, error handling, composition. Do not cram everything into one block.
+- The first `{[ ... ]}` block in each section MUST include the `open` statements needed to make it run. OCaml examples are not self-contained without them. Subsequent blocks in the same section may omit `open` if they build on the first:
+
+  ```ocaml
+  (* First block in section -- include opens *)
+  {[
+  open My_library
+  open My_library.Config
+
+  let cfg = Config.create ~timeout:30 ()
+  (* val cfg : Config.t *)
+  ]}
+
+  (* Later block in same section -- opens already established *)
+  {[
+  let cfg = Config.create ~timeout:30 ~retries:3 ()
+  (* val cfg : Config.t *)
+  ]}
+  ```
 
 ## .mld File Structure
 
 - Heading levels: `{0 Page Title}` for the page title (only in .mld files), `{1 Section}`, `{2 Subsection}`, `{3 Subsubsection}`.
 - Page title format: `{0 Package_name - Brief description}`. The title appears in navigation and as the HTML page heading.
+- Non-index page titles: Use human-readable Title Case, not the filename. `{0 Getting Started}`, not `{0 getting_started}`. The `{0 ...}` text is what `{!page-...}` renders as link text on the index page — if you write `{0 getting_started}`, the index link displays as `getting_started` in code style.
 - Custom anchors: `{1:anchor_name Section Title}` creates a link target accessible via `{!section-anchor_name}`.
 - Filename rules: underscores ONLY. Never use hyphens in .mld filenames. `getting_started.mld` works; `getting-started.mld` breaks `{!page-...}` references. See the File Naming section for why.
 - Every new .mld file MUST be registered in the `(mld_files ...)` list in the corresponding `doc/dune`. Unregistered files silently do not appear in generated docs. This is the single most common reason pages go missing.
@@ -97,6 +116,8 @@ Opinionated preferences for writing documentation with odoc for OCaml libraries.
 
   - {{:https://github.com/user/my-library} GitHub repository}
   ```
+
+**`{!modules:}` prerequisite:** The `{!modules: My_library}` directive generates API reference links from .mli doc comments. If a module's .mli file has no `(** ... *)` doc comment, odoc generates a minimal stub page with just type signatures. Ensure the main .mli files have module-level doc comments before running `dune build @doc`, or the API Reference section will appear incomplete. See the .mli Doc Comments section below for the expected format.
 
 ## .mli Doc Comments
 
@@ -368,6 +389,7 @@ Do NOT use odoc 3.x-only syntax in templates or examples. Stick to odoc 2.x synt
 - [ ] Every .mld file registered in `(mld_files ...)` in its doc/dune
 - [ ] Top-level pages link to GitHub repository
 - [ ] Generated HTML reviewed for navigation and broken links
+- [ ] Non-index .mld page titles use human-readable Title Case in `{0 ...}` (not filenames)
 
 ## Mermaid Diagrams
 

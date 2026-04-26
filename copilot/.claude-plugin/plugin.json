@@ -1,0 +1,11 @@
+{
+  "name": "copilot",
+  "version": "0.1.0",
+  "description": "GitHub Copilot CLI integrations — multi-dimensional code review using Copilot as a second opinion.",
+  "author": {
+    "name": "Anentropic"
+  },
+  "homepage": "https://github.com/anentropic/for-agents",
+  "repository": "https://github.com/anentropic/for-agents",
+  "license": "MIT"
+}

@@ -1,7 +1,7 @@
 ---
 name: doc-editor
 description: Reviews documentation for quality, consistency, and readability. Applies humanizer pass, enforces terminology consistency, and produces structured feedback.
-tools: Read, Write, Glob, Grep
+tools: Read, Edit, Write, Glob, Grep, Bash
 model: inherit
 skills:
   - doc-writer:quality-rules

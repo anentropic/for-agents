@@ -1,6 +1,6 @@
 {
   "name": "doc-writer",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "AI-powered library documentation generator. Produces persona-calibrated, Diataxis-structured docs via a full Author > Editor > Persona pipeline.",
   "author": {
     "name": "Anentropic"

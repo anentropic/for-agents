@@ -53,12 +53,19 @@ def files(readme: str) -> list[str]:
 def resolve(ref: str) -> str:
     if re.fullmatch(r"[0-9a-f]{40}", ref):
         return ref
-    out = subprocess.run(["git", "ls-remote", UPSTREAM, ref, f"refs/tags/{ref}^{{}}"],
-                         capture_output=True, text=True, check=True).stdout
-    shas = [line.split()[0] for line in out.splitlines() if line.strip()]
-    if not shas:
-        raise SystemExit(f"{ref!r} is not a branch, tag or full commit SHA in {UPSTREAM}")
-    return shas[-1]  # a peeled annotated tag (^{}) sorts last and names the commit
+    # Full ref names: a bare "main" would also match refs like refs/heads/renovate/main.
+    out = subprocess.run(["git", "ls-remote", UPSTREAM, f"refs/heads/{ref}", f"refs/tags/{ref}",
+                          f"refs/tags/{ref}^{{}}"], capture_output=True, text=True, check=True).stdout
+    return pick_sha(ref, out)
+
+
+def pick_sha(ref: str, ls_remote: str) -> str:
+    """The commit `ref` names in `git ls-remote` output for its branch and tag refs."""
+    refs = dict(reversed(line.split()) for line in ls_remote.splitlines() if line.strip())
+    for name in (f"refs/heads/{ref}", f"refs/tags/{ref}^{{}}", f"refs/tags/{ref}"):
+        if name in refs:  # a branch first; for an annotated tag, the peeled commit (^{})
+            return refs[name]
+    raise SystemExit(f"{ref!r} is not a branch, tag or full commit SHA in {UPSTREAM}")
 
 
 def fetch(sha: str, path: str) -> bytes:

@@ -436,8 +436,12 @@ def protected_terms(root: pathlib.Path) -> list[str]:
 
 
 def term_pattern(terms: list[str]) -> re.Pattern[str]:
-    """Match any of the terms, with any whitespace (a line break in wrapped source) between words."""
-    alts = (r"\s+".join(re.escape(w) for w in t.split()) for t in terms)
+    """Match any of the terms, with spaces or one line break (wrapped source) between words.
+
+    A blank line between two words is a paragraph break, so it doesn't join them into a term.
+    """
+    gap = r"(?:[^\S\n]+|[^\S\n]*\n[^\S\n]*)"
+    alts = (gap.join(re.escape(w) for w in t.split()) for t in terms)
     return re.compile(r"(?<![\w-])(?:" + "|".join(alts) + r")(?![\w-])", re.I)
 
 

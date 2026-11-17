@@ -317,6 +317,16 @@ class ProtectedTerms(TempDir):
         self.assertNotIn("world", scan.lower())
         self.assertEqual(docs_scan.dropped_terms("the world\nscope", "the world scope", terms), [])
 
+    def test_terms_are_not_matched_across_a_paragraph_break(self) -> None:
+        p = write(self.tmp, "page.md", '''
+            Every fact lives in the world
+
+            Scope rules come next.
+            ''')
+        _, scan = docs_scan.views(p, docs_scan.protected_terms(self.tmp))
+        self.assertIn("lives in the world", scan)
+        self.assertIn("Scope rules", scan)
+
     def test_compare_reports_dropped_terms_code_and_returns_error(self) -> None:
         page = write(self.tmp, "page.md", '''
             doxastica is single-agent by default. Call `contract()` to retract a belief.
@@ -400,6 +410,19 @@ class Vendored(unittest.TestCase):
         self.assertEqual(sorted(files), sorted(
             str(p.relative_to(DESLOP / "vendor")) for p in (DESLOP / "vendor").rglob("*")
             if p.is_file() and "__pycache__" not in p.parts))
+
+    def test_sync_resolves_only_the_exact_branch_or_tag(self) -> None:
+        import sync  # noqa: PLC0415
+
+        a, b, c, d = "a" * 40, "b" * 40, "c" * 40, "d" * 40
+        branches = f"{a}\trefs/heads/main\n{b}\trefs/heads/renovate/main\n"
+        self.assertEqual(sync.pick_sha("main", branches), a)
+        self.assertEqual(sync.pick_sha("main", f"{b}\trefs/heads/renovate/main\n{a}\trefs/heads/main\n"), a)
+        tags = f"{c}\trefs/tags/v1.0\n{d}\trefs/tags/v1.0^{{}}\n"
+        self.assertEqual(sync.pick_sha("v1.0", tags), d)  # annotated tag: the commit, not the tag object
+        self.assertEqual(sync.pick_sha("v1.0", f"{c}\trefs/tags/v1.0\n"), c)  # lightweight tag
+        with self.assertRaises(SystemExit):
+            sync.pick_sha("main", f"{b}\trefs/heads/renovate/main\n")
 
     def test_docs_genre_switches_off_vocabulary_checks(self) -> None:
         docs = docs_scan.ss.GENRE_OVERRIDES["docs"]

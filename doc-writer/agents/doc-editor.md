@@ -271,20 +271,26 @@ The scanner reads `.md`, `.rst` and `.mld` pages. It builds a plain Markdown vie
 
 ### Step 2: Scan Each Page Before Editing
 
-For each page in scope, before you change anything in this pass:
+First clear any snapshots an earlier run left behind, so every comparison is against this run's starting text:
+
+```bash
+python3 {scanner} clean
+```
+
+Then, for each page in scope, before you change anything in this pass:
 
 ```bash
 python3 {scanner} scan {page}
 ```
 
-The first scan of a page also saves a snapshot that Step 5 compares against, so always scan before editing.
+The first scan of a page also saves a snapshot that Step 6 compares against, so always scan before editing.
 
 Reading the output:
 - Sentences are numbered `s0`, `s1`, … and quoted. In the quotes, `CODE` stands for an inline code span and `TERM` for a protected term from `.doc-writer/terminology.yaml`. Find each sentence in the page by its words.
 - Each `FLAG` line names a metric and the section of deslop's pattern catalog with the fix (`fix: patterns.md 3.1`). The catalog is at `{scanner directory}/vendor/references/patterns.md`. Read the named section when the fix isn't obvious.
 - `[durable]` flags held up across every model tested; trust them most.
 - `SELF (claude)` lists words and frames Claude uses far more than human writers, with the sentences they're in. Rewrite these first, because a rewrite tends to add more of them.
-- `model_fingerprint` gives `max_tell_likeness`: 0 is a human rate and 1 is a typical model rate.
+- `LIKENESS` is the model-fingerprint score: 0 is a human rate and 1 is a typical model rate. It is flagged above 0.5.
 
 Flags are prompts to look closer, not orders. A flag on a sentence that is correct for documentation (a precise nominalization like "authentication", a required parameter list) stays as it is.
 
@@ -347,14 +353,14 @@ Before comparing, check the page as a whole:
 python3 {scanner} compare {page}
 ```
 
-This lists flags you fixed, flags still present, **new** flags your rewrite introduced, Claude tells you added, and a fact check against the snapshot:
+This prints `LIKENESS before -> after`, then lists flags you fixed, flags still present, **new** flags your rewrite introduced, Claude tells you added, and a fact check against the snapshot:
 - `DROPPED numbers / code / links` are errors (the command exits 1). Restore every one. A humanizer edit never needs to remove a code span, number or link.
 - `DROPPED names / quotes / negations / hedges` are warnings. Read each one: restore it unless you removed it on purpose (a generic hedge, a scare quote).
 - `PROTECTED terms used less often` means a project term disappeared. Restore it unless the sentence that held it was cut for a reason.
 
 Fix what it reports and compare again, at most twice. Then stop, even if some flags remain: a second rewrite pass makes text worse, not better. Leave remaining flags that are correct for documentation, and say why in the report.
 
-In report-only mode (no edits allowed), run Steps 2 and 3 only and record the flags as SUGGESTION items with the sentence and the suggested fix.
+In report-only mode (no edits allowed), run Steps 1, 2, 3 and 7 only, and record the flags as SUGGESTION items with the sentence and the suggested fix.
 
 ### Step 7: Clean Up
 
@@ -364,7 +370,7 @@ After the last page:
 python3 {scanner} clean
 ```
 
-This deletes the snapshots in `.doc-writer/.deslop/`.
+This deletes the snapshots in `.doc-writer/.deslop/`. Run it in report-only mode too.
 
 ### DO NOT FIX in documentation
 
@@ -381,7 +387,7 @@ For each fix, record a feedback item:
 
 Aggregate repeated patterns into single feedback entries: "Em dash: replaced N instances with commas or periods" rather than one entry per dash.
 
-Add one line per page to the report's Summary with the scanner's before and after numbers: "{page}: Claude likeness 1.16 → 0.80; fixed: flagged_vocab, intensifiers; left: wh_headings (the doc system prescribes these headings)."
+Fill the report's Humanizer Measurements table with one row per page, copying the numbers from the last `compare` (or from `scan` in report-only mode, with no "after" value). Never estimate a number the scanner didn't print. If the scanner was unavailable, leave the table out.
 
 ---
 
@@ -534,6 +540,12 @@ After all passes and post-processing, write a structured feedback report to `.do
 | Term | Before | After | Authority |
 |------|--------|-------|-----------|
 | ... | ... | ... | ... |
+
+## Humanizer Measurements
+
+| Page | Likeness before | Likeness after | Fixed | Left on purpose |
+|------|-----------------|----------------|-------|-----------------|
+| ... | 1.16 | 0.68 | flagged_vocab, intensifiers | wh_headings (prescribed by the doc system) |
 ```
 
 ### Severity Definitions

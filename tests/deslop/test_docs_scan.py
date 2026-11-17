@@ -112,6 +112,35 @@ class MarkdownView(TempDir):
         self.assertIn("](kumiho.md)", fact)
         self.assertIn("](doxastica.models.Scope)", fact)
 
+    def test_footnotes_stay_prose_not_link_definitions(self) -> None:
+        p = write(self.tmp, "page.md", '''
+            The pool recycles connections.[^1]
+
+            [^1]: The pool is recycled after 30 minutes.
+            ''')
+        fact, _ = docs_scan.views(p, [])
+        self.assertIn("[^1]: The pool is recycled after 30 minutes.", fact)
+        self.assertNotIn("](The)", fact)
+
+    def test_indented_code_blocks_are_code_but_list_and_admonition_bodies_are_not(self) -> None:
+        p = write(self.tmp, "page.md", '''
+            Run the server:
+
+                $ server --port 8080
+
+            - A list item
+                that continues on an indented line.
+
+            !!! note
+                Admonition bodies are prose.
+            ''')
+        s = sentences(p)
+        self.assertNotIn("server --port", " ".join(s))
+        self.assertIn("Admonition bodies are prose.", s)
+        self.assertTrue(any("continues on an indented line" in x for x in s), s)
+        fact, _ = docs_scan.views(p, [])
+        self.assertIn("```\n$ server --port 8080\n```", fact)
+
     def test_inline_code_may_wrap_lines(self) -> None:
         p = write(self.tmp, "page.md", '''
             The `async with await
@@ -165,6 +194,13 @@ class RstView(TempDir):
                * - ``pool_size``
                  - Connections kept open
 
+            =========  =======
+            Field      Default
+            =========  =======
+            timeout    30
+            recycle    3600
+            =========  =======
+
             Run this::
 
                $ thing --flag
@@ -180,7 +216,7 @@ class RstView(TempDir):
         joined = " ".join(s)
         self.assertFalse([x for x in s if RESIDUE.search(x)], s)
         for gone in ("widget = Widget", "page-one", "pip install", "--flag", "flowchart",
-                     "Connections kept open", "caption", "howto-thing"):
+                     "Connections kept open", "caption", "howto-thing", "recycle", "====="):
             self.assertNotIn(gone, joined)
         self.assertIn("Notes are prose and are kept.", s)
         self.assertIn("Snowflake needs a warehouse.", s)
@@ -194,6 +230,7 @@ class RstView(TempDir):
         self.assertIn("widget = Widget()", fact)
         self.assertIn("$ thing --flag", fact)
         self.assertIn("`pool_size`", fact)
+        self.assertIn("| recycle    3600 |", fact)
 
 
 class MldView(TempDir):
@@ -270,6 +307,16 @@ class ProtectedTerms(TempDir):
         self.assertIn("`single-agent`", scan)
         self.assertIn("single-agent design", fact)
 
+    def test_terms_are_masked_across_line_breaks_and_in_link_labels(self) -> None:
+        p = write(self.tmp, "page.md", '''
+            Facts in the world
+            scope hold for everyone. See [the world scope](scopes.md).
+            ''')
+        terms = docs_scan.protected_terms(self.tmp)
+        _, scan = docs_scan.views(p, terms)
+        self.assertNotIn("world", scan.lower())
+        self.assertEqual(docs_scan.dropped_terms("the world\nscope", "the world scope", terms), [])
+
     def test_compare_reports_dropped_terms_code_and_returns_error(self) -> None:
         page = write(self.tmp, "page.md", '''
             doxastica is single-agent by default. Call `contract()` to retract a belief.
@@ -283,6 +330,7 @@ class ProtectedTerms(TempDir):
         self.assertEqual(rc, 1, out.getvalue())                    # dropped code span is an error
         self.assertIn("DROPPED code: contract()", out.getvalue())
         self.assertIn("PROTECTED terms used less often: single-agent (1->0)", out.getvalue())
+        self.assertRegex(out.getvalue(), r"LIKENESS [\d.-]+ -> [\d.-]+")
         docs_scan.main(["clean", "--root", str(self.tmp)])
         self.assertFalse((self.tmp / ".doc-writer" / ".deslop").exists())
 

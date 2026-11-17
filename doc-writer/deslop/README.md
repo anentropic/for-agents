@@ -28,8 +28,8 @@ The scanner reads Markdown, so `docs_scan.py` rewrites each page into a Markdown
 The view is thrown away after the scan; the editor edits the real page.
 
 - **Code** is kept as fenced blocks and inline code, which the scanner skips and the fact check
-  compares: MkDocs and Markdown fences (including `~~~`), RST `code-block` and `::` literal
-  blocks, odoc `{[ ]}`, `{@lang[ ]}` and `{v v}`, and inline code in every format.
+  compares: MkDocs and Markdown fences (including `~~~`) and 4-space indented code blocks, RST
+  `code-block` and `::` literal blocks, odoc `{[ ]}`, `{@lang[ ]}` and `{v v}`, and inline code in every format.
 - **Links** are kept as Markdown links, so the fact check sees them: RST `:ref:` and `:doc:`,
   `` `text <url>`_ ``, odoc `{!ref}`, `{{:url} text}` and `{{!ref} text}`, MkDocs autorefs.
   A list item that starts with a link ("Further reading", "Next steps") becomes a table row,
@@ -39,13 +39,15 @@ The view is thrown away after the scan; the editor edits the real page.
   titles become headings.
 - **Dropped:** YAML frontmatter, HTML comments, mkdocstrings `:::` lines, snippets, raw HTML,
   RST comments, targets, `toctree`, autodoc and any other unknown directive, odoc `@tags`,
-  `{!modules: }` and raw `{% %}` markup. Tables (`list-table`, `csv-table`) become table rows.
+  `{!modules: }` and raw `{% %}` markup. Tables (`list-table`, `csv-table`, simple `===  ===`
+  tables) become table rows. Markdown footnotes (`[^1]: ...`) stay prose.
 
 ### Protected terms
 
 Every multi-word or hyphenated `canonical` and `variants` entry in
 `.doc-writer/terminology.yaml` is replaced by `TERM` in the scanned text, so the scanner can't
-flag a project's own vocabulary ("single-agent", "belief state"). Single words are not masked.
+flag a project's own vocabulary ("single-agent", "belief state"). Terms wrapped across a line
+break and terms inside link labels are masked too. Single words are not masked.
 `compare` lists any protected term the revision uses less often than before.
 
 ### Docs thresholds

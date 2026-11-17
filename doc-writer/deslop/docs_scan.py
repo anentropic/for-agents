@@ -32,6 +32,7 @@ import pathlib
 import re
 import shutil
 import sys
+from typing import Callable
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE / "vendor" / "scripts"))
@@ -67,11 +68,15 @@ class Stash:
         self.items.append(s)
         return f"\x00{len(self.items) - 1}\x00"
 
-    def restore(self, text: str, links_as_text: bool = False) -> str:
+    def restore(self, text: str, links_as_text: bool = False,
+                label_filter: Callable[[str], str] = lambda s: s) -> str:
         def item(m: re.Match[str]) -> str:
             s = self.items[int(m.group(1))]
             lm = re.fullmatch(r"\[(.*)\]\((.*)\)", s, flags=re.S) if links_as_text else None
-            return lm.group(1) if lm else s
+            if not lm:
+                return s
+            label = lm.group(1)
+            return label if "\x00" in label or "`" in label else label_filter(label)
 
         for _ in range(5):  # stashed items can contain other placeholders
             new = re.sub(r"\x00(\d+)\x00", item, text)
@@ -119,7 +124,7 @@ def md_to_view(text: str, stash: Stash) -> str:
     text = re.sub(r"<!--.*?-->", "", text, flags=re.S)                    # HTML comments
     # fenced code (``` or ~~~, any indent) -> stashed ``` fence
     text = re.sub(r"(?ms)^([ \t]*)(`{3,}|~{3,})[^\n]*\n(.*?)^[ \t]*\2[ \t]*$",
-                  lambda m: fence(m.group(3), stash), text)
+                  lambda m: m.group(1) + fence(m.group(3), stash).strip("\n"), text)
     # inline code: any run of backticks, may wrap onto the next line (not across paragraphs)
     text = re.sub(r"(?<!`)(`+)(?!`)((?:(?!\n\s*\n).)+?)(?<!`)\1(?!`)",
                   lambda m: inline_code(" ".join(m.group(2).split()), stash), text, flags=re.S)
@@ -128,18 +133,40 @@ def md_to_view(text: str, stash: Stash) -> str:
                   lambda m: link(m.group(1), m.group(2), stash), text)
     text = re.sub(r"(?<!!)\[([^\]\n]+)\]\[([^\]\n]*)\]",
                   lambda m: link(m.group(1), m.group(2) or m.group(1), stash), text)
-    text = re.sub(r"(?m)^\s*\[([^\]\n]+)\]:\s*(\S+).*$",
+    text = re.sub(r"(?m)^\s*\[([^\]\n^][^\]\n]*)\]:\s*(\S+).*$",   # not footnotes ([^1]: ...)
                   lambda m: "| " + link(m.group(1), m.group(2), stash) + " |", text)
-    out = []
-    for ln in text.split("\n"):
+    out: list[str] = []
+    lines = text.split("\n")
+    container = False      # inside an admonition or content tab: indented lines are its body
+    in_list = False        # inside a list: indented lines continue an item
+    i = 0
+    while i < len(lines):
+        ln = lines[i]
         s = ln.strip()
+        if s and indent_of(ln) < 4:
+            in_list = bool(re.match(r"^([-*+]|\d+[.)])\s", s)) or (in_list and indent_of(ln) > 0)
+            container = False
+        # classic indented code block: 4+ spaces after a blank line, outside lists and containers
+        if (ln.startswith("    ") and s and not container and not in_list
+                and (i == 0 or not lines[i - 1].strip())):
+            j = i
+            while j < len(lines) and (lines[j].startswith("    ") or not lines[j].strip()):
+                j += 1
+            while j > i and not lines[j - 1].strip():
+                j -= 1
+            out.append(fence("\n".join(lines[i:j]), stash))
+            i = j
+            continue
+        i += 1
         m = re.match(r"^(?:!!!|\?\?\?\+?)\s*[\w-]+(?:\s+[\w-]+)*\s*(?:\"(.*)\")?\s*$", s)
         if m:                                             # admonition: keep its title as a heading
             out.append(f"#### {m.group(1)}" if m.group(1) else "")
+            container = True
             continue
         m = re.match(r'^===\+?\s+"(.*)"\s*$', s)
         if m:                                             # content tab label
             out.append(f"#### {m.group(1)}")
+            container = True
             continue
         if re.match(r"^(:::\s|--8<--|\{[:.#])", s) or re.match(r"^</?[A-Za-z][^>]*>\s*$", s):
             out.append("")                                # mkdocstrings, snippets, attr lists, raw HTML
@@ -163,6 +190,7 @@ RST_PROSE = {"note", "warning", "tip", "important", "caution", "attention", "dan
 RST_TITLED = {"admonition", "topic", "sidebar", "tab-item", "tab", "group-tab", "card",
               "grid-item-card", "dropdown", "rubric"}
 RST_TABLE = {"list-table", "csv-table", "table"}
+SIMPLE_TABLE_BORDER = re.compile(r"^=+(?: +=+)+\s*$")
 PUNCT_LINE = re.compile(r"""^([=\-~^"'`#*+:._!$%&,/;<>?@\\|])\1{2,}\s*$""")
 PY_ROLE = re.compile(r"^(py:|c:|cpp:|js:)?(class|func|meth|attr|mod|exc|data|obj|const|"
                      r"function|member|type|macro|struct|var|enum|enumerator)$")
@@ -245,6 +273,22 @@ def rst_block(lines: list[str], stash: Stash) -> list[str]:
                 # anything else (toctree, autodoc, image, raw, include, mermaid, ...) is dropped
             # comments, targets and footnote/citation bodies are dropped too
             i = end
+            continue
+        # simple table: "=====  =====" borders; rows become table rows
+        if SIMPLE_TABLE_BORDER.match(s):
+            j, borders = i, 0
+            while j < n:
+                sj = lines[j].strip()
+                if SIMPLE_TABLE_BORDER.match(sj):
+                    borders += 1
+                    if borders >= 2 and (j + 1 >= n or not lines[j + 1].strip()):
+                        j += 1
+                        break
+                elif sj and not re.match(r"^-+(?: +-+)*$", sj):
+                    out.append("| " + rst_inline(sj, stash) + " |")
+                j += 1
+            out.append("")
+            i = j
             continue
         # section title with overline
         if PUNCT_LINE.match(s) and i + 2 < n and lines[i + 1].strip() and PUNCT_LINE.match(lines[i + 2].strip()):
@@ -391,12 +435,16 @@ def protected_terms(root: pathlib.Path) -> list[str]:
     return sorted((t for t in terms if t and re.search(r"[\s-]", t)), key=len, reverse=True)
 
 
+def term_pattern(terms: list[str]) -> re.Pattern[str]:
+    """Match any of the terms, with any whitespace (a line break in wrapped source) between words."""
+    alts = (r"\s+".join(re.escape(w) for w in t.split()) for t in terms)
+    return re.compile(r"(?<![\w-])(?:" + "|".join(alts) + r")(?![\w-])", re.I)
+
+
 def mask(view: str, terms: list[str]) -> str:
-    if not terms:
-        return view
-    pat = re.compile(r"(?<![\w-])(?:" + "|".join(re.escape(t) for t in terms) + r")(?![\w-])", re.I)
-    # only prose is masked: code and links are still stashed when this runs
-    return pat.sub(TERM, view)
+    # Only prose is masked here: code and links are still stashed when this runs. Link labels
+    # are masked separately, when the scan view is restored.
+    return term_pattern(terms).sub(TERM, view) if terms else view
 
 
 def views(path: pathlib.Path, terms: list[str]) -> tuple[str, str]:
@@ -416,7 +464,8 @@ def views(path: pathlib.Path, terms: list[str]) -> tuple[str, str]:
     # The scan view shows a link as its label, which is what the scanner reduces it to anyway.
     # Left as Markdown, a URL followed by ")" can make the scanner's link pattern swallow the
     # text up to the next link.
-    return stash.restore(view), stash.restore(mask(view, terms), links_as_text=True)
+    return stash.restore(view), stash.restore(mask(view, terms), links_as_text=True,
+                                              label_filter=lambda s: mask(s, terms))
 
 
 def make_doc(scan_view: str, fact_view: str) -> ss.Doc:
@@ -442,6 +491,7 @@ def cmd_scan(page: pathlib.Path, root: pathlib.Path) -> int:
     results = {n: ss.run_metric(n, d, None, {}, None) for n in names}
     flags = {n: ss.flag(n, results[n], GENRE) for n in names}
     print(f"[{page}]  (prose view: CODE = code span, {TERM} = protected term)")
+    print(f"LIKENESS {likeness(results)} (model fingerprint: 0 = human rate, 1 = model rate; flagged above 0.5)")
     print(ss.agent_report(d, results, flags, SELF))
     return 0
 
@@ -463,6 +513,9 @@ def cmd_compare(page: pathlib.Path, root: pathlib.Path) -> int:
     text += f"\nSELF ({SELF}) tells ADDED by the revision: {len(added)}"
     text += "".join(f"\n  '{t['term']}' {t['ratio'] or 'inf'}x in " + ", ".join(f"s{i}" for i in t["sentences"])
                     for t in added[:12])
+    lb = likeness({"model_fingerprint": ss.run_metric("model_fingerprint", before, None, {}, None)})
+    la = likeness({"model_fingerprint": ss.run_metric("model_fingerprint", after, None, {}, None)})
+    text = text.replace("\n", f"\nLIKENESS {lb} -> {la}\n", 1)
     lost = dropped_terms(bf, af, terms)
     if lost:
         text += "\nPROTECTED terms used less often: " + ", ".join(f"{t} ({b}->{a})" for t, b, a in lost)
@@ -471,11 +524,15 @@ def cmd_compare(page: pathlib.Path, root: pathlib.Path) -> int:
     return 1 if data.get("invariants", {}).get("errors") else 0
 
 
+def likeness(results: dict[str, dict[str, object]]) -> object:
+    return results.get("model_fingerprint", {}).get("max_tell_likeness")
+
+
 def dropped_terms(before: str, after: str, terms: list[str]) -> list[tuple[str, int, int]]:
     """Protected terms that occur fewer times after the revision than before it."""
     out = []
     for t in terms:
-        pat = re.compile(r"(?<![\w-])" + re.escape(t) + r"(?![\w-])", re.I)
+        pat = term_pattern([t])
         b, a = len(pat.findall(before)), len(pat.findall(after))
         if a < b:
             out.append((t, b, a))

@@ -16,6 +16,7 @@ In this tutorial you will configure doc-writer for an existing project and run t
 **Prerequisites:**
 - doc-writer installed via `/plugin install github:anentropic/for-agents`
 - An existing project open in Claude Code
+- Python 3 on the `PATH` (the Editor's humanizer pass uses it to measure prose; without it the pass still runs, unmeasured)
 
 ### Step 1: Run setup
 
@@ -436,6 +437,8 @@ Formatting guidance for the active documentation system. Created by `doc-writer:
 
 Written automatically by the Editor after its first run. Stores the canonical form of project-specific terms resolved from source code. Contains an `overrides` section where you can force specific term choices that take highest precedence over auto-detected forms.
 
+Multi-word and hyphenated terms listed here (such as "world scope" or "single-agent") are also protected from the humanizer pass: its scanner never flags them, and the Editor reports any it removes. Add a term under `project_terms` to protect it.
+
 ---
 
 #### `.doc-writer/gap-report.md`
@@ -480,7 +483,7 @@ doc-writer uses three specialised agents that run in sequence. Each agent has a 
 
 **Doc Author** writes documentation from the end user's perspective. It scans source code, reads test files for realistic usage patterns, classifies each page by Diataxis type (tutorial, how-to, explanation), and writes accordingly. It explicitly excludes test utilities, CI configuration, development scripts, and internal modules from user-facing content.
 
-**Doc Editor** reviews and edits what the Author produced. It runs four passes in strict order: terminology consistency (using source code as the canonical authority for symbol names), Diataxis type integrity (detecting and fixing pages that mix documentation purposes), humanizer (removing AI writing patterns like em dashes, significance inflation, copula avoidance, and filler phrases), and cross-reference linking (adding links from inline code mentions to API reference entries when a reference location is configured). The Editor does not write new documentation content; gaps are recorded as BLOCKING feedback items for the Author.
+**Doc Editor** reviews and edits what the Author produced. It runs four passes in strict order: terminology consistency (using source code as the canonical authority for symbol names), Diataxis type integrity (detecting and fixing pages that mix documentation purposes), humanizer (removing AI writing patterns like em dashes, participial tails, significance inflation, and filler phrases, measured before and after each page's rewrite with the [deslop](https://github.com/etodanik/deslop) scanner, which also checks that no code span, number or link was lost), and cross-reference linking (adding links from inline code mentions to API reference entries when a reference location is configured). The Editor does not write new documentation content; gaps are recorded as BLOCKING feedback items for the Author.
 
 **Doc Persona** validates the output by simulating real user journeys. It reads only the documentation files (not source code), generates 3-5 goal-oriented scenarios filtered through the configured audience's skill level, then attempts to accomplish each goal using only the docs and their navigation. It assigns PASS, PARTIAL, or FAIL verdicts and identifies the specific page and section responsible for each gap.
 

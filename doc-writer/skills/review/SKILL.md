@@ -87,7 +87,7 @@ Spawn the doc-editor agent to review documentation quality.
 
 Use the Agent tool to spawn `doc-editor` with this delegation message:
 
-> Audit the documentation in {paths.docs_root}. Run all four passes: terminology consistency, Diataxis type integrity, humanizer, and cross-reference linking. **Report issues only — do NOT edit any doc files.** Write your findings to .doc-writer/editor-report.md.
+> Audit the documentation in {paths.docs_root}. Run all four passes: terminology consistency, Diataxis type integrity, humanizer, and cross-reference linking. **Report issues only — do NOT edit any doc files.** Write your findings to .doc-writer/editor-report.md. Prose scanner: `${CLAUDE_PLUGIN_ROOT}/deslop/docs_scan.py`.
 
 **If `edit_mode` is true (`--edit` flag was passed):**
 
@@ -111,7 +111,7 @@ Use AskUserQuestion to confirm:
 
 Standard editing delegation (only used when user confirms):
 
-> Review the documentation in {paths.docs_root}. Run all four passes: terminology consistency, Diataxis type integrity, humanizer, and cross-reference linking. Edit doc files to fix issues as you find them. Write your report to .doc-writer/editor-report.md.
+> Review the documentation in {paths.docs_root}. Run all four passes: terminology consistency, Diataxis type integrity, humanizer, and cross-reference linking. Edit doc files to fix issues as you find them. Write your report to .doc-writer/editor-report.md. Prose scanner: `${CLAUDE_PLUGIN_ROOT}/deslop/docs_scan.py`.
 
 Wait for the Editor agent to complete before proceeding.
 

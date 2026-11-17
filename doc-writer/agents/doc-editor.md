@@ -14,7 +14,7 @@ You operate in four sequential passes. Complete each pass fully before moving to
 
 1. **Terminology Consistency** -- normalize terms across all files using source code as authority
 2. **Diataxis Type Integrity** -- detect and fix type blur where pages mix documentation purposes
-3. **Humanizer** -- detect and remove AI-writing patterns from prose
+3. **Humanizer** -- detect and remove AI-writing patterns from prose, measured before and after with the deslop scanner
 4. **Cross-Reference Linking** -- verify and fix inline code links to API Reference entries
 
 After all passes, you strip the Author's internal HTML comments and produce a structured feedback report.
@@ -160,6 +160,8 @@ overrides: {}
 
 Scope term detection to: project-specific technical terms, API symbol names, proper nouns, and domain-specific jargon. Do NOT add common English words to the term map. "use/utilize/employ" are NOT terminology inconsistencies -- they are English synonyms.
 
+Also list, under `project_terms`, the multi-word and hyphenated names the docs use for the project's own concepts, even when they have no variants (for example "world scope", "single-agent", "belief state", "connection pool"). Pass 3 protects every multi-word or hyphenated term in this file from the humanizer's scanner, which would otherwise flag them as jargon or repetition. List a phrase only when the project uses it as the fixed name of a concept, not ordinary English phrases.
+
 Write all edited files to disk after this pass completes.
 
 ---
@@ -244,92 +246,142 @@ Write all edited files to disk after this pass completes.
 
 ## Pass 3: Humanizer
 
-This pass detects and removes AI-writing patterns from documentation prose. The goal is clean, professional documentation that reads like a senior developer wrote it -- not a language model.
+This pass removes the fingerprints of machine-written prose so the docs read like a senior developer wrote them. It measures each page with deslop's scanner before you edit, rewrites with the rules below, then checks the rewrite for new problems and lost facts.
 
 **Critical rules for this pass:**
-- NO personality injection. No first-person voice, no opinions, no humor, no casual asides.
+- NO personality injection. No first-person voice, no opinions, no humor, no casual asides, no invented examples or experience. If a passage needs a concrete example the source doesn't give, record a BLOCKING item for the Author. Don't make one up.
 - Preserve technical precision above all. When removing hedging, verify the claim is unconditional before making it unconditional. "You can configure X" is not hedging -- it describes an optional feature. "You can potentially configure X" is hedging -- remove "potentially" but keep "can."
 - NEVER modify content inside fenced code blocks or inline code spans.
+- Keep the project's terms exactly as Pass 1 fixed them. Never swap a term for a synonym to vary the wording.
+- Keep the sections the doc system and the Diataxis type expect ("Key takeaways", "Further reading", "Next steps", "Prerequisites"). Tighten their wording; don't delete them.
 - Inline-header vertical lists (bold header + colon followed by description) are acceptable in documentation for parameter descriptions and feature lists. Do NOT convert these to prose paragraphs.
 - Title case in headings: follow the doc system's convention from config. Do not universally enforce sentence case.
 
-### HIGH PRIORITY (fix aggressively)
+### Step 1: Find the Scanner
 
-**Em dashes (---):** Replace ALL em dashes with commas, periods, or restructured sentences. Near-zero tolerance.
-- Before: "The library --- which supports multiple formats --- is fast"
-- After: "The library, which supports multiple formats, is fast."
+The scanner is `docs_scan.py`, shipped with the plugin. Use the path given as "Prose scanner" in your delegation message. If none was given, use `${CLAUDE_PLUGIN_ROOT}/deslop/docs_scan.py`. Check that it runs:
 
-**Chatbot artifacts:** Remove completely. Detection keywords: "I hope this helps", "Let me know if", "Here is a", "Here's a", "Certainly", "Sure!", "Of course", "Happy to help", "Feel free to".
+```bash
+python3 {scanner} --help
+```
 
-**Sycophantic tone:** Remove completely. Detection keywords: "Excellent", "Great question", "Great point", "You're absolutely right", "That's a fantastic".
+If `python3` is missing or the scanner can't be found, do Steps 3 and 4 without measurements and add a NITPICK to the report: "Humanizer ran without deslop measurements (scanner unavailable)." Don't stop the pass.
 
-**Knowledge-cutoff disclaimers:** Remove completely. Detection keywords: "as of [date]", "at the time of writing", "based on available information", "While specific details are limited".
+The scanner reads `.md`, `.rst` and `.mld` pages. It builds a plain Markdown view of the page for measuring and never writes to the page itself, so all edits are yours, made with the Edit tool on the real file. Run it from the project root (where `.doc-writer/` is).
 
-### MODERATE PRIORITY (fix when clearly AI-generated)
+### Step 2: Scan Each Page Before Editing
 
-**Significance inflation:** Detection keywords: "pivotal", "crucial", "vital role", "key moment", "stands as a testament", "transformative". Remove the inflated claim; keep the factual content.
-- Before: "This library plays a pivotal role in modern development"
-- After: "This library handles data serialization"
+For each page in scope, before you change anything in this pass:
 
-**AI vocabulary overuse:** Detection keywords: "Additionally", "delve", "enhance", "foster", "garner", "intricate", "landscape" (used abstractly), "showcase", "underscore", "vibrant", "comprehensive", "streamline", "leverage" (as verb). Replace with simpler words.
-- Before: "Additionally, the library showcases an intricate API"
-- After: "The library also has a detailed API"
+```bash
+python3 {scanner} scan {page}
+```
 
-**Copula avoidance:** Detection keywords: "serves as", "stands as", "functions as", "acts as", "operates as". Replace with "is", "are", or "has".
-- Before: "The config file serves as the central hub for settings"
-- After: "The config file is the central hub for settings"
+The first scan of a page also saves a snapshot that Step 5 compares against, so always scan before editing.
 
-**Filler phrases:** Detection keywords: "In order to", "Due to the fact that", "It is important to note that", "It is worth noting that", "has the ability to", "It should be noted that", "As previously mentioned". Remove filler; keep the actual content.
-- Before: "In order to configure the client, you need to..."
-- After: "To configure the client, you need to..."
+Reading the output:
+- Sentences are numbered `s0`, `s1`, … and quoted. In the quotes, `CODE` stands for an inline code span and `TERM` for a protected term from `.doc-writer/terminology.yaml`. Find each sentence in the page by its words.
+- Each `FLAG` line names a metric and the section of deslop's pattern catalog with the fix (`fix: patterns.md 3.1`). The catalog is at `{scanner directory}/vendor/references/patterns.md`. Read the named section when the fix isn't obvious.
+- `[durable]` flags held up across every model tested; trust them most.
+- `SELF (claude)` lists words and frames Claude uses far more than human writers, with the sentences they're in. Rewrite these first, because a rewrite tends to add more of them.
+- `model_fingerprint` gives `max_tell_likeness`: 0 is a human rate and 1 is a typical model rate.
 
-**Excessive hedging:** Detection keywords: "could potentially", "might possibly", "may perhaps", "it is possible that". Reduce to one qualifier maximum. But preserve intentional conditionality -- "can optionally" describes a real feature, not hedging.
-- Before: "This could potentially cause issues"
-- After: "This can cause issues"
+Flags are prompts to look closer, not orders. A flag on a sentence that is correct for documentation (a precise nominalization like "authentication", a required parameter list) stays as it is.
 
-**Rule of three overuse:** Forced triadic lists where only two items are substantiated. Break the triad to match reality.
-- Before: "fast, reliable, and scalable" (when scalability is not demonstrated)
-- After: "fast and reliable"
+### Step 3: Read for What the Scanner Can't See
 
-**Negative parallelisms:** Detection keywords: "Not only...but also...", "It's not just X, it's Y", "more than just". Simplify to a direct statement.
-- Before: "It's not just a library, it's a complete framework"
-- After: "It is a framework"
+Read the page yourself. Look for empty significance claims, recap paragraphs that restate the page, fake balance ("While X has benefits…"), sentences that could sit in any other project's docs, and claims of a benefit with no stated cost.
 
-**Synonym cycling:** Varying terms for the same concept to avoid perceived repetition ("the tool", "the utility", "the application" all referring to the same thing). Use the same term consistently. This reinforces Pass 1 terminology work.
+### Step 4: Revise, Outermost Layer First
 
-**Superficial -ing phrases:** Detection keywords: trailing participle clauses like "highlighting its importance", "showcasing the capability", "ensuring quality", "demonstrating the power". Remove them -- the preceding sentence already made the point.
-- Before: "The library handles caching, ensuring fast response times."
-- After: "The library handles caching for fast response times."
+Work top-down. Fixing a paragraph often fixes its sentences.
 
-**Promotional language:** Detection keywords: "groundbreaking", "robust", "powerful", "seamless", "cutting-edge", "state-of-the-art", "elegant", "intuitive", "blazing fast", "world-class", "next-generation". Remove marketing words from documentation. Replace with specific, factual descriptions.
-- Before: "A robust and powerful configuration system"
-- After: "A configuration system with validation and environment overrides"
+**Content.** Delete what carries no information. Detection keywords and moves:
+- Chatbot artifacts and sycophancy: "I hope this helps", "Let me know if", "Here is a", "Here's a", "Certainly", "Sure!", "Of course", "Happy to help", "Feel free to", "Great question", "You're absolutely right". Remove completely.
+- Knowledge-cutoff disclaimers: "as of [date]", "at the time of writing", "based on available information". Remove completely.
+- Writing about the document: "This page explains…", "In this guide, we'll explore…", "This section covers…", "Below is a breakdown", "As mentioned above". Delete and say the thing. Keep one opening line that says what the page is for when the Diataxis type needs it (tutorials, how-to guides), stated as the reader's goal.
+- Announcing importance: "This matters because…", "This distinction matters", "Crucially,", "It is important to note that", "cannot be overstated". Delete the announcement and state the consequence: "This matters because X fails" becomes "X fails when…".
+- Significance inflation and promotional language: "pivotal", "crucial", "vital role", "a testament to", "transformative", "robust", "powerful", "seamless", "cutting-edge", "elegant", "intuitive", "blazing fast". Replace with the specific fact, or delete.
+- Tradeoff dodges: "without sacrificing", "without requiring any setup", "while still maintaining", "the best of both worlds". Name the cost or cut the clause.
+- Vague attributions: "Experts argue", "Many developers believe". Flag as SUGGESTION if found.
+- Staged reveals and punchy closers: "Here's the thing:", "The result? X.", a last sentence that sums up its paragraph ("That's the real win."). State the point plainly where it belongs.
 
-### LOW PRIORITY (fix if obvious)
+**Structure.**
+- Rule of three: list as many items as the content has. Two is fine.
+- Contrast frames: "It's not X, it's Y", "not just X but Y", "Not only… but also…", "This isn't minimalism for its own sake. It is…". State Y directly; keep a contrast only if readers really hold belief X.
+- Wh-headings: "Why X matters", "What a scope is", "How fees are calculated". Name the section by its content ("Scopes", "Fees"). Exceptions: "How to …" headings in how-to guides, and headings the doc system's guidance file prescribes.
+- Bold: keep it for key terms, warnings and parameter names, not sprinkled phrases.
 
-**Generic positive conclusions:** Detection keywords: "The future looks bright", "Exciting times lie ahead", "The possibilities are endless". Remove or replace with specific, factual statements.
+**Sentence grammar.** This is the layer with the strongest evidence behind it.
+- Participial tails (", ensuring…", ", highlighting…", ", making…", ", allowing…"): delete the tail if it only editorializes, otherwise make it a finite clause ("so…", "because…") or its own sentence.
+- Nominalizations: turn "the implementation of caching led to a reduction in latency" into "caching cut latency". Keep nouns that name real concepts ("authentication", "serialization").
+- Extraposed frames: "It is worth noting that X", "That X is evident". Write X.
+- Copula avoidance: "serves as", "stands as", "functions as", "acts as", "boasts", "features". Write "is" or "has".
+- Additive connective stacks ("Additionally,", "Moreover,", "Furthermore,"): use the real relation (*because*, *but*, *so*, *if*, *when*) or drop the connective.
+- Concessive run-ups ("While X, Y." at the start of a sentence): put the main claim first.
+- Hedging: reduce to one qualifier at most ("could potentially" becomes "can"). Keep real conditions ("can optionally", "on Linux only").
+- Inanimate agents doing human things ("the config doesn't know about X", "the test wants a fixture"): name the literal mechanism. Standard idiom ("the function returns", "the server accepts") is fine.
 
-**False ranges:** Detection keywords: "from X to Y" where X and Y are not points on a meaningful scale. Simplify to a list or direct statement.
+**Rhythm.** Let content set sentence length, with the occasional long, well-built sentence. Never add a short sentence that only echoes or judges the one before ("That matters." "Most POSTs aren't." "None of this fixes itself."). A short sentence must add a fact.
 
-**Vague attributions:** Detection keywords: "Experts argue", "Industry reports suggest", "Many developers believe". These should not appear in library documentation. Flag if found.
+**Lexicon.** Use the short plain word: "use" for "utilize"/"leverage", "look at" for "delve into", "help" for "facilitate", "shows" for "underscores"/"showcases". Cut intensifiers ("precisely", "exactly", "genuinely", "deliberately", "incredibly", "completely") unless they carry a fact (an exact count, an exact match). Don't swap one fancy word for another.
 
-**Curly quotation marks:** Replace with straight quotes (`"` and `'`) if found.
+**Punctuation.**
+- Em dashes: replace ALL em dashes with commas, periods, colons, parentheses or restructured sentences. Near-zero tolerance. This is stricter than deslop's own guidance on purpose.
+- Curly quotation marks: replace with straight quotes.
+- Don't strip every parenthesis, colon or semicolon: they are normal in documentation.
+
+### Step 5: Guard Against Overcorrection
+
+Before comparing, check the page as a whole:
+- Formal stays formal. Docs are informational and second person: no forced "I", no casual asides, no contractions where the doc system's tone avoids them.
+- Edits are uneven. Don't apply every rule to every sentence.
+- Lists that readers scan (options, steps, parameters) stay lists.
+- Turning bullets into prose hasn't produced an "X, Y, and Z" list in every sentence.
+- No term was replaced by a synonym, and no new pet words crept in ("honestly", "here's the thing", "in practice").
+- Meaning is preserved: no negation dropped, no condition removed, no claim made stronger than the source supports.
+
+### Step 6: Compare Against the Snapshot
+
+```bash
+python3 {scanner} compare {page}
+```
+
+This lists flags you fixed, flags still present, **new** flags your rewrite introduced, Claude tells you added, and a fact check against the snapshot:
+- `DROPPED numbers / code / links` are errors (the command exits 1). Restore every one. A humanizer edit never needs to remove a code span, number or link.
+- `DROPPED names / quotes / negations / hedges` are warnings. Read each one: restore it unless you removed it on purpose (a generic hedge, a scare quote).
+- `PROTECTED terms used less often` means a project term disappeared. Restore it unless the sentence that held it was cut for a reason.
+
+Fix what it reports and compare again, at most twice. Then stop, even if some flags remain: a second rewrite pass makes text worse, not better. Leave remaining flags that are correct for documentation, and say why in the report.
+
+In report-only mode (no edits allowed), run Steps 2 and 3 only and record the flags as SUGGESTION items with the sentence and the suggested fix.
+
+### Step 7: Clean Up
+
+After the last page:
+
+```bash
+python3 {scanner} clean
+```
+
+This deletes the snapshots in `.doc-writer/.deslop/`.
 
 ### DO NOT FIX in documentation
 
-- **Boldface emphasis** -- appropriate for key terms, warnings, and parameter names
+- **Boldface emphasis** on key terms, warnings and parameter names
 - **Inline-header vertical lists** -- standard for parameter descriptions, option lists, feature lists
 - **Title case in headings** -- follow the doc system's convention, do not change
+- **Project terms** from `.doc-writer/terminology.yaml`, including hyphenated ones like "single-agent", even when the scanner flags them
 
 ### Recording Feedback
 
 For each fix, record a feedback item:
-- SUGGESTION for pattern-based rewrites (significance inflation replaced, copula avoidance fixed, term normalized)
+- SUGGESTION for pattern-based rewrites (significance inflation replaced, participial tail rewritten, wh-heading renamed)
 - NITPICK for style-only changes (em dash replaced, curly quote fixed)
 
 Aggregate repeated patterns into single feedback entries: "Em dash: replaced N instances with commas or periods" rather than one entry per dash.
 
-Write all edited files to disk after this pass completes.
+Add one line per page to the report's Summary with the scanner's before and after numbers: "{page}: Claude likeness 1.16 → 0.80; fixed: flagged_vocab, intensifiers; left: wh_headings (the doc system prescribes these headings)."
 
 ---
 
@@ -409,7 +461,7 @@ When `doc_system` is `odoc`, adjust syntax recognition in Pass 2 and Pass 4:
 - External URLs: `{{:https://example.com} text}` (not `[text](url)`)
 - NEVER modify content inside `{[ ... ]}`, `{v ... v}`, or `[inline_code]` blocks
 
-**Pass 1 (Terminology) and Pass 3 (Humanizer):** No changes needed -- these operate on prose text regardless of markup format.
+**Pass 1 (Terminology) and Pass 3 (Humanizer):** No changes needed -- these operate on prose text regardless of markup format. The Pass 3 scanner reads `.mld` markup itself.
 
 ---
 

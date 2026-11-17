@@ -267,11 +267,11 @@ Spawn the doc-editor agent to run quality passes on the authored documentation.
 
 **Create mode** — use the Agent tool to spawn `doc-editor` with this message:
 
-> Edit the documentation in {paths.docs_root}. Run all four passes: terminology consistency, Diataxis type integrity, humanizer, and cross-reference linking.
+> Edit the documentation in {paths.docs_root}. Run all four passes: terminology consistency, Diataxis type integrity, humanizer, and cross-reference linking. Prose scanner: `${CLAUDE_PLUGIN_ROOT}/deslop/docs_scan.py`.
 
 **Update mode** — scope the Editor to new and refreshed pages, but run terminology across all:
 
-> Edit the NEW and REFRESHED documentation pages: {changed_page_list}. Run all four passes on these pages. Run the terminology pass on ALL documentation pages in {paths.docs_root} since term changes can ripple across files.
+> Edit the NEW and REFRESHED documentation pages: {changed_page_list}. Run all four passes on these pages. Run the terminology pass on ALL documentation pages in {paths.docs_root} since term changes can ripple across files. Prose scanner: `${CLAUDE_PLUGIN_ROOT}/deslop/docs_scan.py`.
 
 Where `{changed_page_list}` is the combined list of new pages and refreshed pages written by the Author in Step 2. If Author was skipped (0 gaps AND 0 stale pages), run the Editor on all existing pages instead (full quality pass).
 
@@ -279,7 +279,7 @@ Where `{changed_page_list}` is the combined list of new pages and refreshed page
 
 Use the Agent tool to spawn `doc-editor` with this message:
 
-> Edit the revised documentation pages: {changed_pages}. Run all four passes on the changed pages. Run the terminology pass on ALL documentation pages since term changes can ripple across files.
+> Edit the revised documentation pages: {changed_pages}. Run all four passes on the changed pages. Run the terminology pass on ALL documentation pages since term changes can ripple across files. Prose scanner: `${CLAUDE_PLUGIN_ROOT}/deslop/docs_scan.py`.
 
 Wait for the Editor agent to complete before proceeding.
 

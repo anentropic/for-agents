@@ -1,0 +1,78 @@
+name: deslop sync
+
+# Weekly check for upstream changes to deslop, which doc-writer vendors in
+# doc-writer/deslop/vendor/. When upstream main has moved, sync.py pulls the
+# vendored files at the new commit and updates the pin and checksums, the tests
+# run, and a PR opens with the upstream diff link and the test result. Review the
+# upstream changes before merging: the vendored files run on users' machines.
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: deslop-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync vendored deslop
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      HAS_APP: ${{ secrets.BOT_APP_PRIVATE_KEY != '' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      - name: Sync from upstream main
+        id: sync
+        run: python3 doc-writer/deslop/sync.py
+
+      - name: Run the deslop tests
+        id: tests
+        if: steps.sync.outputs.new != ''
+        continue-on-error: true
+        run: python3 -m unittest discover -s tests/deslop -v
+
+      - name: Get app token
+        id: app-token
+        if: steps.sync.outputs.new != '' && env.HAS_APP == 'true'
+        uses: actions/create-github-app-token@v3.3.0
+        with:
+          app-id: ${{ secrets.BOT_APP_ID }}
+          private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
+
+      - name: Open pull request
+        if: steps.sync.outputs.new != ''
+        uses: peter-evans/create-pull-request@v8.1.3
+        with:
+          token: ${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}
+          branch: chore/deslop-sync
+          delete-branch: true
+          commit-message: "chore(doc-writer): sync vendored deslop to ${{ steps.sync.outputs.new }}"
+          title: "chore(doc-writer): sync vendored deslop"
+          body: |
+            Automated by `.github/workflows/deslop-sync.yml`.
+
+            Upstream deslop moved, so the vendored files in `doc-writer/deslop/vendor/` were
+            synced to the new commit with `doc-writer/deslop/sync.py`.
+
+            | | |
+            |---|---|
+            | upstream changes | ${{ steps.sync.outputs.compare }} |
+            | files changed | `${{ steps.sync.outputs.changed || 'none (pin only)' }}` |
+            | `tests/deslop` | **${{ steps.tests.outcome }}** |
+
+            Before merging:
+            - Read the upstream diff. These files run on the machines of everyone who uses doc-writer.
+            - If `tests/deslop` failed, fix `docs_scan.py` on this branch, or close the PR and pin
+              an earlier commit with `python3 doc-writer/deslop/sync.py --ref <sha>`.
+            - Scan a few real doc pages with `docs_scan.py scan` and check the flags still make
+              sense for docs.

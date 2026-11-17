@@ -342,6 +342,17 @@ class Vendored(unittest.TestCase):
                 data = (DESLOP / "vendor" / rel).read_bytes()
                 self.assertEqual(hashlib.sha256(data).hexdigest(), digest)
 
+    def test_sync_script_can_read_the_pin_and_file_list(self) -> None:
+        import sync  # noqa: PLC0415
+
+        readme = (DESLOP / "README.md").read_text(encoding="utf-8")
+        self.assertRegex(sync.pinned(readme), r"^[0-9a-f]{40}$")
+        files = sync.files(readme)
+        self.assertIn("scripts/slop_scan.py", files)
+        self.assertEqual(sorted(files), sorted(
+            str(p.relative_to(DESLOP / "vendor")) for p in (DESLOP / "vendor").rglob("*")
+            if p.is_file() and "__pycache__" not in p.parts))
+
     def test_docs_genre_switches_off_vocabulary_checks(self) -> None:
         docs = docs_scan.ss.GENRE_OVERRIDES["docs"]
         self.assertIsNone(docs["hyphen_compounds"]["warn_above"])

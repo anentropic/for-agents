@@ -81,10 +81,23 @@ describes data files that are not copied here; only `graphite_tells_lexicon.json
 
 ### Updating
 
-1. Copy the same files from a newer deslop commit into `vendor/`.
-2. Update the commit above and the checksum table (`sha256sum` on each file).
-3. Run `python3 -m unittest discover -s tests/deslop` from the repository root, and scan a few
-   real pages with `docs_scan.py scan` to check the flags still make sense for docs.
+`.github/workflows/deslop-sync.yml` checks upstream every Monday. When upstream `main` has moved,
+it runs `sync.py`, runs the tests, and opens a PR with the upstream diff link and the test
+result. Read the upstream diff before merging: these files run on users' machines.
+
+To sync by hand, from the repository root:
+
+```bash
+python3 doc-writer/deslop/sync.py --check        # has upstream moved?
+python3 doc-writer/deslop/sync.py                # sync to upstream main
+python3 doc-writer/deslop/sync.py --ref <sha>    # sync to a branch, tag or commit
+python3 -m unittest discover -s tests/deslop
+```
+
+`sync.py` downloads every file in the checksum table above at the resolved commit, and rewrites
+the pinned commit (with the date of the sync) and the checksums. To vendor another file, add a
+row for it to the table and run `sync.py`. Then scan a few real pages with
+`docs_scan.py scan` to check the flags still make sense for docs.
 
 ## Licensing
 

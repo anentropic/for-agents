@@ -364,7 +364,7 @@ Auto-detect: {how to detect this framework -- e.g., "check for docusaurus.config
 
 ## Detection
 
-Config file: {config filename or "none"}
+Config file: {config path relative to the project root, or "none"; list alternative locations comma-separated, most common first, e.g. "conf.py, docs/conf.py"}
 Features to detect:
 - {feature 1 and where to find it in config}
 - {feature 2 and where to find it in config}

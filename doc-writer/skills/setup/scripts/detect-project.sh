@@ -12,8 +12,8 @@ elif [ -f "docusaurus.config.js" ] || [ -f "docusaurus.config.ts" ]; then
   echo "- **Doc system:** docusaurus (found docusaurus.config)"
 elif [ -f ".vitepress/config.js" ] || [ -f ".vitepress/config.ts" ] || [ -f ".vitepress/config.mts" ]; then
   echo "- **Doc system:** vitepress (found .vitepress/config)"
-elif [ -f "conf.py" ]; then
-  echo "- **Doc system:** sphinx (found conf.py)"
+elif SPHINX_CONF=$(for f in conf.py docs/conf.py docs/source/conf.py doc/conf.py doc/source/conf.py; do [ -f "$f" ] && echo "$f" && break; done) && [ -n "$SPHINX_CONF" ]; then
+  echo "- **Doc system:** sphinx (found $SPHINX_CONF)"
 else
   echo "- **Doc system:** plain-markdown (no doc system detected)"
 fi

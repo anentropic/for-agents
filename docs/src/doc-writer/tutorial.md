@@ -107,7 +107,7 @@ writes an expanded `context.md`. You should see a summary like this:
 ## Setup Complete
 
 Created `.doc-writer/` with:
-- config.yaml -- 1 user persona(s), tone: warm-businesslike, doc system: mkdocs-material, plugin version: 1.8.0, paths configured
+- config.yaml -- 1 user persona(s), tone: warm-businesslike, doc system: mkdocs-material, plugin version: 1.9.0, paths configured
 - mkdocs-material.md -- Documentation system guidance (editable)
 - rules.md -- Project-specific rules template (editable)
 - .originals/ -- Pristine copies of guidance and rules for future upgrades

@@ -29,8 +29,10 @@ Answer the early questions as usual. Two of the later ones need care on an exist
 ### Doc system
 
 The doc system question names the system that setup detected. Confirm it, and setup looks
-for that system's config file in the project root: `mkdocs.yml` for `mkdocs-material`, `conf.py`
-for `sphinx-shibuya`, `doc/dune` for `odoc`. When it finds the file, it never rewrites it:
+for that system's config file in its usual locations: `mkdocs.yml` or `mkdocs.yaml` for
+`mkdocs-material`; `conf.py`, `docs/conf.py`, `docs/source/conf.py`, `doc/conf.py` or
+`doc/source/conf.py` for `sphinx-shibuya`; `doc/dune` for `odoc`. When it finds the file, it
+never rewrites it or writes a second one:
 
 - Under **Extras** it lists the recommended features your file lacks. Choose **None** to keep
   your config unchanged.
@@ -39,11 +41,11 @@ for `sphinx-shibuya`, `doc/dune` for `odoc`. When it finds the file, it never re
 - The framework questions that follow preselect the options that match the features your file
   already enables.
 
-!!! warning "A config file outside the project root is not found"
+!!! note "A config file somewhere else"
 
-    Setup checks the project root only. If your `conf.py` lives in `docs/`, for example, setup
-    treats the project as having no config and writes a new `conf.py` to the project root.
-    Delete that file before you commit.
+    If your config lives somewhere other than these locations, setup treats the project as
+    having no config and offers to write a new one. Check `git status` after setup and delete
+    any config file you did not expect.
 
 ### Paths
 

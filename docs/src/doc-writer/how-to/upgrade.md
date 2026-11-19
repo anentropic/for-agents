@@ -33,7 +33,7 @@ Restart Claude Code so the new version loads.
 ```
 
 The command compares the `plugin_version` stored in your config with the installed plugin. If
-they match, it prints `doc-writer is already up to date (version 1.8.0).` and stops. Otherwise it
+they match, it prints `doc-writer is already up to date (version 1.9.0).` and stops. Otherwise it
 prints the two versions and works through four steps.
 
 ### 1. Config migration
@@ -75,7 +75,7 @@ The command ends with a summary of everything it did:
 ```text
 ## Upgrade Summary
 
-**Version:** 1.7.0 -> 1.8.0
+**Version:** 1.8.0 -> 1.9.0
 
 ### Config Changes
 - No config schema changes

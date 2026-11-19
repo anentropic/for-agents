@@ -6,7 +6,7 @@
 
 ## Project Summary
 
-doc-writer is a Claude Code plugin (version 1.8.0, MIT) that writes, audits and fixes library documentation. It runs a pipeline of agents: a Doc Author plans and drafts Diataxis-structured pages, a Doc Editor normalizes terminology, fixes type blur, removes AI-writing patterns (measured with a vendored deslop scanner) and checks cross-references, and a Doc Persona tries to complete real tasks using only the docs, so gaps the builders cannot see get caught. It supports mkdocs-material, sphinx-shibuya, odoc and plain Markdown, and keeps its per-project state in a `.doc-writer/` folder.
+doc-writer is a Claude Code plugin (version 1.9.0, MIT) that writes, audits and fixes library documentation. It runs a pipeline of agents: a Doc Author plans and drafts Diataxis-structured pages, a Doc Editor normalizes terminology, fixes type blur, removes AI-writing patterns (measured with a vendored deslop scanner) and checks cross-references, and a Doc Persona tries to complete real tasks using only the docs, so gaps the builders cannot see get caught. It supports mkdocs-material, sphinx-shibuya, odoc and plain Markdown, and keeps its per-project state in a `.doc-writer/` folder.
 Inferred from: README.md, `doc-writer/.claude-plugin/plugin.json`, the SKILL.md and agent files, `doc-writer/deslop/README.md`, the existing `docs/src/` pages.
 
 The plugin is distributed from a marketplace repository that may hold other plugins; the docs site's front page lists plugins and `doc-writer.md` documents this one.

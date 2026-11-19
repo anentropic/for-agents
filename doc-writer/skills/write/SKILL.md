@@ -156,7 +156,21 @@ Spawn the doc-author agent in **plan-only mode** to scan the codebase and propos
 
 **Update mode** — check the gap report from Step 1 for both undocumented symbols and stale pages:
 
-- If gap-report shows **0 undocumented symbols AND 0 stale pages**: display "All exported symbols are documented and all pages are up to date. No changes needed." Skip Steps 2a–2c entirely and proceed directly to Step 3 (Editor) for a quality pass on existing docs.
+- If gap-report shows **0 undocumented symbols AND 0 stale pages**: display "All exported symbols are documented and all pages are up to date." Gap detection only finds undocumented symbols and stale pages, so it can't see a missing page that the user wants (a new how-to guide, an explanation, a page a Persona FAIL asked for). Before skipping the Author, use AskUserQuestion:
+  - header: "New pages"
+  - question: "Gap detection found nothing to add. Do you want any new pages, or just a quality pass on the existing docs?"
+  - options:
+    - { label: "Quality pass only", description: "Skip the Author and run the Editor and Persona on the existing docs" }
+    - { label: "Add pages", description: "Describe the pages you want; the Author plans them for your approval" }
+    - { label: "Chat about this", description: "Discuss what gap detection checks and what it misses" }
+
+  **"Quality pass only"**: skip Steps 2a–2c entirely and proceed directly to Step 3 (Editor) for a quality pass on existing docs.
+
+  **"Add pages"** (or "Type something else"/"Other" with a description of pages): ask in plain text which pages they want, if they have not already said. Then spawn `doc-author` with this message, and continue with Step 2b (Page Inventory Approval) and Step 2c as usual:
+
+> Run Phase 1 only (plan mode). Existing documentation is in {paths.docs_root} ({existing_page_count} pages). The project author has asked for these new pages: {user's description}. Propose inventory entries for ONLY those pages, fitting them into the existing structure. Do NOT propose pages for already-documented features. Write the inventory to `.doc-writer/page-inventory.md`. Do NOT write any documentation pages. Do NOT use AskUserQuestion. Read `.doc-writer/config.yaml` for persona and paths configuration.
+
+  **"Chat about this"**: explain that gap detection compares exported symbols against the docs and compares doc dates against source dates, so pages that are not about one symbol never show up as gaps. Then re-present the question.
 
 - If gap-report shows **undocumented symbols only** (0 stale pages): use the Agent tool to spawn `doc-author` with this message:
 

@@ -13,7 +13,7 @@ it, and every command reads it at startup. You can edit it by hand; run
 
 ```yaml title=".doc-writer/config.yaml"
 version: 1
-plugin_version: "1.8.0" # (1)!
+plugin_version: "1.9.0" # (1)!
 
 user_personas: # (2)!
   - name: "Python developers who clean text data"
@@ -70,7 +70,7 @@ Config schema version. Currently `1`. Don't edit it.
 ### plugin_version
 
 The doc-writer version the project's files were last set up or upgraded with, for example
-`"1.8.0"`. `/doc-writer:upgrade` compares it with the installed plugin and writes the new value
+`"1.9.0"`. `/doc-writer:upgrade` compares it with the installed plugin and writes the new value
 when it finishes. Missing in projects set up before version 1.5.0; the upgrade adds it.
 
 ### user_personas

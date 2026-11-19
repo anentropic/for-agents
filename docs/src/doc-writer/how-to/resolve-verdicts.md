@@ -79,10 +79,11 @@ Work through each remaining FAIL:
 2. Decide what kind of problem it is:
     - **Missing content**: the docs have no page or section for the goal. If a section on an
       existing page would cover it, add one with `/doc-writer:edit`; that command does not
-      create pages. For a new page, re-run `/doc-writer:write`, choose
-      **Type something else** at the page inventory approval and describe the page. Update
-      mode proposes new pages only for undocumented symbols, so a page for a workflow is not
-      offered unless you ask for it.
+      create pages. For a new page, re-run `/doc-writer:write` and ask
+      for it: choose **Type something else** at the page inventory approval, or **Add pages**
+      if gap detection found nothing, and describe the page. Update mode proposes new pages
+      only for undocumented symbols, so a page for a workflow is not offered unless you ask
+      for it.
     - **Wrong or contradictory content**: fix the page with `/doc-writer:edit`, quoting the
       issue.
     - **A miscalibrated persona**: the scenario expects knowledge your readers would not need,

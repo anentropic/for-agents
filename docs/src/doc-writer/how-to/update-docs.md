@@ -48,8 +48,11 @@ The stale-page check is deliberately coarse. Any commit to the source root flags
 older than it, so expect false positives. The Doc Author checks each flagged page against the
 current code before proposing a change.
 
-If both lists are empty, the pipeline reports that no changes are needed, skips the Doc Author,
-and runs the Doc Editor over all your existing pages before the Doc Persona evaluates them.
+If both lists are empty, the pipeline asks whether you want any new pages. Choose
+**Quality pass only** to skip the Doc Author and have the Doc Editor go over all your existing
+pages before the Doc Persona evaluates them. Choose **Add pages** to describe pages you want,
+such as a guide to a workflow that is not tied to one symbol. The Author then plans them for
+your approval as described below.
 
 ## Approve new and refreshed pages
 
@@ -67,8 +70,7 @@ refreshed ones in place, changing only the stale parts and keeping their structu
 
 To add a page the Author did not propose, such as a guide to a workflow that is not tied to a new
 symbol, choose **Type something else** and describe it. The updated list is shown again for you
-to confirm. This approval step appears only when gap detection found something to propose: if
-both gap report lists are empty, the pipeline skips it.
+to confirm.
 
 ## Let the pipeline finish
 

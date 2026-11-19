@@ -374,7 +374,7 @@ After doc system selection, check whether the project already has a framework co
         Variables with an automatic source (e.g., `{copyright_year}`): never ask -- always use the computed value.
 
      c. Replace all identified template variables in the scaffold content with their inferred values.
-     d. Write the generated config file to `{config_filename}`, the first candidate location (e.g., `mkdocs.yml`).
+     d. Write the generated config file to `{config_filename}`, the first candidate location (e.g., `mkdocs.yml`). Set `{config_path}` to `{config_filename}`, so later steps (including the Step 5 researcher message) read the file you just wrote.
      e. Check if `{paths.docs_root}` directory exists. If not, create it with a starter `index.md`:
         ```markdown
         # {site_name}
@@ -555,7 +555,7 @@ Use the Agent tool to spawn `doc-researcher` with this message:
 
 > Enrich the project configuration. Read `.doc-writer/config.yaml` for user personas, tone, and doc system. Scan the codebase (README, source files, framework config) and produce `.doc-writer/context.md` with expanded persona guidance, project domain summary, tone-specific writing rules, and framework usage preferences.
 >
-> Framework config file: {config_path from Step 2b.3, or "none found"}. Read this file for framework features; do not look for the config anywhere else.
+> Framework config file: {config_path from Step 2b.3 (the config it found, or the one it wrote in full scaffold mode), or "none found"}. Read this file for framework features; do not look for the config anywhere else.
 >
 > Framework Q&A answers: {framework_answers or "none -- use defaults from framework config detection"}
 

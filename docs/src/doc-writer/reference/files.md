@@ -37,7 +37,7 @@ next run overwrites them.
 |------|------------|----------|
 | `gap-report.md` | `write` and `review` (gap detection) | Exported symbols with no documentation, and in update mode the pages that may be stale |
 | `page-inventory.md` | `write` (Author plan) | The proposed pages: type, title, key sections, file path |
-| `editor-report.md` | Every Editor run | Findings per page by severity (BLOCKING, SUGGESTION, NITPICK), terminology changes, humanizer measurements |
+| `editor-report.md` | Every Editor run | Findings per page by severity (BLOCKING, SUGGESTION, NITPICK), terminology changes, deslop measurements |
 | `persona-report.md` | The Doc Persona, with one persona | Each scenario's verdict, navigation path and suggested fixes |
 | `persona-report-{persona-name}.md` | The Doc Persona, one per persona | The same, for each of several personas. `review` also writes it with one persona |
 | `scenarios.yaml` | The Doc Persona, on its first run | The goals each persona tests. Reused on later runs until the page set changes substantially |

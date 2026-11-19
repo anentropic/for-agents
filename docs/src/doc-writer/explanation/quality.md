@@ -1,13 +1,13 @@
 ---
-title: Quality rules and the humanizer pass
+title: Quality rules and the deslop pass
 description: The rules every page must meet, how Diataxis page types and type blur work, and how the Editor measures prose
 ---
 
-# Quality rules and the humanizer pass
+# Quality rules and the deslop pass
 
 Every page doc-writer produces is held to the same standards, whatever your project. This page
 explains those standards: the universal quality rules, the Diataxis page types and the "type
-blur" the Editor looks for, and how the humanizer pass measures and rewrites prose.
+blur" the Editor looks for, and how the deslop pass measures and rewrites prose.
 
 ## Universal rules and project rules
 
@@ -55,12 +55,12 @@ The Editor's second pass looks for blur. A paragraph or two that drifted is move
 replaced with a link to the right kind of page. A page that fundamentally mixes two types is not
 patched: the Editor reports it as a BLOCKING finding, so the Author can split or restructure it.
 
-## The humanizer pass
+## The deslop pass
 
 Machine-written prose has recognizable habits: significance inflation ("plays a crucial role"),
 filler and hedging, sentences that end in a trailing "-ing" clause, em dashes everywhere, and
 words a model uses far more often than people do. Readers notice them, and they make
-documentation harder to trust. The humanizer, the Editor's third pass, rewrites them out.
+documentation harder to trust. The deslop pass, the Editor's third pass, rewrites them out.
 
 The pass measures as well as rewrites. It uses the prose scanner from
 [deslop](https://github.com/etodanik/deslop) by Danny Povolotski, which ships with doc-writer.
@@ -77,7 +77,7 @@ For each page, the Editor:
    restored.
 
 The Editor stops after at most two rounds of fixes, because rewriting again tends to make text
-worse. The before and after scores for each page appear in the **Humanizer Measurements** table
+worse. The before and after scores for each page appear in the **Deslop Measurements** table
 of `.doc-writer/editor-report.md`.
 
 The pass leaves some things alone: code blocks and inline code, bold key terms,
@@ -97,7 +97,7 @@ add more.
 
 The scanner is a Python script that needs only the standard library. If `python3` is not on your
 `PATH`, the Editor still rewrites the prose by the same rules, but without measurements, and adds
-a NITPICK to its report: "Humanizer ran without deslop measurements (scanner unavailable)." The
+a NITPICK to its report: "Deslop pass ran without measurements (scanner unavailable)." The
 measurements table is left out.
 
 ## Related

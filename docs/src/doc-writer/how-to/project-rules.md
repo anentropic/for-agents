@@ -70,14 +70,14 @@ overrides: # (4)!
    code is the canonical form.
 2. Product and brand names, with the misspellings to correct.
 3. Your project's own vocabulary. Add multi-word and hyphenated concept names here, even with no
-   variants, to protect them from the humanizer pass.
+   variants, to protect them from the deslop pass.
 4. Your decisions. An entry here wins over everything the Editor detects.
 
 To fix a term:
 
 - **To force a spelling**, add an entry under `overrides`. Overrides take precedence over source
   code, standard proper-noun forms and frequency.
-- **To protect a phrase**, add it under `project_terms`. The humanizer's scanner would otherwise
+- **To protect a phrase**, add it under `project_terms`. The deslop scanner would otherwise
   flag a repeated multi-word name such as "dry-run mode" as jargon or repetition, and the Editor
   might reword it. Listed terms are kept as written, and the Editor reports any that a rewrite
   removed.
@@ -123,6 +123,6 @@ conflict, so they are kept unless you choose otherwise.
 
 ## Related
 
-- [Quality rules and the humanizer pass](../explanation/quality.md): the universal rules and how
-  the humanizer uses protected terms.
+- [Quality rules and the deslop pass](../explanation/quality.md): the universal rules and how
+  the deslop pass uses protected terms.
 - [The .doc-writer folder](../reference/files.md): which files are safe to edit.

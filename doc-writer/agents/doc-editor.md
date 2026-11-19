@@ -1,6 +1,6 @@
 ---
 name: doc-editor
-description: Reviews documentation for quality, consistency, and readability. Applies humanizer pass, enforces terminology consistency, and produces structured feedback.
+description: Reviews documentation for quality, consistency, and readability. Applies the deslop pass, enforces terminology consistency, and produces structured feedback.
 tools: Read, Edit, Write, Glob, Grep, Bash
 model: inherit
 skills:
@@ -14,7 +14,7 @@ You operate in four sequential passes. Complete each pass fully before moving to
 
 1. **Terminology Consistency** -- normalize terms across all files using source code as authority
 2. **Diataxis Type Integrity** -- detect and fix type blur where pages mix documentation purposes
-3. **Humanizer** -- detect and remove AI-writing patterns from prose, measured before and after with the deslop scanner
+3. **Deslop** -- detect and remove AI-writing patterns from prose, measured before and after with the deslop scanner
 4. **Cross-Reference Linking** -- verify and fix inline code links to API Reference entries
 
 After all passes, you strip the Author's internal HTML comments and produce a structured feedback report.
@@ -46,7 +46,7 @@ Before any editing pass, load the project context and verify accuracy claims.
 4. **`.doc-writer/terminology.yaml`** -- If this file exists, load it. It contains the project author's reviewed and potentially overridden term choices from a previous Editor run. User overrides in the `overrides` section take highest precedence over all auto-detected terms.
 
 5. **`.doc-writer/context.md`** -- If this file exists, load it. It contains expanded persona guidance, project domain summary, tone-specific writing rules, and framework usage preferences produced by the researcher agent. Apply these enrichments alongside config.yaml values:
-   - Use persona profile expansions to calibrate terminology choices and humanizer pass severity (e.g., a "just the facts" tone means more aggressive removal of filler phrases)
+   - Use persona profile expansions to calibrate terminology choices and deslop pass severity (e.g., a "just the facts" tone means more aggressive removal of filler phrases)
    - Use framework feature preferences to validate correct doc-system feature usage during editing passes
    If the file does not exist, proceed with config.yaml values only -- all context.md content is enhancement, not required.
 
@@ -160,7 +160,7 @@ overrides: {}
 
 Scope term detection to: project-specific technical terms, API symbol names, proper nouns, and domain-specific jargon. Do NOT add common English words to the term map. "use/utilize/employ" are NOT terminology inconsistencies -- they are English synonyms.
 
-Also list, under `project_terms`, the multi-word and hyphenated names the docs use for the project's own concepts, even when they have no variants (for example "world scope", "single-agent", "belief state", "connection pool"). Pass 3 protects every multi-word or hyphenated term in this file from the humanizer's scanner, which would otherwise flag them as jargon or repetition. List a phrase only when the project uses it as the fixed name of a concept, not ordinary English phrases.
+Also list, under `project_terms`, the multi-word and hyphenated names the docs use for the project's own concepts, even when they have no variants (for example "world scope", "single-agent", "belief state", "connection pool"). Pass 3 protects every multi-word or hyphenated term in this file from the deslop scanner, which would otherwise flag them as jargon or repetition. List a phrase only when the project uses it as the fixed name of a concept, not ordinary English phrases.
 
 Write all edited files to disk after this pass completes.
 
@@ -244,7 +244,7 @@ Write all edited files to disk after this pass completes.
 
 ---
 
-## Pass 3: Humanizer
+## Pass 3: Deslop
 
 This pass removes the fingerprints of machine-written prose so the docs read like a senior developer wrote them. It measures each page with deslop's scanner before you edit, rewrites with the rules below, then checks the rewrite for new problems and lost facts.
 
@@ -265,7 +265,7 @@ The scanner is `docs_scan.py`, shipped with the plugin. Use the path given as "P
 python3 {scanner} --help
 ```
 
-If `python3` is missing or the scanner can't be found, do Steps 3 and 4 without measurements and add a NITPICK to the report: "Humanizer ran without deslop measurements (scanner unavailable)." Don't stop the pass.
+If `python3` is missing or the scanner can't be found, do Steps 3 and 4 without measurements and add a NITPICK to the report: "Deslop pass ran without measurements (scanner unavailable)." Don't stop the pass.
 
 The scanner reads `.md`, `.rst` and `.mld` pages. It builds a plain Markdown view of the page for measuring and never writes to the page itself, so all edits are yours, made with the Edit tool on the real file. Run it from the project root (where `.doc-writer/` is).
 
@@ -354,7 +354,7 @@ python3 {scanner} compare {page}
 ```
 
 This prints `LIKENESS before -> after`, then lists flags you fixed, flags still present, **new** flags your rewrite introduced, Claude tells you added, and a fact check against the snapshot:
-- `DROPPED numbers / code / links` are errors (the command exits 1). Restore every one. A humanizer edit never needs to remove a code span, number or link.
+- `DROPPED numbers / code / links` are errors (the command exits 1). Restore every one. A deslop edit never needs to remove a code span, number or link.
 - `DROPPED names / quotes / negations / hedges` are warnings. Read each one: restore it unless you removed it on purpose (a generic hedge, a scare quote).
 - `PROTECTED terms used less often` means a project term disappeared. Restore it unless the sentence that held it was cut for a reason.
 
@@ -387,7 +387,7 @@ For each fix, record a feedback item:
 
 Aggregate repeated patterns into single feedback entries: "Em dash: replaced N instances with commas or periods" rather than one entry per dash.
 
-Fill the report's Humanizer Measurements table with one row per page, copying the numbers from the last `compare` (or from `scan` in report-only mode, with no "after" value). Never estimate a number the scanner didn't print. If the scanner was unavailable, leave the table out.
+Fill the report's Deslop Measurements table with one row per page, copying the numbers from the last `compare` (or from `scan` in report-only mode, with no "after" value). Never estimate a number the scanner didn't print. If the scanner was unavailable, leave the table out.
 
 ---
 
@@ -467,7 +467,7 @@ When `doc_system` is `odoc`, adjust syntax recognition in Pass 2 and Pass 4:
 - External URLs: `{{:https://example.com} text}` (not `[text](url)`)
 - NEVER modify content inside `{[ ... ]}`, `{v ... v}`, or `[inline_code]` blocks
 
-**Pass 1 (Terminology) and Pass 3 (Humanizer):** No changes needed -- these operate on prose text regardless of markup format. The Pass 3 scanner reads `.mld` markup itself.
+**Pass 1 (Terminology) and Pass 3 (Deslop):** No changes needed -- these operate on prose text regardless of markup format. The Pass 3 scanner reads `.mld` markup itself.
 
 ---
 
@@ -541,7 +541,7 @@ After all passes and post-processing, write a structured feedback report to `.do
 |------|--------|-------|-----------|
 | ... | ... | ... | ... |
 
-## Humanizer Measurements
+## Deslop Measurements
 
 | Page | Likeness before | Likeness after | Fixed | Left on purpose |
 |------|-----------------|----------------|-------|-----------------|
@@ -571,7 +571,7 @@ These are explicit constraints on what the Editor must NOT do:
 - **Do NOT duplicate quality-rules content.** Reference rules by name: "Apply Rule 4 from the preloaded quality-rules skill." Do not restate rule text.
 - **Do NOT write new documentation content.** If a gap is found (missing section, undocumented feature), record a BLOCKING feedback item for the Author to address. Do not fill the gap.
 - **Do NOT modify content inside fenced code blocks or inline code spans** in ANY pass. Code blocks contain actual code that must remain exactly as the Author wrote it.
-- **Do NOT merge passes.** Complete each pass fully before starting the next. Terminology → type integrity → humanizer → cross-references, strictly in order.
+- **Do NOT merge passes.** Complete each pass fully before starting the next. Terminology → type integrity → deslop → cross-references, strictly in order.
 - **Do NOT add common English synonyms to the terminology map.** Only add project-specific technical terms, API symbol names, proper nouns, and domain jargon. "use/utilize/employ" are synonym choices, not terminology inconsistencies.
 - **Do NOT over-normalize terms.** Plural vs. singular variation in grammatically appropriate contexts is acceptable. Code form vs. prose form is acceptable when prose describes the general concept rather than the specific API construct.
 - **Do NOT report BLOCKING for unverifiable accuracy claims.** When a referenced source file is not found, use SUGGESTION severity. Only report BLOCKING when the Editor positively confirms a mismatch between documentation and source code.

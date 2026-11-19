@@ -3,7 +3,5 @@ __pycache__/
 .venv/
 site/
 
-# doc-writer run outputs
+# doc-writer's temporary humanizer snapshots
 .doc-writer/.deslop/
-.doc-writer/*-report*.md
-.doc-writer/page-inventory.md

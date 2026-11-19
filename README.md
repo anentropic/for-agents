@@ -15,12 +15,22 @@ builders don't see in their own docs.
 
 ## Installation
 
-Add this repository as a plugin marketplace, then install the plugin from it:
+Add this repository as a Claude Code plugin marketplace, then install the plugin from it.
+In a Claude Code session:
 
 ```
 /plugin marketplace add anentropic/for-agents
 /plugin install doc-writer@anentropic-for-agents
 ```
+
+Or from the terminal:
+
+```bash
+claude plugin marketplace add anentropic/for-agents
+claude plugin install doc-writer@anentropic-for-agents
+```
+
+Restart Claude Code afterwards so the plugin loads.
 
 ## Building the docs
 

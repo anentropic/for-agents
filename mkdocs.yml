@@ -25,6 +25,7 @@ theme:
         name: Switch to light mode
   features:
     - navigation.instant
+    - navigation.indexes
     - navigation.sections
     - navigation.top
     - navigation.tracking
@@ -58,5 +59,23 @@ markdown_extensions:
       permalink: true
 
 nav:
-  - Home: index.md
-  - doc-writer: doc-writer.md
+  - Overview: index.md
+  - doc-writer:
+      - doc-writer/index.md
+      - Tutorial: doc-writer/tutorial.md
+      - How-to guides:
+          - Configure a project: doc-writer/how-to/configure.md
+          - Update docs after code changes: doc-writer/how-to/update-docs.md
+          - Resolve verdicts: doc-writer/how-to/resolve-verdicts.md
+          - Audit docs: doc-writer/how-to/audit.md
+          - Make targeted fixes: doc-writer/how-to/targeted-fixes.md
+          - Add rules and terminology: doc-writer/how-to/project-rules.md
+          - Upgrade the plugin: doc-writer/how-to/upgrade.md
+      - Reference:
+          - Commands: doc-writer/reference/commands.md
+          - config.yaml: doc-writer/reference/configuration.md
+          - The .doc-writer folder: doc-writer/reference/files.md
+      - Explanation:
+          - How the pipeline works: doc-writer/explanation/pipeline.md
+          - Personas and verdicts: doc-writer/explanation/personas.md
+          - Quality rules and the humanizer: doc-writer/explanation/quality.md

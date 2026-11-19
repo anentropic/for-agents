@@ -1,39 +1,49 @@
 version: 1
 user_personas:
-  - name: "Paul — solo developer building projects with Claude Code and open source libraries"
-    skill_level: "expert"
-    generated_at: "2026-03-16"
+  - name: "Library maintainer using Claude Code"
+    skill_level: "advanced"
+    generated_at: "2026-11-19"
     doc_pages:
       - "README.md"
-      - "docs/doc-writer.md"
-      - "docs/copilot-review.md"
+      - "docs/src/index.md"
+      - "docs/src/doc-writer/index.md"
+      - "docs/src/doc-writer/tutorial.md"
+      - "docs/src/doc-writer/how-to/configure.md"
+      - "docs/src/doc-writer/how-to/update-docs.md"
+      - "docs/src/doc-writer/how-to/resolve-verdicts.md"
+      - "docs/src/doc-writer/how-to/audit.md"
+      - "docs/src/doc-writer/how-to/targeted-fixes.md"
+      - "docs/src/doc-writer/how-to/project-rules.md"
+      - "docs/src/doc-writer/how-to/upgrade.md"
+      - "docs/src/doc-writer/reference/commands.md"
+      - "docs/src/doc-writer/reference/configuration.md"
+      - "docs/src/doc-writer/reference/files.md"
+      - "docs/src/doc-writer/explanation/pipeline.md"
+      - "docs/src/doc-writer/explanation/personas.md"
+      - "docs/src/doc-writer/explanation/quality.md"
     scenarios:
       - id: S1
-        goal: "I want to install both plugins and get doc-writer running on a new project"
+        goal: "I want to install doc-writer for my whole team and run first-time setup on a library that already has an MkDocs site (docs_dir: docs/src), without setup clobbering my mkdocs.yml or pointing at the wrong folder"
         starting_point: "README.md"
-        persona_relevance: "Paul starts every new project by wiring up his tooling. This is the first thing he would do after cloning or creating a repo."
-        done_when: "Can identify the install command, run setup, and know which command kicks off documentation generation — with confidence about the order of steps."
-
+        persona_relevance: "The persona's libraries usually already have a partial docs site; the first contact with the plugin is configuring it against that existing setup, and they will not accept unreviewed changes to mkdocs.yml"
+        done_when: "I know the install command (with project scope), which setup questions to expect, what setup writes or changes in mkdocs.yml and docs/, and how to set docs_root to docs/src/"
       - id: S2
-        goal: "I want to re-run only the persona validation step after manually editing a doc page, without regenerating everything"
+        goal: "I want to re-run doc-writer after a release that added public functions, so only new and stale pages change and my hand-edited pages are left alone"
         starting_point: "README.md"
-        persona_relevance: "Paul edits docs by hand sometimes and wants to validate without blowing away his work. Knowing which command does evaluation-only vs full regeneration matters."
-        done_when: "Identifies the correct command and understands that it runs Persona without running Author (i.e., docs are not regenerated)."
-
+        persona_relevance: "Keeping docs in step with releases is the recurring job; the persona judges the plugin by whether the diff touches only what it should"
+        done_when: "I can trigger update mode, read the gap report, approve only real refresh entries, and explain any change to a page I did not approve"
       - id: S3
-        goal: "I want to understand what the copilot-review 'wheels' dimension specifically checks for, so I know whether to include it when reviewing AI-generated code"
+        goal: "I want to audit my docs before a release without changing any page, then fix only the BLOCKING findings and FAILs"
         starting_point: "README.md"
-        persona_relevance: "Paul uses Claude Code heavily and suspects AI-generated code patterns in his projects. He wants to know if the wheels dimension is worth running."
-        done_when: "Can articulate what the wheels dimension checks, what it does and does not flag, and whether it is relevant to AI-generated code."
-
+        persona_relevance: "Before shipping, the persona wants findings first and small, targeted diffs second, never a broad rewrite"
+        done_when: "I have run a read-only audit, know which report files hold which findings, selected just the severe issues in /doc-writer:edit, and know how to confirm the fixes"
       - id: S4
-        goal: "I want to add a project-specific rule requiring all code examples to include error handling, and understand when that rule takes effect"
+        goal: "I want to add house rules (British spelling, a required Requirements section) and force the spelling of a project term so the Editor stops changing it back"
         starting_point: "README.md"
-        persona_relevance: "Paul has strong opinions about error handling in examples. He wants to know how to encode this as a standing rule rather than repeating it as a prompt each time."
-        done_when: "Knows the file to edit, the format to use, and when agents pick up the new rule."
-
+        persona_relevance: "Maintainers have house style and fixed vocabulary; they need to know which .doc-writer files are theirs to edit and that edits survive later runs and upgrades"
+        done_when: "I have edited rules.md and terminology.yaml correctly, know when agents pick them up, know which commands could replace them, and can verify the effect"
       - id: S5
-        goal: "I want to run a focused copilot-review on just my src/auth/ directory, checking only architecture and error handling, using a faster model"
+        goal: "I want to deal with a FAIL that did not converge after three passes in update mode, where the docs need a whole new page, and then re-test with comparable verdicts"
         starting_point: "README.md"
-        persona_relevance: "Paul is about to merge a targeted change to the auth module and wants a fast, focused sanity check without paying the full review cost."
-        done_when: "Can construct the exact command with path, --focus flags, and --reasoning or --model flags."
+        persona_relevance: "An advanced user will hit the escalation edge case and needs to know which command can actually produce the missing content"
+        done_when: "I know whether to use edit, write or setup for a missing-page FAIL, can get the new page written, and can re-run the Persona against the same scenarios"

@@ -6,7 +6,7 @@ Auto-detect: check for conf.py in project root or docs/conf.py.
 
 ## Detection
 
-Config file: conf.py
+Config file: docs/conf.py, docs/source/conf.py, doc/conf.py, doc/source/conf.py, conf.py
 Features to detect:
 - html_theme = "shibuya" (conf.py)
 - sphinx_design in extensions (conf.py)

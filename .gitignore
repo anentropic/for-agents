@@ -1,2 +1,7 @@
 .claude/
 __pycache__/
+.venv/
+site/
+
+# doc-writer's temporary humanizer snapshots
+.doc-writer/.deslop/

@@ -1,32 +1,43 @@
-# anentropic/for-agents
+# for-agents
 
-A collection of Claude Code plugins for working with AI-assisted development.
+Claude Code plugins for AI-assisted development.
 
-[Full Documentation](./docs/)
+**Documentation:** https://anentropic.github.io/for-agents/
 
 ## Plugins
 
-### `doc-writer`
+### doc-writer
 
-Writes and reviews library documentation to publication quality using a three-agent pipeline (Author, Editor, User Persona). Solves the perspective problem: agents that build features tend to document from the builder's viewpoint. This plugin produces docs written from the end user's perspective.
-
-[doc-writer documentation](./docs/doc-writer.md)
-
-### `copilot-review`
-
-Runs a multi-dimensional code review by decomposing into six focused sub-reviews (architecture, test coverage, code quality, error handling, dependency audit, reinvented wheels), getting a second opinion from GitHub Copilot CLI on each dimension, then consolidating findings into prioritised action items.
-
-[copilot-review documentation](./docs/copilot-review.md)
+Writes and reviews library documentation with a pipeline of agents: an Author drafts pages,
+an Editor checks terminology, structure and prose, and a Persona tries to complete real tasks
+using only the docs. Because the Persona never reads the source code, it catches the gaps that
+builders don't see in their own docs.
 
 ## Installation
 
-Install both plugins via the Claude Code marketplace:
+Add this repository as a Claude Code plugin marketplace, then install the plugin from it.
+In a Claude Code session:
 
 ```
-/plugin install github:anentropic/for-agents
+/plugin marketplace add anentropic/for-agents
+/plugin install doc-writer@anentropic-for-agents
 ```
 
-Install individual plugins by name once they appear in the marketplace search results.
+Or from the terminal:
+
+```bash
+claude plugin marketplace add anentropic/for-agents
+claude plugin install doc-writer@anentropic-for-agents
+```
+
+Restart Claude Code afterwards so the plugin loads.
+
+## Building the docs
+
+```bash
+uv sync --group docs
+uv run mkdocs serve
+```
 
 ## License
 

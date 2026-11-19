@@ -340,13 +340,13 @@ After doc system selection, check whether the project already has a framework co
 
 1. **Determine what to look for:**
    - Read `{framework_root}/{doc_system}.qa.md` if it exists.
-   - If the .qa.md file has a `## Detection` section with `Config file: {filename}`, use that filename.
+   - If the .qa.md file has a `## Detection` section with `Config file: {path}[, {path}...]`, use those paths as the candidate locations, in order. Paths are relative to the project root. The first candidate is `{config_filename}`, where a new config is written.
    - If no .qa.md file exists or Config file is "none", skip scaffold check entirely and proceed to Step 2b.5.
 
 2. **Check for existing framework config:**
-   - Use Glob to check if `{config_filename}` exists in the project root (e.g., `mkdocs.yml` for mkdocs-material).
+   - Use Glob to check each candidate location in order (e.g., `docs/conf.py`, then `docs/source/conf.py`, ..., then `conf.py` for sphinx-shibuya). The first one that exists is the project's config: record its path as `{config_path}` and use that path, not the project root, for every later read and write of the config file. A Sphinx project usually keeps `conf.py` in `docs/` or `docs/source/`, so never treat a config that is missing from the project root as missing from the project.
 
-3. **If config file NOT found (full scaffold mode):**
+3. **If no candidate location has a config file (full scaffold mode):**
    - Check if `{framework_root}/scaffolds/{doc_system}.yml` (or `.js`, `.yaml`, `.toml`, `.py` variants) exists. Also check if `{framework_root}/scaffolds/{doc_system}/` directory exists (for multi-file scaffolds like odoc).
    - **If scaffold template exists:**
      a. Read the scaffold template.
@@ -374,7 +374,7 @@ After doc system selection, check whether the project already has a framework co
         Variables with an automatic source (e.g., `{copyright_year}`): never ask -- always use the computed value.
 
      c. Replace all identified template variables in the scaffold content with their inferred values.
-     d. Write the generated config file to the project root (e.g., `mkdocs.yml`).
+     d. Write the generated config file to `{config_filename}`, the first candidate location (e.g., `mkdocs.yml`). Set `{config_path}` to `{config_filename}`, so later steps (including the Step 5 researcher message) read the file you just wrote.
      e. Check if `{paths.docs_root}` directory exists. If not, create it with a starter `index.md`:
         ```markdown
         # {site_name}
@@ -394,8 +394,8 @@ After doc system selection, check whether the project already has a framework co
         For other frameworks, infer the appropriate install command from the researcher's knowledge or the framework's conventions.
    - **If no scaffold template exists:** Inform the user: "No scaffold template for '{doc_system}'. You'll need to create the config file manually." Proceed to Step 2b.5.
 
-4. **If config file FOUND (diff-against-defaults mode):**
-   - Read the existing config file from the project root.
+4. **If a config file was FOUND at `{config_path}` (diff-against-defaults mode):**
+   - Read the existing config file from `{config_path}`. Never write a second config file anywhere else.
    - Check if `{framework_root}/scaffolds/{doc_system}.yml` (or `.js`, `.yaml`, `.toml`, `.py` variants) exists. Also check if `{framework_root}/scaffolds/{doc_system}/` directory exists (for multi-file scaffolds like odoc).
    - **If scaffold template exists:**
      a. Read the scaffold template (opinionated defaults).
@@ -403,7 +403,7 @@ After doc system selection, check whether the project already has a framework co
      b. Compare: identify features, extensions, and plugins in the scaffold template that are ABSENT from the existing config. Use Grep on the existing config to check for each feature listed in the scaffold.
      c. If gaps found, present as AskUserQuestion:
         - header: "Extras"
-        - question: "Your {config_filename} is missing these recommended features. Enable any?"
+        - question: "Your {config_path} is missing these recommended features. Enable any?"
         - multiSelect: true
         - options: (one per missing feature, using feature name and brief description)
           - Plus: { label: "None", description: "Keep current config as-is" }
@@ -411,13 +411,13 @@ After doc system selection, check whether the project already has a framework co
           - Plus: { label: "Chat about this", description: "Learn what each feature does" }
      d. For each selected feature: show the exact config YAML that will be added. Use AskUserQuestion to confirm:
         - header: "Confirm"
-        - question: "Add this to {config_filename}?"
+        - question: "Add this to {config_path}?"
         - Display the proposed addition as a code block.
         - options:
           - { label: "Add it", description: "Append to existing config" }
           - { label: "Skip", description: "Don't add this feature" }
           - { label: "Chat about this", description: "Discuss this change" }
-     e. For confirmed additions: Read the existing config file, append the new config blocks, and Write the complete updated file. Never overwrite existing config -- only append.
+     e. For confirmed additions: Read the existing config file at `{config_path}`, append the new config blocks, and Write the complete updated file. Never overwrite existing config -- only append.
      f. If "None" selected: proceed without changes.
    - **If no scaffold template exists:** No diff possible. Proceed to Step 2b.5.
 
@@ -430,7 +430,7 @@ After scaffold check, present framework-specific questions. These are read dynam
    - **If found:** Read the file. Parse the `## Question N:` sections.
    - **If NOT found:** Skip framework Q&A. Proceed to Step 2c (Paths).
 
-2. **If config file exists (detected in Step 2b.3):** Use Grep on the config file to detect which features are currently enabled. Match detected features against the `recommend_if` fields in the Q&A options. Mark matching options as "(Recommended)" and pre-select them for multiSelect questions. Show detected features in the `detect_context` field.
+2. **If config file exists (detected in Step 2b.3):** Use Grep on the config file at `{config_path}` to detect which features are currently enabled. Match detected features against the `recommend_if` fields in the Q&A options. Mark matching options as "(Recommended)" and pre-select them for multiSelect questions. Show detected features in the `detect_context` field.
 
 3. **Present each question from the .qa.md file as an AskUserQuestion:**
    - Use the `header`, `question`, and `options` fields from each `## Question` section.
@@ -555,7 +555,11 @@ Use the Agent tool to spawn `doc-researcher` with this message:
 
 > Enrich the project configuration. Read `.doc-writer/config.yaml` for user personas, tone, and doc system. Scan the codebase (README, source files, framework config) and produce `.doc-writer/context.md` with expanded persona guidance, project domain summary, tone-specific writing rules, and framework usage preferences.
 >
+> Framework config file: {config_path from Step 2b.3 (the config it found, or the one it wrote in full scaffold mode), or "none found"}. Read this file for framework features; do not look for the config anywhere else.
+>
 > Framework Q&A answers: {framework_answers or "none -- use defaults from framework config detection"}
+
+When this runs from `--refresh-context` or "Re-run researcher" (Step 2b.3 did not run in this session), first find `{config_path}` the same way Step 2b.3 does: check the candidate locations from the `## Detection` `Config file:` line of `{doc_system}.qa.md` in order and take the first that exists.
 
 After the researcher completes, display the updated confirmation:
 ```

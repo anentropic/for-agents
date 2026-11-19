@@ -1,0 +1,81 @@
+site_name: for-agents
+site_description: Claude Code plugins for AI-assisted development
+site_url: https://anentropic.github.io/for-agents/
+repo_url: https://github.com/anentropic/for-agents
+repo_name: anentropic/for-agents
+edit_uri: edit/main/docs/src/
+docs_dir: docs/src
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.indexes
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - toc.follow
+    - content.code.copy
+    - content.code.annotate
+    - search.suggest
+    - search.highlight
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+
+nav:
+  - Overview: index.md
+  - doc-writer:
+      - doc-writer/index.md
+      - Tutorial: doc-writer/tutorial.md
+      - How-to guides:
+          - Configure a project: doc-writer/how-to/configure.md
+          - Update docs after code changes: doc-writer/how-to/update-docs.md
+          - Resolve verdicts: doc-writer/how-to/resolve-verdicts.md
+          - Audit docs: doc-writer/how-to/audit.md
+          - Make targeted fixes: doc-writer/how-to/targeted-fixes.md
+          - Add rules and terminology: doc-writer/how-to/project-rules.md
+          - Upgrade the plugin: doc-writer/how-to/upgrade.md
+      - Reference:
+          - Commands: doc-writer/reference/commands.md
+          - config.yaml: doc-writer/reference/configuration.md
+          - The .doc-writer folder: doc-writer/reference/files.md
+      - Explanation:
+          - How the pipeline works: doc-writer/explanation/pipeline.md
+          - Personas and verdicts: doc-writer/explanation/personas.md
+          - Quality rules and the humanizer: doc-writer/explanation/quality.md

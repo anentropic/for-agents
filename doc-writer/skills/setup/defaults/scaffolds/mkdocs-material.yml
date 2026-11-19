@@ -1,5 +1,4 @@
 # Opinionated defaults for mkdocs-material projects
-# Source: based on cookiecutter-python-uv-library/mkdocs.yml best practices
 # Template variables: {site_name}, {site_description}
 # Used by /doc-writer:setup when no mkdocs.yml exists in the project
 

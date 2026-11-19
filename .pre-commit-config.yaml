@@ -1,4 +1,4 @@
-exclude: ^(\.planning/|doc-writer/deslop/vendor/)
+exclude: ^doc-writer/(deslop/vendor/|skills/setup/defaults/scaffolds/)
 repos:
   - repo: builtin
     hooks:

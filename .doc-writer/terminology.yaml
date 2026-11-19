@@ -1,25 +1,98 @@
 version: 1
 
-source_terms: []
+source_terms:
+  - canonical: "/doc-writer:setup"
+    variants: []
+    source: "name: doc-writer:setup in doc-writer/skills/setup/SKILL.md"
+  - canonical: "/doc-writer:write"
+    variants: []
+    source: "name: doc-writer:write in doc-writer/skills/write/SKILL.md"
+  - canonical: "/doc-writer:review"
+    variants: []
+    source: "name: doc-writer:review in doc-writer/skills/review/SKILL.md"
+  - canonical: "/doc-writer:edit"
+    variants: []
+    source: "name: doc-writer:edit in doc-writer/skills/edit/SKILL.md"
+  - canonical: "/doc-writer:upgrade"
+    variants: []
+    source: "name: doc-writer:upgrade in doc-writer/skills/upgrade/SKILL.md"
+  - canonical: "--skip-gap-scan"
+    variants: []
+    source: "argument-hint in doc-writer/skills/write/SKILL.md"
+  - canonical: "--refresh-context"
+    variants: []
+    source: "argument-hint in doc-writer/skills/setup/SKILL.md"
 
 proper_nouns:
-  - canonical: "GitHub Copilot CLI"
-    variants: []
-    notes: "Full product name; 'Copilot' is acceptable as shorthand within a page after first use"
   - canonical: "GitHub"
     variants: ["Github"]
   - canonical: "Diataxis"
     variants: []
+  - canonical: "Claude Code"
+    variants: ["claude code", "Claude code"]
+  - canonical: "MkDocs Material"
+    variants: ["Mkdocs Material", "mkdocs material"]
 
 project_terms:
   - canonical: "plugin"
     variants: ["skill"]
-    notes: "Both doc-writer and copilot-review are referred to as plugins (the install mechanism is /plugin install). 'skill' is the internal SKILL.md file type but not the user-facing term."
+    notes: "doc-writer is referred to as a plugin (the install mechanism is /plugin install). 'skill' is the internal SKILL.md file type but not the user-facing term."
   - canonical: "Doc Author"
     variants: []
+    notes: "Short form 'the Author' is acceptable after first mention on a page."
   - canonical: "Doc Editor"
     variants: []
+    notes: "Short form 'the Editor' is acceptable after first mention on a page."
   - canonical: "Doc Persona"
+    variants: []
+    notes: "The agent. Lowercase 'persona' is the reader profile in config.yaml. Short form 'the Persona' is acceptable after first mention."
+  - canonical: "Doc Researcher"
+    variants: []
+    notes: "Short form 'the researcher' is acceptable; the setup menu label is 'Re-run researcher'."
+  - canonical: "page inventory"
+    variants: []
+  - canonical: "type blur"
+    variants: []
+  - canonical: "humanizer pass"
+    variants: []
+  - canonical: "gap detection"
+    variants: []
+  - canonical: "gap report"
+    variants: []
+  - canonical: "create mode"
+    variants: []
+  - canonical: "update mode"
+    variants: []
+  - canonical: "revision pass"
+    variants: []
+  - canonical: "revision loop"
+    variants: []
+  - canonical: "escalation report"
+    variants: []
+  - canonical: "docs root"
+    variants: []
+  - canonical: "source root"
+    variants: []
+  - canonical: "doc system"
+    variants: []
+    notes: "Hyphenated 'doc-system' only as a compound adjective (doc-system config file, doc-system guidance)."
+  - canonical: "guidance file"
+    variants: []
+  - canonical: "prose scanner"
+    variants: []
+  - canonical: "likeness score"
+    variants: []
+  - canonical: "protected term"
+    variants: []
+  - canonical: "quality rules"
+    variants: []
+  - canonical: "report-only mode"
+    variants: []
+  - canonical: "page-type integrity"
+    variants: []
+  - canonical: "how-to guide"
+    variants: []
+  - canonical: "front page"
     variants: []
 
 overrides: {}

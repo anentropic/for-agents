@@ -6,7 +6,7 @@ Auto-detect: check for mkdocs.yml in project root.
 
 ## Detection
 
-Config file: mkdocs.yml
+Config file: mkdocs.yml, mkdocs.yaml
 Features to detect:
 - navigation.sections, navigation.tabs (theme.features)
 - pymdownx.tabbed (markdown_extensions)

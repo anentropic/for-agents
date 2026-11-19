@@ -264,7 +264,7 @@ Detect whether the plugin has added new framework Q&A questions since the user l
 
    a. Display: "The plugin update includes {N} new framework question(s) for {doc_system}."
 
-   b. If a framework config file exists (e.g., `mkdocs.yml`, `conf.py` -- detected in Step 1 or detected now via Glob), use Grep on it to detect which features are currently enabled. Match detected features against the `recommend_if` fields in the Q&A options and mark matching options as "(Recommended)". This mirrors setup Step 2b.5 behavior.
+   b. If a framework config file exists (e.g., `mkdocs.yml`, `docs/conf.py` -- detected in Step 1, or now by checking the candidate locations in the `.qa.md` `## Detection` `Config file:` line in order, as setup Step 2b.3 does), use Grep on it to detect which features are currently enabled. Match detected features against the `recommend_if` fields in the Q&A options and mark matching options as "(Recommended)". This mirrors setup Step 2b.5 behavior.
 
    c. For each new question, present it via AskUserQuestion:
       - Use the `header`, `question`, and `options` fields from the `.qa.md` question section.

@@ -81,11 +81,13 @@ The same command behaves differently depending on what is already in your docs r
 | When | No pages, or only a starter `index.md` | Two or more pages |
 | Gap detection | Undocumented symbols | Undocumented symbols and possibly stale pages |
 | Author plans | A complete page set | New pages for the gaps, plus refreshes of pages that really are stale |
-| Editor scope | All pages | New and refreshed pages; terminology across all pages |
+| Editor scope | All pages | New and refreshed pages; terminology across all pages. With no gaps and **Quality pass only**, all pages |
 | FAIL on a page the run did not touch | Not applicable | Escalated to you, never revised |
 
-Update mode never rewrites a page you did not approve, so a later run leaves your hand
-corrections alone.
+Update mode only writes new content into pages you approve, and it never revises a page it did
+not create or refresh after a FAIL. The Doc Editor still edits other pages: its terminology pass
+covers every page, and a **Quality pass only** run gives every page all four Editor passes.
+Review the diff before committing if you have hand corrections to keep.
 
 ## The revision loop
 

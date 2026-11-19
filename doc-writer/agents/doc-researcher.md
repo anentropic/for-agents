@@ -49,7 +49,7 @@ Scan these sources in order of priority. Stop if context is filling up -- breadt
 
 2. **Package manifest** (`pyproject.toml`, `package.json`, `Cargo.toml`, `go.mod`, `*.cabal`, `mix.exs`) -- dependencies, project metadata, version, description.
 
-3. **Framework config file** (`mkdocs.yml`, `docusaurus.config.js`, `conf.py`, `book.toml`, `_config.yml`) -- active features and plugins. If `doc_system` is `mkdocs-material`, also note which mkdocs extensions and plugins are enabled and which are absent.
+3. **Framework config file** -- active features and plugins. If the spawn message names the framework config file, read that path. Otherwise check the candidate locations in the `## Detection` `Config file:` line of `{doc_system}.qa.md` (in `${CLAUDE_PLUGIN_ROOT}/skills/setup/defaults/` or `.doc-writer/`) in order and read the first that exists; with no `.qa.md`, look for `mkdocs.yml`, `docusaurus.config.js`, `conf.py`, `book.toml` or `_config.yml` in the project root and in `docs/` and `doc/` (Sphinx usually keeps `conf.py` in `docs/` or `docs/source/`). If `doc_system` is `mkdocs-material`, also note which mkdocs extensions and plugins are enabled and which are absent.
 
 4. **Top-level source directory listing** -- use Glob with `{paths.source_root}/**/*.{py,ts,js,rs,go}` limited to the first 50 files. Record the module structure (directory names, file groupings).
 

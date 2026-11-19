@@ -30,8 +30,9 @@ Answer the early questions as usual. Two of the later ones need care on an exist
 
 The doc system question names the system that setup detected. Confirm it, and setup looks
 for that system's config file in its usual locations: `mkdocs.yml` or `mkdocs.yaml` for
-`mkdocs-material`; `conf.py`, `docs/conf.py`, `docs/source/conf.py`, `doc/conf.py` or
-`doc/source/conf.py` for `sphinx-shibuya`; `doc/dune` for `odoc`. When it finds the file, it
+`mkdocs-material`; `docs/conf.py`, `docs/source/conf.py`, `doc/conf.py`, `doc/source/conf.py`
+or `conf.py` for `sphinx-shibuya`; `doc/dune` for `odoc`. With no config, setup writes a new one
+to the first of these: `mkdocs.yml`, `docs/conf.py` or `doc/dune`. When it finds the file, it
 never rewrites it or writes a second one:
 
 - Under **Extras** it lists the recommended features your file lacks. Choose **None** to keep

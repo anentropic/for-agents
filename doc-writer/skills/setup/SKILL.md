@@ -344,7 +344,7 @@ After doc system selection, check whether the project already has a framework co
    - If no .qa.md file exists or Config file is "none", skip scaffold check entirely and proceed to Step 2b.5.
 
 2. **Check for existing framework config:**
-   - Use Glob to check each candidate location in order (e.g., `conf.py`, then `docs/conf.py`, then `docs/source/conf.py` for sphinx-shibuya). The first one that exists is the project's config: record its path as `{config_path}` and use that path, not the project root, for every later read and write of the config file. A Sphinx project usually keeps `conf.py` in `docs/` or `docs/source/`, so never treat a config that is missing from the project root as missing from the project.
+   - Use Glob to check each candidate location in order (e.g., `docs/conf.py`, then `docs/source/conf.py`, ..., then `conf.py` for sphinx-shibuya). The first one that exists is the project's config: record its path as `{config_path}` and use that path, not the project root, for every later read and write of the config file. A Sphinx project usually keeps `conf.py` in `docs/` or `docs/source/`, so never treat a config that is missing from the project root as missing from the project.
 
 3. **If no candidate location has a config file (full scaffold mode):**
    - Check if `{framework_root}/scaffolds/{doc_system}.yml` (or `.js`, `.yaml`, `.toml`, `.py` variants) exists. Also check if `{framework_root}/scaffolds/{doc_system}/` directory exists (for multi-file scaffolds like odoc).
@@ -555,7 +555,11 @@ Use the Agent tool to spawn `doc-researcher` with this message:
 
 > Enrich the project configuration. Read `.doc-writer/config.yaml` for user personas, tone, and doc system. Scan the codebase (README, source files, framework config) and produce `.doc-writer/context.md` with expanded persona guidance, project domain summary, tone-specific writing rules, and framework usage preferences.
 >
+> Framework config file: {config_path from Step 2b.3, or "none found"}. Read this file for framework features; do not look for the config anywhere else.
+>
 > Framework Q&A answers: {framework_answers or "none -- use defaults from framework config detection"}
+
+When this runs from `--refresh-context` or "Re-run researcher" (Step 2b.3 did not run in this session), first find `{config_path}` the same way Step 2b.3 does: check the candidate locations from the `## Detection` `Config file:` line of `{doc_system}.qa.md` in order and take the first that exists.
 
 After the researcher completes, display the updated confirmation:
 ```

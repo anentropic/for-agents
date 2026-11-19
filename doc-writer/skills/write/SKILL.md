@@ -281,7 +281,7 @@ Spawn the doc-editor agent to run quality passes on the authored documentation.
 
 **Create mode** — use the Agent tool to spawn `doc-editor` with this message:
 
-> Edit the documentation in {paths.docs_root}. Run all four passes: terminology consistency, Diataxis type integrity, humanizer, and cross-reference linking. Prose scanner: `${CLAUDE_PLUGIN_ROOT}/deslop/docs_scan.py`.
+> Edit the documentation in {paths.docs_root}. Run all four passes: terminology consistency, Diataxis type integrity, deslop, and cross-reference linking. Prose scanner: `${CLAUDE_PLUGIN_ROOT}/deslop/docs_scan.py`.
 
 **Update mode** — scope the Editor to new and refreshed pages, but run terminology across all:
 
@@ -425,7 +425,7 @@ Present a completion summary to the project author:
 
 ### Editor Changes Applied
 - Terminology fixes: {count}
-- Humanizer rewrites: {count}
+- Deslop rewrites: {count}
 - Cross-reference updates: {count}
 
 ### Persona Verdicts

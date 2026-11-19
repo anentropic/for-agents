@@ -53,7 +53,7 @@ project_terms:
     variants: []
   - canonical: "type blur"
     variants: []
-  - canonical: "humanizer pass"
+  - canonical: "deslop pass"
     variants: []
   - canonical: "gap detection"
     variants: []

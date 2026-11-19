@@ -30,7 +30,7 @@ then makes four passes over the pages, always in this order:
    `terminology.yaml` as the authority.
 2. **Page-type integrity**: finds paragraphs that drift into the wrong kind of writing, such as
    background theory in the middle of a how-to guide.
-3. **Humanizer**: rewrites the patterns that make text read as machine-written, measuring each
+3. **Deslop**: rewrites the patterns that make text read as machine-written, measuring each
    page before and after.
 4. **Cross-references**: links code mentions to your API reference, when there is one.
 
@@ -127,5 +127,5 @@ steps.
 ## Related
 
 - [Personas and verdicts](personas.md): how the Persona tests the docs.
-- [Quality rules and the humanizer pass](quality.md): what the Author and Editor enforce.
+- [Quality rules and the deslop pass](quality.md): what the Author and Editor enforce.
 - [Commands reference](../reference/commands.md#write): every stage's output files.

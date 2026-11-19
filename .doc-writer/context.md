@@ -16,7 +16,7 @@ The plugin is distributed from a marketplace repository that may hold other plug
 - Interactive prompts: structured multiple-choice questions, always with "Type something else" and "Chat about this" escape options; a page-inventory approval gate before writing; a PARTIAL-verdict decision step.
 - Files in `.doc-writer/`: user-owned and safe to edit -- `config.yaml`, `rules.md`, `terminology.yaml`, `{doc_system}.md`, `context.md` (regenerated on refresh). Generated outputs to read, not edit -- `page-inventory.md`, `gap-report.md`, `editor-report.md`, `persona-report*.md`, `scenarios.yaml`, `author-notes.md`, `mli-enrichment.md` (odoc only). Internal working folders -- `.originals/` (upgrade baselines) and `.deslop/` (scanner snapshots).
 - Outcome guarantees: generated docs are left uncommitted for review; `review` without `--edit` changes no doc files; `--edit` asks before changing anything.
-- Requirement: the humanizer measurement needs `python3`; without it the Editor still runs and notes that measurements were skipped.
+- Requirement: the deslop measurement needs `python3`; without it the Editor still runs and notes that measurements were skipped.
 
 **Not for user docs:** the internals of `docs_scan.py` (its functions, view-building rules), `detect-project.sh`, `scan-exports.sh`, the vendored deslop files, agent prompt wording, and this repository's own tests, CI or docs build. Mention the deslop scanner by what it does for the user, credit it, and stop there.
 
@@ -30,7 +30,7 @@ The plugin is distributed from a marketplace repository that may hold other plug
   - The pipeline order -- gap detection, Author plan, inventory approval, Author write, Editor, Persona evaluation, revision loop, summary -- and which file each stage writes.
   - Every file in `.doc-writer/`: who writes it, when it is regenerated, and whether hand edits survive.
   - What the verdicts (PASS / PARTIAL / FAIL) mean and what the user is expected to decide.
-  - Terms of art the plugin introduces: Diataxis types, "type blur", "persona", "gap report", "humanizer pass". Define on first use or link to the explanation section.
+  - Terms of art the plugin introduces: Diataxis types, "type blur", "persona", "gap report", "deslop pass". Define on first use or link to the explanation section.
 - **Their world:** They maintain an open source library, usually alone or with a few collaborators, and documentation lags behind the code. They want a published site that reads like a careful human wrote it, but they do not have the hours to write tutorials, how-tos and reference pages by hand, and generic "generate docs" prompts produce builder-centric pages full of AI tells. They will judge the plugin by the quality of a diff they review before committing.
 - **How they found this library:** Searching for a Claude Code plugin that writes documentation, they landed on the repository. Alternatives they likely weighed: prompting Claude directly, API-reference generators (mkdocstrings, autodoc) that cover reference but not tutorials or guides, and hand-writing. The differentiators to make clear early: the Persona tests docs without reading source, the Editor enforces terminology and de-slops prose, and nothing is committed for them.
 

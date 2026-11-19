@@ -20,7 +20,7 @@ separate agents so that each one has a narrower job:
   sets itself 3 to 5 concrete goals, and tries to reach each one by following only the docs.
   Missing steps and dead-end links show up as FAIL or PARTIAL verdicts instead of slipping
   past someone who already knows the code.
-- **The Doc Editor enforces your terminology and removes AI-writing patterns.** Its humanizer
+- **The Doc Editor enforces your terminology and removes AI-writing patterns.** Its deslop
   pass measures every page before and after it rewrites, and checks that no code span, number
   or link was lost.
 - **Nothing is committed for you.** Every command leaves its changes in your working tree, so
@@ -103,5 +103,5 @@ The plugin adds five commands: `/doc-writer:setup`, `/doc-writer:write`, `/doc-w
   and why the work is split this way.
 - **[Personas and verdicts](explanation/personas.md)**: how the Doc Persona builds scenarios,
   walks the docs and decides between PASS, PARTIAL and FAIL.
-- **[Quality rules and the humanizer pass](explanation/quality.md)**: the rules every page must
+- **[Quality rules and the deslop pass](explanation/quality.md)**: the rules every page must
   meet, Diataxis page types, and how prose gets measured.

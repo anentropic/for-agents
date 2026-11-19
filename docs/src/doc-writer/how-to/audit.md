@@ -26,7 +26,7 @@ The audit runs three stages in order:
 1. **Gap detection** lists exported symbols that no page mentions and writes
    `.doc-writer/gap-report.md`.
 2. **Editor audit** runs the Doc Editor's four passes (terminology, page-type integrity,
-   humanizer and cross-references) in report-only mode, and writes its findings to
+   deslop and cross-references) in report-only mode, and writes its findings to
    `.doc-writer/editor-report.md`.
 3. **Persona evaluation** runs one Doc Persona per configured persona. Each tries its scenarios
    against your docs and writes a report.
@@ -125,4 +125,4 @@ them.
 
 - [Make targeted fixes](targeted-fixes.md): act on selected findings from these reports.
 - [Commands reference](../reference/commands.md#review): `review` arguments and outputs.
-- [Quality rules and the humanizer pass](../explanation/quality.md): what the Editor checks.
+- [Quality rules and the deslop pass](../explanation/quality.md): what the Editor checks.

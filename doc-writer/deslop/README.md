@@ -1,6 +1,6 @@
 # deslop (vendored)
 
-The Doc Editor's humanizer pass (Pass 3 in `agents/doc-editor.md`) measures prose with
+The Doc Editor's deslop pass (Pass 3 in `agents/doc-editor.md`) measures prose with
 [deslop](https://github.com/etodanik/deslop) by Danny Povolotski. This folder holds the parts
 of deslop that the pass runs, plus a wrapper that makes them work on documentation pages.
 

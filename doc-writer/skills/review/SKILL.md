@@ -87,7 +87,7 @@ Spawn the doc-editor agent to review documentation quality.
 
 Use the Agent tool to spawn `doc-editor` with this delegation message:
 
-> Audit the documentation in {paths.docs_root}. Run all four passes: terminology consistency, Diataxis type integrity, humanizer, and cross-reference linking. **Report issues only — do NOT edit any doc files.** Write your findings to .doc-writer/editor-report.md. Prose scanner: `${CLAUDE_PLUGIN_ROOT}/deslop/docs_scan.py`.
+> Audit the documentation in {paths.docs_root}. Run all four passes: terminology consistency, Diataxis type integrity, deslop, and cross-reference linking. **Report issues only — do NOT edit any doc files.** Write your findings to .doc-writer/editor-report.md. Prose scanner: `${CLAUDE_PLUGIN_ROOT}/deslop/docs_scan.py`.
 
 **If `edit_mode` is true (`--edit` flag was passed):**
 
@@ -106,12 +106,12 @@ Use AskUserQuestion to confirm:
 - **"Apply edits":** Spawn the Editor with the standard editing delegation below.
 - **"Report only":** Skip the Editor entirely. Note "Editor skipped (user declined)" in the final report. Proceed to Step 3.
 - **"Type something else":** Ask the user in plain text what files to scope. Wait for response. Then spawn the Editor with the standard editing delegation, scoped to the user's specified files.
-- **"Chat about this":** Explain what the Editor will change (four passes: terminology, Diataxis type integrity, humanizer, cross-references). Answer questions in plain text. After discussion resolves, re-present the AskUserQuestion to get a decision.
+- **"Chat about this":** Explain what the Editor will change (four passes: terminology, Diataxis type integrity, deslop, cross-references). Answer questions in plain text. After discussion resolves, re-present the AskUserQuestion to get a decision.
 - **"Other" (auto-added):** Ask the user in plain text what they want to do. Wait for response. Proceed based on their answer.
 
 Standard editing delegation (only used when user confirms):
 
-> Review the documentation in {paths.docs_root}. Run all four passes: terminology consistency, Diataxis type integrity, humanizer, and cross-reference linking. Edit doc files to fix issues as you find them. Write your report to .doc-writer/editor-report.md. Prose scanner: `${CLAUDE_PLUGIN_ROOT}/deslop/docs_scan.py`.
+> Review the documentation in {paths.docs_root}. Run all four passes: terminology consistency, Diataxis type integrity, deslop, and cross-reference linking. Edit doc files to fix issues as you find them. Write your report to .doc-writer/editor-report.md. Prose scanner: `${CLAUDE_PLUGIN_ROOT}/deslop/docs_scan.py`.
 
 Wait for the Editor agent to complete before proceeding.
 

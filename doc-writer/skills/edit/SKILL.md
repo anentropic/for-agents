@@ -118,7 +118,7 @@ After the Author makes revisions, spawn the doc-editor agent to verify quality o
 
 Use the Agent tool to spawn `doc-editor` with this delegation message:
 
-> Edit the following revised documentation pages: {comma-separated list of changed page paths}. Run all four passes: terminology consistency, Diataxis type integrity, humanizer, and cross-reference linking on these pages. For the terminology pass, scan ALL documentation files in {paths.docs_root} (not just changed pages) because terminology changes can ripple across the entire doc set. Write your report to .doc-writer/editor-report.md. Prose scanner: `${CLAUDE_PLUGIN_ROOT}/deslop/docs_scan.py`.
+> Edit the following revised documentation pages: {comma-separated list of changed page paths}. Run all four passes: terminology consistency, Diataxis type integrity, deslop, and cross-reference linking on these pages. For the terminology pass, scan ALL documentation files in {paths.docs_root} (not just changed pages) because terminology changes can ripple across the entire doc set. Write your report to .doc-writer/editor-report.md. Prose scanner: `${CLAUDE_PLUGIN_ROOT}/deslop/docs_scan.py`.
 
 Wait for the Editor agent to complete.
 

@@ -32,7 +32,7 @@ configured persona). Tone: warm-businesslike.
 
 | # | Type | Title | Key Sections | File Path |
 |---|------|-------|--------------|-----------|
-| 19 | (refresh) | doc-writer (old single page) | Retire: content moves into pages 2-16. Stale: wrong install (`/plugin install github:anentropic/for-agents`); "three-agent" pipeline (four agents; Doc Researcher missing); `/doc-writer:upgrade` undocumented; setup omits use cases, tone, framework/navigation questions and `context.md`; config reference missing `use_cases`, `use_cases_section`, `qa_answers`, `plugin_version`; example output uses a real person's name ("[Paul, S2]", "**Paul:**") — replace with the configured persona or a neutral name. odoc is already listed. | docs/src/doc-writer.md |
+| 19 | (refresh) | doc-writer (old single page) | Retire: content moves into pages 2-16. Stale: wrong install (`/plugin install github:anentropic/for-agents`); "three-agent" pipeline (four agents; Doc Researcher missing); `/doc-writer:upgrade` undocumented; setup omits use cases, tone, framework/navigation questions and `context.md`; config reference missing `use_cases`, `use_cases_section`, `qa_answers`, `plugin_version`; example output uses a real person's name — replace with the configured persona or a neutral name. odoc is already listed. | docs/src/doc-writer.md |
 
 ## Proposed nav (mkdocs.yml)
 

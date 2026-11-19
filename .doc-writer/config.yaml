@@ -2,25 +2,36 @@
 version: 1
 
 user_personas:
-  - name: "Paul — solo developer building projects with Claude Code and open source libraries"
-    skill_level: "expert"
+  - name: "Library maintainer using Claude Code"
+    skill_level: "advanced"
     assumed_knowledge:
-      - "why the project exists and the overall goals"
-      - "Claude Code ecosystem and open source tooling"
+      - "Claude Code: sessions, slash commands, installing plugins"
+      - "git and reviewing a diff before committing"
+      - "the documentation system their own project already uses"
     never_assume:
-      - "the required steps to accomplish a task"
-      - "the expected workflow"
-    domain_context: "building agentic tools and integrations with Claude Code"
-    discovery_story: "this is his own repo"
+      - "what doc-writer's commands do, or which one to run first"
+      - "the order of the pipeline stages and what each one writes"
+      - "the files doc-writer keeps in .doc-writer/ and which are safe to edit"
+    user_tasks:
+      - "Install doc-writer and configure it for an existing project"
+      - "Generate documentation for a project that has none"
+      - "Update existing documentation after code changes"
+      - "Audit existing documentation without changing it"
+      - "Fix specific issues from an audit"
+      - "Add project-specific documentation rules"
+    domain_context: "maintains an open source library and wants publication-quality docs without writing all of them by hand"
+    discovery_story: "found the repository while looking for a Claude Code plugin that writes documentation"
 
-doc_system: "plain-markdown"
+tone: "warm-businesslike"
+
+doc_system: "mkdocs-material"
 api_reference: ""
 
 paths:
-  docs_root: "docs/"
-  source_root: "src/"
+  docs_root: "docs/src/"
+  source_root: "doc-writer/"
 
 detected:
-  language: "Unknown"
-  doc_system: "plain-markdown"
-  existing_docs: false
+  language: "markdown"
+  doc_system: "mkdocs-material"
+  existing_docs: true

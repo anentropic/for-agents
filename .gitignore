@@ -1,2 +1,9 @@
 .claude/
 __pycache__/
+.venv/
+site/
+
+# doc-writer run outputs
+.doc-writer/.deslop/
+.doc-writer/*-report*.md
+.doc-writer/page-inventory.md

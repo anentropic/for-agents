@@ -3,5 +3,5 @@ __pycache__/
 .venv/
 site/
 
-# doc-writer's temporary humanizer snapshots
+# doc-writer's temporary deslop snapshots
 .doc-writer/.deslop/

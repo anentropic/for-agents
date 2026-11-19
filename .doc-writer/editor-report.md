@@ -164,7 +164,7 @@ Update commands (`claude plugin marketplace update`, `claude plugin update`) kep
 | Section | Description | Fix |
 |---------|-------------|-----|
 | Universal rules and project rules | "That keeps the baseline... while letting" | Rewritten plainly |
-| The humanizer pass | Intensifier "deliberately" | Removed |
+| The deslop pass | Intensifier "deliberately" | Removed |
 
 The deslop credit to its author is kept. It is the MIT attribution the vendored license requires, not an example name.
 
@@ -215,7 +215,7 @@ The deslop credit to its author is kept. It is the MIT attribution the vendored 
 
 `terminology.yaml` now also lists the command names, Claude Code, MkDocs Material, Doc Researcher, and the project's multi-word concept names (page inventory, type blur, gap report, create mode, update mode, revision pass, docs root, and others) as protected terms.
 
-## Humanizer Measurements
+## Deslop Measurements
 
 | Page | Likeness before | Likeness after | Fixed | Left on purpose |
 |------|-----------------|----------------|-------|-----------------|

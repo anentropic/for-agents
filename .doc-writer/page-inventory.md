@@ -24,7 +24,7 @@ configured persona). Tone: warm-businesslike.
 | 13 | reference (hand-written) | The .doc-writer folder | Every file: who writes it, when regenerated, safe to edit or not (`context.md` regenerated on refresh; reports overwritten; `.originals/`, `.deslop/` internal) | docs/src/doc-writer/reference/files.md |
 | 14 | explanation | How the pipeline works | Four agents (Doc Researcher, Doc Author, Doc Editor, Doc Persona), stage order and outputs, revision loop (max three passes), Mermaid flow, why separate agents | docs/src/doc-writer/explanation/pipeline.md |
 | 15 | explanation | Understanding personas and verdicts | What a persona is, scenarios (`scenarios.yaml` reused across passes), docs-only navigation, PASS/PARTIAL/FAIL meaning, multiple personas | docs/src/doc-writer/explanation/personas.md |
-| 16 | explanation | Quality rules and the deslop pass | Universal vs project rules, Diataxis types and "type blur", the Editor's four passes, humanizer measurement via the deslop scanner (credited, what it measures for you), `python3` requirement and fallback | docs/src/doc-writer/explanation/quality.md |
+| 16 | explanation | Quality rules and the deslop pass | Universal vs project rules, Diataxis types and "type blur", the Editor's four passes, deslop measurement (credited, what it measures for you), `python3` requirement and fallback | docs/src/doc-writer/explanation/quality.md |
 | 17 | (readme) | README.md | Optional: align install form and agent count with the site | README.md |
 | 18 | (maintainer) | MAINTAINER.md | Optional; recommend excluding for now (internals stay out of the public site) | MAINTAINER.md |
 

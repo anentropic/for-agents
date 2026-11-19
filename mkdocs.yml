@@ -78,4 +78,4 @@ nav:
       - Explanation:
           - How the pipeline works: doc-writer/explanation/pipeline.md
           - Personas and verdicts: doc-writer/explanation/personas.md
-          - Quality rules and the humanizer: doc-writer/explanation/quality.md
+          - Quality rules and the deslop pass: doc-writer/explanation/quality.md
